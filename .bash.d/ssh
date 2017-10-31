@@ -27,7 +27,7 @@ function ensure_ssh_agent() {
         echo "Starting SSH agent..."
         eval "$(ssh-agent -s)"
         (cd ~/.ssh && ssh-add "${SSH_KEYS[@]}")
-    else
+    elif [[ -z $SSH_AUTH_SOCK ]]; then
         set_agent_sock
     fi
 }
