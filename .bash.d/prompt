@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# get the git prompt
+function get_vc_prompt() {
+    if is_repo; then
+        local repo=$(get_repo)
+        local label=$(git rev-parse --abbrev-ref HEAD)
+        if [[ $label == "HEAD" ]]; then
+            label=$(git rev-parse --short=8 HEAD)
+        fi
+        echo "($repo:$label)"
+    fi
+}
+
+# convert the given exit code into an indicator
+function display_code() {
+    case $1 in
+        0) echo $(emojify :ok_hand:) ;;
+        1) echo $(emojify :exclamation:) ;;
+        *) echo "${RED}$(emojify :exclamation:)($prev_exit)" ;;
+    esac
+}
+
+# get the current directory, replacing $HOME with ~ and adding
+# a slash to the end, if necessary
+function get_curr_dir() {
+    local curr_dir=${PWD/$HOME/"~"}
+    if [[ $curr_dir != */ ]]; then
+        curr_dir="$curr_dir/"
+    fi
+    echo $curr_dir
+}
+
+# any actions to run before prompting for commands
+function pre_prompt() {
+    # needs to be first
+    display_code $?
+
+    # print title every time
+    update_title
+
+    local curr_date=$(date +"%F %T")
+
+    printf "\n${POWDER_BLUE}[%s] ${GREEN}%s ${MAGENTA}%s${NORMAL}\n" \
+        "$curr_date" "$(get_curr_dir)" "$(get_vc_prompt)"
+}
+
+function get_prompt() {
+    echo "$(emojify :zap:) "
+}

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+function _add() {
+    export PATH="$1:$PATH"
+}
+
+# my custom scripts
+_add ~/bin

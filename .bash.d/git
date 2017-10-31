@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# git tab completion
+source /usr/local/bin/git-completion.bash
+
+# exit non-zero if not a git repo
+function is_repo() {
+    git rev-parse HEAD > /dev/null 2>&1
+}
+
+# get the name of the current repo; works in worktrees
+function get_repo() {
+    basename $(git rev-parse --absolute-git-dir | sed 's|/\.git.*||')
+}

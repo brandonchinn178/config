@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# track current title
+: ${CUSTOM_TITLE:=""}
+
+# helper to set title
+function title() {
+    CUSTOM_TITLE="$*"
+}
+
+# update title in terminal
+function update_title() {
+    printf "\e]0;$CUSTOM_TITLE\7"
+}
