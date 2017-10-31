@@ -1,0 +1,5 @@
+#!/bin/bash
+
+function get_conda_env() {
+    conda env list | grep "*" | awk '{ print $1; }'
+}

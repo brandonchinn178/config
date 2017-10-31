@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# set SSH_AUTH_SOCK
+function set_agent_sock() {
+    for sock_folder in $(find $TMPDIR -name "ssh-*"); do
+        sock=$(find $sock_folder -name "agent.*")
+        if [[ ! -z $sock ]]; then
+            echo "Setting SSH_AUTH_SOCK to: $sock"
+            export SSH_AUTH_SOCK=$sock
+            return 0
+        fi
+    done
+    echo "No ssh-agent sock file found."
+    return 1
+}
+
+SSH_KEYS=(
+    id_rsa
+)
+
+# ensure that ssh-agent is running. If an ssh-agent is already running,
+# set SSH_AUTH_SOCK
+function ensure_ssh_agent() {
+    export SSH_AGENT_PID=$(pgrep ssh-agent)
+
+    if [[ -z $SSH_AGENT_PID ]]; then
+        echo "Starting SSH agent..."
+        eval "$(ssh-agent -s)"
+        (cd ~/.ssh && ssh-add "${SSH_KEYS[@]}")
+    else
+        set_agent_sock
+    fi
+}
