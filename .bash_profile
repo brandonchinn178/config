@@ -7,4 +7,4 @@ done
 PROMPT_COMMAND='pre_prompt; update_terminal_cwd'
 PS1="$(get_prompt)"
 
-ensure_ssh_agent
+check_ssh_agent
