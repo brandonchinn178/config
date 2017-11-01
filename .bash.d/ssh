@@ -14,19 +14,24 @@ function set_agent_sock() {
     return 1
 }
 
-SSH_KEYS=(
-    id_rsa
-)
+function start_ssh_agent() {
+    eval "$(ssh-agent -s)"
+    local SSH_KEYS=(
+        id_rsa
+        git_gmail
+        leapyear-ci.pem
+        leapyear-dev.pem
+    )
+    (cd ~/.ssh && ssh-add "${SSH_KEYS[@]}")
+}
 
-# ensure that ssh-agent is running. If an ssh-agent is already running,
+# Check if ssh-agent is running. If an ssh-agent is already running,
 # set SSH_AUTH_SOCK
-function ensure_ssh_agent() {
-    export SSH_AGENT_PID=$(pgrep ssh-agent)
+function check_ssh_agent() {
+    export SSH_AGENT_PID=$(pgrep -f 'ssh-agent -s')
 
     if [[ -z $SSH_AGENT_PID ]]; then
-        echo "Starting SSH agent..."
-        eval "$(ssh-agent -s)"
-        (cd ~/.ssh && ssh-add "${SSH_KEYS[@]}")
+        echo 'No SSH agent running. Run `start_ssh_agent`.'
     elif [[ -z $SSH_AUTH_SOCK ]]; then
         set_agent_sock
     fi
