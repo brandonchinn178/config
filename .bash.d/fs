@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# get the current directory, replacing $HOME with ~ and adding
+# a slash to the end, if necessary
+function get_curr_dir() {
+    local curr_dir=${PWD/$HOME/"~"}
+    if [[ $curr_dir != */ ]]; then
+        curr_dir="$curr_dir/"
+    fi
+    echo $curr_dir
+}
+
+function ch() {
+    cd "$@" && ls
+}
