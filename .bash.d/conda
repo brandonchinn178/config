@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# get the currently activate conda environment.
 function get_conda_env() {
-    conda env list | grep "*" | awk '{ print $1; }'
+    echo $CONDA_DEFAULT_ENV
+}
+
+# exit 0 if a conda environment is activated
+function is_conda_active() {
+    [[ $(get_conda_env) == "" ]]
 }
