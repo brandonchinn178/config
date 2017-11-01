@@ -10,5 +10,5 @@ function is_repo() {
 
 # get the name of the current repo; works in worktrees
 function get_repo() {
-    basename $(git rev-parse --absolute-git-dir | sed 's|/\.git.*||')
+    basename "$(git rev-parse --absolute-git-dir | sed 's|/\.git.*||')"
 }
