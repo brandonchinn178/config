@@ -1,0 +1,5 @@
+#!/bin/bash
+
+rm -rf ~/.bash.d
+cp -r {.bash.d,.bash_profile} ~
+

@@ -6,4 +6,5 @@
 
 ## Installation
 
-Put files into `$HOME`.
+`./apply`
+
