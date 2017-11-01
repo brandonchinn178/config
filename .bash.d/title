@@ -15,5 +15,5 @@ function update_title() {
         title=$(get_curr_dir)
     fi
 
-    printf "\e]0;%s\7" "$title
+    printf "\e]0;%s\7" "$title"
 }
