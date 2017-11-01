@@ -17,7 +17,7 @@ function display_code() {
     case $1 in
         0) echo $(emojify :ok_hand:) ;;
         1) echo $(emojify :exclamation:) ;;
-        *) echo "${RED}$(emojify :exclamation:)($prev_exit)" ;;
+        *) echo "${RED}$(emojify :exclamation:)($1)" ;;
     esac
 }
 
