@@ -3,3 +3,4 @@
 cd "$(dirname ${BASH_SOURCE[0]})"
 ln -sf $PWD/bash_profile ~/.bash_profile
 ln -sf $PWD/vimrc ~/.vimrc
+

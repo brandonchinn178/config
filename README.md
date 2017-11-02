@@ -6,5 +6,5 @@
 
 ## Installation
 
-`./apply`
+`./install`
 
