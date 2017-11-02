@@ -1,5 +1,3 @@
 #!/bin/bash
 
-rm -rf ~/.bash.d
-cp -r {.bash.d,.bash_profile} ~
-
+ln -sf $PWD/.bash_profile ~/.bash_profile
