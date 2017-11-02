@@ -1,7 +1,16 @@
 #!/bin/bash
 
 cd "$(dirname ${BASH_SOURCE[0]})"
-ln -sf $PWD/bash.d ~/.bash.d
-ln -sf $PWD/bash_profile ~/.bash_profile
-ln -sf $PWD/vimrc ~/.vimrc
 
+FILES=(
+    'bash.d'
+    'bash_profile'
+    'vimrc'
+)
+
+for FILE in "${FILES[@]}"; do
+    DEST="$HOME/.$FILE"
+    if [[ ! -h $DEST ]]; then
+        ln -sf "$PWD/$FILE" "$DEST"
+    fi
+done
