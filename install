@@ -10,7 +10,6 @@ FILES=(
 
 for FILE in "${FILES[@]}"; do
     DEST="$HOME/.$FILE"
-    if [[ ! -h $DEST ]]; then
-        ln -sf "$PWD/$FILE" "$DEST"
-    fi
+    rm -rf "$DEST"
+    ln -sf "$PWD/$FILE" "$DEST"
 done
