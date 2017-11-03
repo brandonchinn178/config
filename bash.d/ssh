@@ -5,9 +5,15 @@ function set_agent_sock() {
     for sock_folder in $(find $TMPDIR -name "ssh-*"); do
         sock=$(find $sock_folder -name "agent.*")
         if [[ ! -z $sock ]]; then
-            echo "Setting SSH_AUTH_SOCK to: $sock"
-            export SSH_AUTH_SOCK=$sock
-            return 0
+            local SSH_AUTH_SOCK=$sock
+            if ssh-add -l > /dev/null 2>&1; then
+                echo "Setting SSH_AUTH_SOCK to: $sock"
+                export SSH_AUTH_SOCK
+                return 0
+            else
+                # delete old sock file
+                rm -rf $sock
+            fi
         fi
     done
     echo "No ssh-agent sock file found."
