@@ -29,10 +29,18 @@ function pre_prompt() {
     # print title every time
     update_title
 
-    local curr_date=$(date +"%F %T")
+    local curr_date="[$(date +"%F %T")]"
+    local curr_dir="$(get_curr_dir)"
+    local vc_prompt="$(get_vc_prompt)"
+    local one_line="$curr_date $curr_dir $vc_prompt"
 
-    printf "\n${POWDER_BLUE}[%s] ${GREEN}%s ${MAGENTA}%s${NORMAL}\n" \
-        "$curr_date" "$(get_curr_dir)" "$(get_vc_prompt)"
+    printf "\n${POWDER_BLUE}%s " "$curr_date"
+    if [[ ${#one_line} -gt $COLUMNS ]]; then
+        printf "${MAGENTA}%s\n${GREEN}%s" "$vc_prompt" "$curr_dir"
+    else
+        printf "${GREEN}%s ${MAGENTA}%s" "$curr_dir" "$vc_prompt"
+    fi
+    printf "${NORMAL}\n"
 }
 
 function get_prompt() {
