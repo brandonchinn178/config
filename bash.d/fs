@@ -17,5 +17,5 @@ function ch() {
 
 # cd into the git root
 function root() {
-    cd "$(git rev-parse --git-dir)/.."
+    cd "$(git rev-parse --show-toplevel)"
 }
