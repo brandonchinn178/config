@@ -1,11 +1,11 @@
 #!/bin/bash
 
-function _add() {
+function _add_to_path() {
     export PATH="$1:$PATH"
 }
 
 # my custom scripts
-_add ~/bin
+_add_to_path ~/bin
 
 # ls
 
