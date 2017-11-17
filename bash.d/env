@@ -6,3 +6,8 @@ function _add() {
 
 # my custom scripts
 _add ~/bin
+
+# ls
+
+export CLICOLOR=xterm-color
+export LSCOLORS=exfxcxdxcxegedabagacad
