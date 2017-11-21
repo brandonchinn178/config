@@ -10,4 +10,4 @@ _add_to_path ~/bin
 # ls
 
 export CLICOLOR=xterm-color
-export LSCOLORS=exfxcxdxcxegedabagacad
+export LSCOLORS=exgxcxdxcxegedabagacad
