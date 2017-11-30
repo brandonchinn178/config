@@ -12,3 +12,13 @@ function is_repo() {
 function get_repo() {
     basename "$(git rev-parse --absolute-git-dir | sed 's|/\.git.*||')"
 }
+
+# get the current branch, or the commit hash if not on a branch
+function get_branch() {
+    local label=$(git rev-parse --abbrev-ref HEAD)
+    if [[ $label == "HEAD" ]]; then
+        git rev-parse --short=8 HEAD
+    else
+        echo $label
+    fi
+}

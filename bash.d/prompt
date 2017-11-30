@@ -4,10 +4,7 @@
 function get_vc_prompt() {
     if is_repo; then
         local repo=$(get_repo)
-        local label=$(git rev-parse --abbrev-ref HEAD)
-        if [[ $label == "HEAD" ]]; then
-            label=$(git rev-parse --short=8 HEAD)
-        fi
+        local label=$(get_branch)
         echo "($repo:$label)"
     fi
 }
