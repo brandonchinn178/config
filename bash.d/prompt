@@ -9,9 +9,9 @@ function get_vc_prompt() {
     fi
 }
 
-# convert the given exit code into an indicator
+# convert the recent exit code into an indicator
 function display_code() {
-    case $1 in
+    case $? in
         0) echo $(emojify :ok_hand:) ;;
         1) echo $(emojify :exclamation:) ;;
         *) echo "${RED}$(emojify :exclamation:)($1)" ;;
@@ -21,7 +21,7 @@ function display_code() {
 # any actions to run before prompting for commands
 function pre_prompt() {
     # needs to be first
-    display_code $?
+    display_code
 
     # print title every time
     update_title

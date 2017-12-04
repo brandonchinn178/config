@@ -14,6 +14,8 @@ done
 
 if [[ $SHLVL == "1" ]]; then
     PROMPT_COMMAND='pre_prompt; update_terminal_cwd'
+else
+    PROMPT_COMMAND='display_code; printf "\n"; update_terminal_cwd'
 fi
 
 PS1="$(get_prompt)"
