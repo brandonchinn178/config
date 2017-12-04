@@ -5,6 +5,7 @@ cd "$(dirname ${BASH_SOURCE[0]})"
 FILES=(
     'bash.d'
     'bash_profile'
+    'bashrc'
     'vimrc'
 )
 
