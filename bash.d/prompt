@@ -11,10 +11,11 @@ function get_vc_prompt() {
 
 # convert the recent exit code into an indicator
 function display_code() {
-    case $? in
+    local code=$?
+    case $code in
         0) echo $(emojify :ok_hand:) ;;
         1) echo $(emojify :exclamation:) ;;
-        *) echo "${RED}$(emojify :exclamation:)($1)${NORMAL}" ;;
+        *) echo "${RED}$(emojify :exclamation:)($code)${NORMAL}" ;;
     esac
 }
 
