@@ -8,9 +8,13 @@ esac
 
 source /etc/bashrc
 
-for component in $(ls ~/.bash.d); do
-    source ~/.bash.d/$component
-done
+function source_bashd() {
+    local component
+    for component in $(ls ~/.bash.d); do
+        source ~/.bash.d/$component
+    done
+}
+source_bashd
 
 if [[ $SHLVL == "1" ]]; then
     PROMPT_COMMAND='pre_prompt; update_terminal_cwd'
