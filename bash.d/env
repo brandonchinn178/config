@@ -4,6 +4,10 @@ function _add_to_path() {
     export PATH="$PATH:$1"
 }
 
+function _prepend_to_path() {
+    export PATH="$1:$PATH"
+}
+
 # my custom scripts
 _add_to_path ~/bin
 
