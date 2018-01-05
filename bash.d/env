@@ -11,6 +11,8 @@ function _prepend_to_path() {
 # my custom scripts
 _add_to_path ~/bin
 
+export EDITOR=vim
+
 # ls
 
 export CLICOLOR=xterm-color
