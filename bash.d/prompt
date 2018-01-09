@@ -1,5 +1,9 @@
 #!/bin/bash
 
+OK_HAND="\xF0\x9F\x91\x8C"
+EXCLAMATION="\xE2\x9D\x97\x20"
+ZAP="\xE2\x9A\xA1\x0A"
+
 # get the git prompt
 function get_vc_prompt() {
     if is_repo; then
@@ -13,9 +17,9 @@ function get_vc_prompt() {
 function display_code() {
     local code=$?
     case $code in
-        0) echo $(emojify :ok_hand:) ;;
-        1) echo $(emojify :exclamation:) ;;
-        *) echo "${RED}$(emojify :exclamation:)($code)${NORMAL}" ;;
+        0) echo -e $OK_HAND ;;
+        1) echo -e $EXCLAMATION ;;
+        *) echo -e "${EXCLAMATION} ${RED}($code)${NORMAL}" ;;
     esac
 }
 
@@ -39,8 +43,4 @@ function pre_prompt() {
         printf "${GREEN}%s ${MAGENTA}%s" "$curr_dir" "$vc_prompt"
     fi
     printf "${NORMAL}\n"
-}
-
-function get_prompt() {
-    echo "$(emojify :zap:) "
 }
