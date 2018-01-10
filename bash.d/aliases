@@ -3,3 +3,4 @@
 alias sublime="open -a 'Sublime Text'"
 alias chrome="open -a 'Google Chrome'"
 alias grep="grep --color"
+alias ll="ls -l"
