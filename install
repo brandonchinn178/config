@@ -3,10 +3,11 @@
 cd "$(dirname ${BASH_SOURCE[0]})"
 
 FILES=(
-    'bash.d'
-    'bash_profile'
-    'bashrc'
-    'vimrc'
+    bash.d
+    bash_profile
+    bashrc
+    bin
+    vimrc
 )
 
 for FILE in "${FILES[@]}"; do

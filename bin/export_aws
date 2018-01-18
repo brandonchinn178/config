@@ -1,0 +1,5 @@
+#!/bin/bash
+#
+# Echo commands that export AWS credentials to the environment.
+
+awk 'NR != 1 { print "export", toupper($1) "=" $3 }' ~/.aws/credentials
