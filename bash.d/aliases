@@ -1,6 +1,15 @@
 #!/bin/bash
 
-alias sublime="open -a 'Sublime Text'"
 alias chrome="open -a 'Google Chrome'"
 alias grep="grep --color"
 alias ll="ls -l"
+
+function sublime() {
+    if [[ $# == 0 ]]; then
+        open -a 'Sublime Text' .
+    else
+        open -a 'Sublime Text' "$@"
+    fi
+}
+
+alias subl="sublime"
