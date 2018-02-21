@@ -1,0 +1,12 @@
+[user]
+name = Brandon Chinn
+email = brandonchinn178@gmail.com
+
+[core]
+hooksPath = ~/.bin
+
+[push]
+default = current
+
+[alias]
+squash = commit --amend --no-edit

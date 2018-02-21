@@ -8,6 +8,7 @@ FILES=(
     bashrc
     bin
     vimrc
+    gitconfig
 )
 
 for FILE in "${FILES[@]}"; do
