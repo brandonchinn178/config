@@ -5,7 +5,7 @@ source /usr/local/bin/git-completion.bash
 
 # exit non-zero if not a git repo
 function is_repo() {
-    git rev-parse HEAD > /dev/null 2>&1
+    git rev-parse HEAD &> /dev/null
 }
 
 # exit non-zero if not a git worktree

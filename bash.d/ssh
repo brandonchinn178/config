@@ -6,7 +6,7 @@ function set_agent_sock() {
     for sock_folder in $(ls $TMPDIR | grep '^ssh-.*'); do
         local sock=$(find $TMPDIR/$sock_folder -name "agent.*")
         if [[ ! -z $sock ]]; then
-            if SSH_AUTH_SOCK=$sock ssh-add -l > /dev/null 2>&1; then
+            if SSH_AUTH_SOCK=$sock ssh-add -l &> /dev/null; then
                 echo "Setting SSH_AUTH_SOCK to: $sock"
                 export SSH_AUTH_SOCK=$sock
                 return 0
