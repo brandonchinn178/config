@@ -8,6 +8,15 @@ function is_repo() {
     git rev-parse HEAD > /dev/null 2>&1
 }
 
+# exit non-zero if not a git worktree
+function is_worktree() {
+    if is_repo; then
+        (root && [[ $(git rev-parse --git-dir) != ".git" ]])
+    else
+        return 1
+    fi
+}
+
 # get the name of the current repo; works in worktrees
 function get_repo() {
     basename "$(git rev-parse --absolute-git-dir | sed 's|/\.git.*||')"
