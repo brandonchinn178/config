@@ -12,7 +12,11 @@ function title() {
 function update_title() {
     local title=$CUSTOM_TITLE
     if [[ -z $title ]]; then
-        title=$(get_curr_dir)
+        if is_repo; then
+            title="$(get_repo):$(get_branch)"
+        else
+            title=$(get_curr_dir)
+        fi
     fi
 
     printf "\e]0;%s\7" "$title"
