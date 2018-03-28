@@ -5,8 +5,13 @@ email = brandonchinn178@gmail.com
 [core]
 hooksPath = ~/.bin
 
+[rebase]
+autoSquash = true
+
 [push]
 default = current
 
 [alias]
+fixup = commit --fixup
 squash = commit --amend --no-edit
+l = log --oneline
