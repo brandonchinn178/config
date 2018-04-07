@@ -32,7 +32,7 @@ else
     PROMPT_COMMAND='display_code; printf "\n"; update_terminal_cwd'
 fi
 
-PS1="$(get_prompt) "
+PS1="$ "
 
 check_ssh_agent
 
