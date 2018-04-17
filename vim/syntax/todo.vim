@@ -14,9 +14,9 @@ syn match todoBlocked "^!.*"
 syn match todoTodo "^-.*"
 syn match todoDetails "^\s\+-.*"
 
-hi todoHeader     ctermfg=Cyan cterm=underline
+hi todoHeader     ctermfg=Brown cterm=underline
 hi todoDone       ctermfg=Green
-hi todoBors       ctermfg=Blue
+hi todoBors       ctermfg=LightBlue
 hi todoPR         ctermfg=Magenta
 hi todoInProgress ctermfg=Yellow
 hi todoBlocked    ctermfg=Red
