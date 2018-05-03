@@ -68,12 +68,27 @@ Some basic exclusion patterns. Also enables Vintage, which exposes Vim key bindi
 }
 ```
 
+### Haskell-SublimeHaskell.sublime-settings
+
+These are syntax settings for Haskell files using the `SublimeHaskell` package.
+
+```
+{
+    "color_scheme": "Packages/SublimeHaskell/Themes/Hasky (Dark).tmTheme",
+    "extensions": ["*.hs"],
+    "tab_size": 2,
+    "rulers": [100]
+}
+```
+
 ### SublimeHaskell.sublime-settings
 
 These are settings for the `SublimeHaskell` package.
 
 ```
 {
+    "add_word_completions": true,
+    "add_default_completions": true,
     "hsdev_local_process": false
 }
 ```
