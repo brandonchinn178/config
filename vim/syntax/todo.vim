@@ -12,7 +12,7 @@ syn match todoPR "^\*.*"
 syn match todoInProgress "^\~.*"
 syn match todoBlocked "^!.*"
 syn match todoTodo "^-.*"
-syn match todoDetails "^\s\+-.*"
+syn match todoDetails "^\s\+.*"
 
 hi todoHeader     ctermfg=Brown cterm=underline
 hi todoDone       ctermfg=Green
