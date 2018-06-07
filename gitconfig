@@ -14,4 +14,6 @@ default = current
 [alias]
 fixup = commit --fixup
 squash = commit --amend --no-edit
-l = log --oneline
+l = log --oneline -10
+s = status -sb
+c = commit
