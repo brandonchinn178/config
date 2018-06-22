@@ -7,9 +7,10 @@ FILES=(
     bash_profile
     bashrc
     bin
+    gitconfig
+    inputrc
     vim
     vimrc
-    gitconfig
 )
 
 for FILE in "${FILES[@]}"; do
