@@ -1,1 +1,7 @@
 Control-f: "#"
+
+# vim-style arrow keys
+Control-h: backward-char
+Control-j: next-history
+Control-k: previous-history
+Control-l: forward-char
