@@ -89,7 +89,12 @@ These are settings for the `SublimeHaskell` package.
 {
     "add_word_completions": true,
     "add_default_completions": true,
-    "hsdev_local_process": false
+    "backends": {
+        "No backend": {
+            "default": true,
+            "backend": "none"
+        }
+    }
 }
 ```
 
