@@ -16,4 +16,4 @@ fixup = commit --fixup
 squash = commit --amend --no-edit
 l = log --oneline -10
 s = status -sb
-c = commit
+c = checkout
