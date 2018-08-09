@@ -14,6 +14,7 @@ default = current
 [alias]
 fixup = commit --fixup
 squash = commit --amend --no-edit
+touch = commit --amend -C HEAD --date now
 l = log --oneline -10
 s = status -sb
 c = checkout
