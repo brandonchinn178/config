@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# Call `stack sdist` and place the file in an easy-to-locate place.
+
+FILE=$(mktemp)
+trap 'rm -rf $FILE' EXIT
+
+stack sdist 2>&1 | tee "$FILE"
+
+TARBALL="$(tail -n 1 "$FILE")"
+DEST="$HOME/Desktop"
+
+cp "$TARBALL" "$DEST"
+echo -e "\nCopied $(basename $TARBALL) to ${DEST}"
