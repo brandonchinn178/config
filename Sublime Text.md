@@ -106,9 +106,12 @@ Disables key bindings for changing font size and makes Ctrl+Tab change tabs sane
 [
     { "keys": ["ctrl+tab"], "command": "next_view" },
     { "keys": ["ctrl+shift+tab"], "command": "prev_view" },
-    { "keys": ["super+equals"], "command": "unbound"},
-    { "keys": ["super+plus"], "command": "unbound"},
-    { "keys": ["super+minus"], "command": "unbound"}
+    { "keys": ["super+equals"], "command": "unbound" },
+    { "keys": ["super+plus"], "command": "unbound" },
+    { "keys": ["super+minus"], "command": "unbound" },
+    { "keys": ["super+shift+w"], "command": "close_all" },
+    { "keys": ["super+shift+s"], "command": "save_all" }
+    { "keys": ["ctrl+super+s"], "command": "save_all" }
 ]
 ```
 

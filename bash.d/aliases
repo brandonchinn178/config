@@ -2,7 +2,7 @@
 
 alias chrome="open -a 'Google Chrome'"
 alias grep="grep --color"
-alias ll="ls -lhA"
+alias ll="ls -lhAt"
 
 function sublime() {
     if [[ $# == 0 ]]; then
@@ -13,3 +13,4 @@ function sublime() {
 }
 
 alias subl="sublime"
+alias desk="cd ~/Desktop"
