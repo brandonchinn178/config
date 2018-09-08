@@ -14,3 +14,11 @@ function sublime() {
 
 alias subl="sublime"
 alias desk="cd ~/Desktop"
+
+# touch a file, creating the directory if it doesn't already exist
+function touch() {
+    for f in "$@"; do
+        mkdir -p "$(dirname "$f")"
+        command touch "$f"
+    done
+}
