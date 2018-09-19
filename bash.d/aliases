@@ -1,10 +1,8 @@
 #!/bin/bash
 
 alias chrome="open -a 'Google Chrome'"
-alias grep="grep --color"
-alias ll="ls -lhAt"
 
-function sublime() {
+function subl() {
     if [[ $# == 0 ]]; then
         open -a 'Sublime Text' .
     else
@@ -12,8 +10,10 @@ function sublime() {
     fi
 }
 
-alias subl="sublime"
+alias grep="grep --color"
+alias ll="ls -lhAt"
 alias desk="cd ~/Desktop"
+alias git='hub'
 
 # touch a file, creating the directory if it doesn't already exist
 function touch() {
