@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-      *) return;;
-esac
-
 source /etc/bashrc
 
 function get_here() {
@@ -25,6 +19,12 @@ function source_bashd() {
     done
 }
 source_bashd
+
+# If not running interactively, exit here
+case $- in
+    *i*) ;;
+      *) return;;
+esac
 
 if [[ $SHLVL == "1" ]]; then
     PROMPT_COMMAND='pre_prompt; update_terminal_cwd'
