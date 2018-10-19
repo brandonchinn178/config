@@ -2,9 +2,6 @@
 name = Brandon Chinn
 email = brandonchinn178@gmail.com
 
-[core]
-hooksPath = ~/.bin
-
 [rebase]
 autoSquash = true
 
