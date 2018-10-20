@@ -21,7 +21,7 @@ done
 
 GIT_COMPLETION=/usr/local/bin/git-completion.bash
 if [[ ! -f "$GIT_COMPLETION" ]]; then
-    curl -o "$GIT_COMPLETION" https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
+    curl -o "$GIT_COMPLETION" https://raw.githubusercontent.com/git/git/v2.17.1/contrib/completion/git-completion.bash
 fi
 
 if ! type brew &> /dev/null; then
