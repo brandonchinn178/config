@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex
+
 cd "$(dirname ${BASH_SOURCE[0]})"
 
 FILES=(
@@ -9,8 +11,6 @@ FILES=(
     bin
     gitconfig
     inputrc
-    vim
-    vimrc
 )
 
 for FILE in "${FILES[@]}"; do
@@ -18,6 +18,9 @@ for FILE in "${FILES[@]}"; do
     rm -rf "$DEST"
     ln -sf "$PWD/$FILE" "$DEST"
 done
+
+rm -rf ~/.config/nvim
+ln -sf "$PWD/nvim" ~/.config/nvim
 
 GIT_COMPLETION=/usr/local/bin/git-completion.bash
 if [[ ! -f "$GIT_COMPLETION" ]]; then
@@ -30,4 +33,18 @@ fi
 
 if ! type hub &> /dev/null; then
     brew install hub
+fi
+
+if ! type ag &> /dev/null; then
+    brew install ag
+fi
+
+# neovim
+if ! type nvim &> /dev/null; then
+    brew install nvim
+fi
+
+# neobundle
+if [[ ! -d nvim/bundle/neobundle.vim ]]; then
+    git clone https://github.com/Shougo/neobundle.vim nvim/bundle/neobundle.vim
 fi
