@@ -11,6 +11,7 @@ FILES=(
     bin
     gitconfig
     inputrc
+    vimrc
 )
 
 for FILE in "${FILES[@]}"; do
