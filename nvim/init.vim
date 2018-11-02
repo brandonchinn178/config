@@ -6,6 +6,7 @@ NeoBundle 'ctrlpvim/ctrlp.vim'
 NeoBundle 'airblade/vim-gitgutter'
 NeoBundle 'vim-airline/vim-airline'
 NeoBundle 'neovimhaskell/haskell-vim'
+NeoBundle 'maralla/completor.vim'
 call neobundle#end()
 
 filetype plugin indent on
@@ -62,6 +63,10 @@ let g:haskell_enable_pattern_synonyms = 1
 let g:haskell_enable_quantification = 1
 let g:haskell_indent_if = 2
 let g:haskell_indent_case = 5
+
+" completor
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " The Silver Searcher
 if executable('ag')
