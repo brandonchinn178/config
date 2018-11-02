@@ -7,6 +7,7 @@ NeoBundle 'airblade/vim-gitgutter'
 NeoBundle 'vim-airline/vim-airline'
 NeoBundle 'neovimhaskell/haskell-vim'
 NeoBundle 'maralla/completor.vim'
+NeoBundle 'tpope/vim-fugitive'
 call neobundle#end()
 
 filetype plugin indent on
