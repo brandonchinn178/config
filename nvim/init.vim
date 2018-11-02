@@ -5,6 +5,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 NeoBundle 'ctrlpvim/ctrlp.vim'
 NeoBundle 'airblade/vim-gitgutter'
 NeoBundle 'vim-airline/vim-airline'
+NeoBundle 'neovimhaskell/haskell-vim'
 call neobundle#end()
 
 filetype plugin indent on
@@ -55,6 +56,12 @@ set updatetime=100
 
 " vim-airline
 let g:airline#extensions#tabline#enabled = 1
+
+" haskell-vim
+let g:haskell_enable_pattern_synonyms = 1
+let g:haskell_enable_quantification = 1
+let g:haskell_indent_if = 2
+let g:haskell_indent_case = 5
 
 " The Silver Searcher
 if executable('ag')
