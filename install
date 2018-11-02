@@ -39,9 +39,17 @@ if ! type ag &> /dev/null; then
     brew install ag
 fi
 
+# python3
+if ! type python3 &> /dev/null; then
+    curl -O https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+    bash Miniconda3-latest-MacOSX-x86_64.sh -b -p ~/miniconda3
+    ln -sf ~/miniconda3/bin/python /usr/local/bin/python3
+fi
+
 # neovim
 if ! type nvim &> /dev/null; then
     brew install nvim
+    ~/miniconda3/bin/pip install neovim
 fi
 
 # neobundle
