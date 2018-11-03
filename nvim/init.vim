@@ -40,6 +40,8 @@ au TermOpen * execute 'normal i'
 " Buffers
 nnoremap <tab> :bn<CR>
 nnoremap <S-tab> :bp<CR>
+"https://stackoverflow.com/a/8585343
+nnoremap <leader>d :bp<bar>sp<bar>bn<bar>bd<CR>
 
 " Auto-reload buffer
 " https://stackoverflow.com/a/45428958
@@ -58,12 +60,12 @@ set updatetime=100
 
 " vim-airline
 let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail'
 
 " haskell-vim
 let g:haskell_enable_pattern_synonyms = 1
 let g:haskell_enable_quantification = 1
-let g:haskell_indent_if = 2
-let g:haskell_indent_case = 5
+let g:haskell_indent_disable = 1
 
 " completor
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
