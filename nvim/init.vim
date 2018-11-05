@@ -8,6 +8,7 @@ NeoBundle 'vim-airline/vim-airline'
 NeoBundle 'neovimhaskell/haskell-vim'
 NeoBundle 'maralla/completor.vim'
 NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'plasticboy/vim-markdown'
 call neobundle#end()
 
 filetype plugin indent on
@@ -70,6 +71,9 @@ let g:haskell_indent_disable = 1
 " completor
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" vim-markdown
+let g:vim_markdown_folding_disabled = 1
 
 " The Silver Searcher
 if executable('ag')
