@@ -2,13 +2,13 @@
 set runtimepath+=~/.config/nvim/bundle/neobundle.vim/
 call neobundle#begin(expand('~/.config/nvim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
-NeoBundle 'ctrlpvim/ctrlp.vim'
 NeoBundle 'airblade/vim-gitgutter'
-NeoBundle 'vim-airline/vim-airline'
-NeoBundle 'neovimhaskell/haskell-vim'
+NeoBundle 'ctrlpvim/ctrlp.vim'
 NeoBundle 'maralla/completor.vim'
-NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'neovimhaskell/haskell-vim'
 NeoBundle 'plasticboy/vim-markdown'
+NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'vim-airline/vim-airline'
 call neobundle#end()
 
 filetype plugin indent on
@@ -49,32 +49,6 @@ nnoremap <leader>d :bp<bar>sp<bar>bn<bar>bd<CR>
 set autoread
 au FocusGained,BufEnter * checktime
 
-" ctrlp
-let g:ctrlp_match_window = 'order: ttb'
-let g:ctrlp_working_path_mode = 'rwa'
-let g:ctrlp_open_new_file = 'r'
-
-" vim-gitgutter
-set signcolumn=yes
-let g:gitgutter_terminal_reports_focus = 0
-set updatetime=100
-
-" vim-airline
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#formatter = 'unique_tail'
-
-" haskell-vim
-let g:haskell_enable_pattern_synonyms = 1
-let g:haskell_enable_quantification = 1
-let g:haskell_indent_disable = 1
-
-" completor
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-" vim-markdown
-let g:vim_markdown_folding_disabled = 1
-
 " The Silver Searcher
 if executable('ag')
     " Use ag over grep
@@ -90,3 +64,31 @@ endif
 " Highlights
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
+
+""" Plugins
+
+" airblade/vim-gitgutter
+set signcolumn=yes
+let g:gitgutter_terminal_reports_focus = 0
+set updatetime=100
+
+" ctrlpvim/ctrlp
+let g:ctrlp_match_window = 'order: ttb'
+let g:ctrlp_working_path_mode = 'rwa'
+let g:ctrlp_open_new_file = 'r'
+
+" maralla/completor
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" neovimhaskell/haskell-vim
+let g:haskell_enable_pattern_synonyms = 1
+let g:haskell_enable_quantification = 1
+let g:haskell_indent_disable = 1
+
+" plasticboy/vim-markdown
+let g:vim_markdown_folding_disabled = 1
+
+" vim-airline/vim-airline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail'
