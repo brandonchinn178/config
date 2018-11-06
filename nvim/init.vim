@@ -27,6 +27,11 @@ set number
 set ignorecase
 nnoremap <esc> :noh<cr><esc>
 nnoremap <esc>^[ <esc>^[
+function! s:Find(str)
+    execute "silent grep! " . a:str . " | copen"
+endfunction
+nnoremap F :Find "\b<C-R><C-W>\b"<CR>
+command! -nargs=1 Find call s:Find(<f-args>)
 
 " Syntax highlighting
 syntax on
