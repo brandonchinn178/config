@@ -76,6 +76,7 @@ set updatetime=100
 let g:ctrlp_match_window = 'order: ttb'
 let g:ctrlp_working_path_mode = 'rwa'
 let g:ctrlp_open_new_file = 'r'
+let g:ctrlp_regexp = 1
 
 " maralla/completor
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
