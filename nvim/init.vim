@@ -44,6 +44,7 @@ nnoremap t :term<CR>
 au TermOpen * execute 'normal i'
 
 " Buffers
+set hidden
 nnoremap <leader><tab> :bn<CR>
 nnoremap <leader><S-tab> :bp<CR>
 "https://stackoverflow.com/a/8585343
