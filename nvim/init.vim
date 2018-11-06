@@ -54,6 +54,9 @@ nnoremap <leader>d :bp<bar>sp<bar>bn<bar>bd<CR>
 set autoread
 au FocusGained,BufEnter * checktime
 
+" Copying to clipboard
+noremap <leader>y "*y
+
 " The Silver Searcher
 if executable('ag')
     " Use ag over grep
