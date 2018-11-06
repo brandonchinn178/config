@@ -39,8 +39,8 @@ nnoremap t :term<CR>
 au TermOpen * execute 'normal i'
 
 " Buffers
-nnoremap <tab> :bn<CR>
-nnoremap <S-tab> :bp<CR>
+nnoremap <leader><tab> :bn<CR>
+nnoremap <leader><S-tab> :bp<CR>
 "https://stackoverflow.com/a/8585343
 nnoremap <leader>d :bp<bar>sp<bar>bn<bar>bd<CR>
 
