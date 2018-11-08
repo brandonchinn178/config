@@ -30,8 +30,16 @@ nnoremap <esc>^[ <esc>^[
 function! s:Find(str)
     execute "silent grep! " . a:str . " | copen"
 endfunction
-nnoremap F :Find "\b<C-R><C-W>\b"<CR>
+nnoremap K :Find "\b<C-R><C-W>\b"<CR>
 command! -nargs=1 Find call s:Find(<f-args>)
+
+" Windows
+function! IsQuickFixOpen()
+    return len(filter(range(1, winnr('$')), 'getwinvar(v:val, "&ft") == "qf"')) == 1
+endfunction
+nnoremap <expr> <leader>c IsQuickFixOpen() ? ':cclose<cr>' : ':close<cr>'
+nnoremap <leader><tab> :cnext<cr>
+nnoremap <leader><S-tab> :cprev<cr>
 
 " Syntax highlighting
 syntax on
@@ -45,8 +53,8 @@ au TermOpen * execute 'normal i'
 
 " Buffers
 set hidden
-nnoremap <leader><tab> :bn<CR>
-nnoremap <leader><S-tab> :bp<CR>
+nnoremap <tab> :bn<CR>
+nnoremap <S-tab> :bp<CR>
 "https://stackoverflow.com/a/8585343
 nnoremap <leader>d :bp<bar>sp<bar>bn<bar>bd<CR>
 
