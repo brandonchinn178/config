@@ -27,8 +27,15 @@ set number
 set ignorecase
 nnoremap <esc> :noh<cr><esc>
 nnoremap <esc>^[ <esc>^[
+let ag_args = [
+    \'--nocolor',
+    \'--hidden',
+    \'--ignore .git',
+    \'--ignore *.parq*',
+    \'--ignore *.out',
+    \]
 function! s:Find(str)
-    execute "silent grep! \"" . a:str . "\" | copen"
+    execute "cexpr system('ag " . join(g:ag_args, ' ') . "-- \"" . a:str . "\"') | copen"
 endfunction
 nnoremap K :Find \b<C-R><C-W>\b<CR>
 command! -nargs=1 Find call s:Find(<f-args>)
@@ -66,24 +73,6 @@ au FocusGained,BufEnter * checktime
 " Copying to clipboard
 noremap <leader>y "*y
 
-" The Silver Searcher
-if executable('ag')
-    " Use ag over grep
-    set grepprg=ag\ --vimgrep\ --\ $*
-
-    " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-    let ag_args = [
-        \'-l --nocolor -g "" --hidden',
-        \'--ignore .git',
-        \'--ignore *.parq*',
-        \'--ignore *.out',
-        \]
-    let g:ctrlp_user_command = join(['ag %s'] + ag_args, ' ')
-
-    " ag is fast enough that CtrlP doesn't need to cache
-    let g:ctrlp_use_caching = 0
-endif
-
 " Highlights
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
@@ -100,6 +89,8 @@ let g:ctrlp_match_window = 'order: ttb'
 let g:ctrlp_working_path_mode = 'rwa'
 let g:ctrlp_open_new_file = 'r'
 let g:ctrlp_regexp = 1
+let g:ctrlp_user_command = join(['ag %s -l -g ""'] + ag_args, ' ')
+let g:ctrlp_use_caching = 0
 
 " maralla/completor
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
