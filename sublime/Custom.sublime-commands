@@ -1,0 +1,3 @@
+[
+    { "caption": "Custom: Open all modified files", "command": "open_all_modified" }
+]
