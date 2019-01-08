@@ -1,0 +1,6 @@
+{
+    "color_scheme": "Packages/SublimeHaskell/Themes/Hasky (Dark).tmTheme",
+    "extensions": ["*.hs"],
+    "tab_size": 2,
+    "rulers": [100]
+}

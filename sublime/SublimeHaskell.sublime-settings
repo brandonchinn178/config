@@ -1,0 +1,10 @@
+{
+    "add_word_completions": true,
+    "add_default_completions": true,
+    "backends": {
+        "No backend": {
+            "default": true,
+            "backend": "none"
+        }
+    }
+}
