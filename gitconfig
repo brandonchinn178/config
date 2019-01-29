@@ -1,6 +1,6 @@
 [user]
 name = Brandon Chinn
-email = brandonchinn178@gmail.com
+email = brandon@leapyear.io
 
 [rebase]
 autoSquash = true
@@ -15,3 +15,6 @@ touch = commit --amend -C HEAD --date now
 l = log --oneline -10
 s = status -sb
 c = checkout
+
+[merge]
+conflictstyle = diff3
