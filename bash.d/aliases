@@ -13,7 +13,6 @@ function subl() {
 alias grep="grep --color"
 alias ll="ls -lhAt"
 alias desk="cd ~/Desktop"
-alias git='hub'
 alias nv='nvim'
 
 # touch a file, creating the directory if it doesn't already exist
