@@ -19,3 +19,21 @@ function ch() {
 function root() {
     cd "$(git rev-parse --show-toplevel)"
 }
+
+# rename the given file
+function rename() {
+    local old=${1?}
+    local new=${2?}
+    mv "${old}" "$(dirname "${old}")/${new}"
+}
+
+# change the extension of the given file
+function chext() {
+    local old=${1?}
+    local ext=${2?}
+    if [[ "${ext}" != .* ]]; then
+        ext=".${ext}"
+    fi
+
+    mv "${old}" "${old%\.*}${ext}"
+}
