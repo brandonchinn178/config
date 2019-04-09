@@ -34,8 +34,6 @@ fi
 
 PS1="$ "
 
-check_ssh_agent
-
 # If a `venv` directory is in the current directory on start up, source it.
 if [[ -d venv ]]; then
     source venv/bin/activate
