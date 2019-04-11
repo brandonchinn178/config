@@ -21,3 +21,5 @@ export LSCOLORS=exgxcxdxcxegedabagacad
 if [[ -f ~/.aws/credentials ]]; then
     $(export_aws)
 fi
+
+export IGNOREEOF=2
