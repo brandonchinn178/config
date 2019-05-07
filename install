@@ -21,36 +21,34 @@ for FILE in "${FILES[@]}"; do
     ln -sf "$PWD/$FILE" "$DEST"
 done
 
-rm -rf ~/.config/nvim
-ln -sf "$PWD/nvim" ~/.config/nvim
+if ! type brew &> /dev/null; then
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+fi
+
+# rm -rf ~/.config/nvim
+# ln -sf "$PWD/nvim" ~/.config/nvim
 
 GIT_COMPLETION=/usr/local/bin/git-completion.bash
 if [[ ! -f "$GIT_COMPLETION" ]]; then
     curl -o "$GIT_COMPLETION" https://raw.githubusercontent.com/git/git/v2.17.1/contrib/completion/git-completion.bash
 fi
 
-if ! type brew &> /dev/null; then
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-fi
-
-if ! type ag &> /dev/null; then
-    brew install ag
-fi
-
 # python3
 if ! type python3 &> /dev/null; then
-    curl -O https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-    bash Miniconda3-latest-MacOSX-x86_64.sh -b -p ~/miniconda3
-    ln -sf ~/miniconda3/bin/python /usr/local/bin/python3
+    brew install python3
 fi
 
-# neovim
-if ! type nvim &> /dev/null; then
-    brew install nvim
-    ~/miniconda3/bin/pip install neovim
-fi
+# if ! type ag &> /dev/null; then
+#     brew install ag
+# fi
 
-# neobundle
-if [[ ! -d nvim/bundle/neobundle.vim ]]; then
-    git clone https://github.com/Shougo/neobundle.vim nvim/bundle/neobundle.vim
-fi
+# # neovim
+# if ! type nvim &> /dev/null; then
+#     brew install nvim
+#     ~/miniconda3/bin/pip install neovim
+# fi
+
+# # neobundle
+# if [[ ! -d nvim/bundle/neobundle.vim ]]; then
+#     git clone https://github.com/Shougo/neobundle.vim nvim/bundle/neobundle.vim
+# fi
