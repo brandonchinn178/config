@@ -15,7 +15,9 @@ HERE=$(get_here)
 function source_bashd() {
     local component
     for component in $(find "$HERE/bash.d" -type f); do
-        source $component
+        if [[ "${component}" != *.swp ]]; then
+            source $component
+        fi
     done
 }
 source_bashd
