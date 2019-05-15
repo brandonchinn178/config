@@ -15,6 +15,7 @@ touch = commit --amend -C HEAD --date now --no-verify --allow-empty
 l = log --oneline -10
 s = status -sb
 c = checkout
+p = push --force-with-lease
 
 [merge]
 conflictstyle = diff3
