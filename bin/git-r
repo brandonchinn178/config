@@ -1,0 +1,24 @@
+#!/bin/bash
+#
+# Interactively rebase, against master by default.
+
+source ~/.bash.d/git
+
+set -u -o pipefail
+
+ARGS=("$@")
+
+# check if we're currently in a rebase
+# https://stackoverflow.com/a/3921928
+if [[ ! -d "$(git rev-parse --git-path rebase-merge)" ]]; then
+    ARGS+=('-i')
+    if [[ $# == 0 ]]; then
+        if [[ "$(get_branch)" == master ]]; then
+            ARGS+=('HEAD~10')
+        else
+            ARGS+=('master')
+        fi
+    fi
+fi
+
+git rebase ${ARGS+"${ARGS[@]}"}

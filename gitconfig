@@ -4,6 +4,8 @@ email = brandon@leapyear.io
 
 [rebase]
 autoSquash = true
+missingCommitsCheck = error
+abbreviateCommands = true
 
 [push]
 default = current
@@ -16,6 +18,7 @@ l = log --oneline -10
 s = status -sb
 c = checkout
 p = push --force-with-lease
+rc = rebase --continue
 
 [merge]
 conflictstyle = diff3
