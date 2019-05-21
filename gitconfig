@@ -18,6 +18,7 @@ l = log --oneline -10
 s = status -sb
 c = checkout
 p = push --force-with-lease
+pd = !git pull && git bd
 rc = rebase --continue
 
 [merge]
