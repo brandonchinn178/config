@@ -9,7 +9,11 @@ function get_vc_prompt() {
     if is_repo; then
         local repo=$(get_repo)
         local label=$(get_branch)
-        echo "($repo:$label)"
+        if [[ -z "${repo}" ]]; then
+            echo "(${label})"
+        else
+            echo "(${repo}:${label})"
+        fi
     fi
 }
 
