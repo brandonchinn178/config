@@ -6,19 +6,37 @@ source ~/.bash.d/git
 
 set -u -o pipefail
 
-ARGS=("$@")
-
 # check if we're currently in a rebase
 # https://stackoverflow.com/a/3921928
-if [[ ! -d "$(git rev-parse --git-path rebase-merge)" ]]; then
-    ARGS+=('-i')
-    if [[ $# == 0 ]]; then
-        if [[ "$(get_branch)" == master ]]; then
-            ARGS+=('HEAD~10')
-        else
-            ARGS+=('master')
-        fi
+if [[ -d "$(git rev-parse --git-path rebase-merge)" ]]; then
+    git rebase "$@"
+    exit
+fi
+
+ARGS=("-i")
+NO_ARGS=1
+
+while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+        (*)
+            NO_ARGS=0
+            ARGS+=("$1")
+        ;;
+    esac
+    shift
+done
+
+if [[ -n "$(git ls-files -m)" ]]; then
+    echo "Saving work..."
+    git wip
+fi
+
+if [[ "${NO_ARGS}" == 1 ]]; then
+    if [[ "$(get_branch)" == master ]]; then
+        ARGS+=('HEAD~10')
+    else
+        ARGS+=('master')
     fi
 fi
 
-git rebase ${ARGS+"${ARGS[@]}"}
+git rebase "${ARGS[@]}"
