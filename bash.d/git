@@ -20,7 +20,7 @@ function is_worktree() {
 # get the name of the current repo; works in worktrees
 function get_repo() {
     GIT_URL=$(git remote -v | grep origin | head -n 1 | awk '{ print $2 }')
-    basename "$(sed 's|\.git.*||' <<< "$GIT_URL")"
+    basename "$(sed 's|\.git$||' <<< "$GIT_URL")"
 }
 
 # get the current branch, or the commit hash if not on a branch
