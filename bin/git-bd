@@ -4,7 +4,7 @@
 
 set -u -o pipefail
 
-BRANCHES=( $(git branch --merged | awk '/^[^*]/ { print $1 }') )
+BRANCHES=( $(git branch --merged | awk '/^[^*]/ { print $1 }' | grep -v master) )
 
 if [[ "${#BRANCHES[@]}" == 0 ]]; then
     echo 'No merged branches to delete'
