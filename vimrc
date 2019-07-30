@@ -7,6 +7,7 @@ set shiftwidth=4
 
 " Line numbers
 set number
+set ruler
 
 " Searching
 set ignorecase
