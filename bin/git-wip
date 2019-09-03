@@ -3,4 +3,4 @@
 set -u -o pipefail
 
 git add .
-git commit -m "wip" --no-verify
+git commit -m "[ci skip] wip" --no-verify
