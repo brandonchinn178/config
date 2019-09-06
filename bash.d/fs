@@ -37,3 +37,22 @@ function chext() {
 
     mv "${old}" "${old%\.*}${ext}"
 }
+
+# Go to the given repo
+function repo() {
+    local name=${1?}
+    local repo=~/repos/"${name}"
+
+    if [[ ! -d "${repo}" ]]; then
+        echo "No repo: ${repo}"
+        return 1
+    fi
+
+    cd "${repo}"
+}
+function _repo_complete() {
+    local cur="${COMP_WORDS[COMP_CWORD]}"
+    local dir=~/repos
+    COMPREPLY=( $(compgen -W "$(ls "${dir}")" -- "${cur}") )
+}
+complete -F _repo_complete repo
