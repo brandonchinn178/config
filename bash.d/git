@@ -22,13 +22,3 @@ function get_repo() {
     GIT_URL=$(git remote -v | grep origin | head -n 1 | awk '{ print $2 }')
     basename "$(sed 's|\.git$||' <<< "$GIT_URL")"
 }
-
-# get the current branch, or the commit hash if not on a branch
-function get_branch() {
-    local label=$(git rev-parse --abbrev-ref HEAD)
-    if [[ $label == "HEAD" ]]; then
-        git rev-parse --short=8 HEAD
-    else
-        echo $label
-    fi
-}

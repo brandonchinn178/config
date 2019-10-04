@@ -32,7 +32,7 @@ if [[ -n "$(git ls-files -m)" ]]; then
 fi
 
 if [[ "${NO_ARGS}" == 1 ]]; then
-    if [[ "$(get_branch)" == master ]]; then
+    if [[ "$(git rev-parse --abbrev-ref HEAD)" == master ]]; then
         ARGS+=('HEAD~10')
     else
         ARGS+=('master')
