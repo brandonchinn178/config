@@ -9,15 +9,17 @@ class OpenAllModifiedCommand(WindowCommand):
     Defines a command that opens all modified files in the directory.
     """
 
-    def run(self):
+    def run(self, staged=False):
         folders = self.window.folders()
         if len(folders) == 0:
             sublime.error_message('ERROR: No folders open.')
             return
         folder = folders[0]
 
+        diff_args = ['--staged'] if staged else []
+
         proc = subprocess.Popen(
-            ['git', 'ls-files', '-m'],
+            ['git', 'diff', '--name-only'] + diff_args,
             cwd=folder,
             stdout=subprocess.PIPE,
         )
