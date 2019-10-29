@@ -1,0 +1,58 @@
+#!/bin/bash
+#
+# Show modified or staged files in the given commit.
+
+set -u -o pipefail
+
+usage='"
+usage: $0 [--status] [-s|--staged] [-m|--modified] [COMMIT]
+
+Show the files changed in the given commit (defaults to HEAD).
+"'
+
+## Argument parsing
+
+STAGED=0
+MODIFIED=0
+STATUS=0
+ARGS=()
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        (--help) eval echo "${usage}"; exit 0 ;;
+        (-s|--staged) STAGED=1 ;;
+        (-m|--modified) MODIFIED=1 ;;
+        (--status) STATUS=1 ;;
+        (*) ARGS+=("$1") ;;
+    esac
+    shift
+done
+
+if [[ "${#ARGS[@]}" -gt 1 ]]; then
+    eval echo "${usage}" >&2
+    exit 1
+fi
+
+if [[ "${#ARGS[@]}" == 1 ]]; then COMMIT_BIT=1; else COMMIT_BIT=0; fi
+if [[ $((STAGED + MODIFIED + COMMIT_BIT)) -gt 1 ]]; then
+    echo "At most one of --staged, --modified, and COMMIT may be specified" >&2
+    exit 1
+fi
+
+COMMIT="${ARGS[0]:-HEAD}"
+
+## Main
+
+if [[ "${STATUS}" == 1 ]]; then
+    FILE_FLAG='--name-status'
+else
+    FILE_FLAG='--name-only'
+fi
+
+if [[ "${MODIFIED}" == 1 ]]; then
+    git diff "${FILE_FLAG}"
+elif [[ "${STAGED}" == 1 ]]; then
+    git diff "${FILE_FLAG}" --staged
+else
+    git diff-tree "${FILE_FLAG}" --no-commit-id -r "${COMMIT}"
+fi
