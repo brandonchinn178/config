@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# Reset HEAD to X commits back.
+
+set -u -o pipefail
+
+if [[ $# == 0 ]]; then
+    COMMIT="HEAD~1"
+elif ! [[ $1 =~ ^[0-9]+$ ]]; then
+    echo "Usage: git back [#]" >&2
+    exit 1
+else
+    COMMIT="HEAD~$1"
+fi
+
+echo "Previous commit: $(git rev-parse HEAD)"
+git reset "${COMMIT}"
+echo "Current commit: $(git rev-parse "${COMMIT}")"
