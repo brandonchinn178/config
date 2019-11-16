@@ -44,5 +44,6 @@
     "scroll_past_end": true,
     "show_definitions": false,
     "theme": "Default.sublime-theme",
-    "translate_tabs_to_spaces": true
+    "translate_tabs_to_spaces": true,
+    "enable_typescript_language_service": false
 }
