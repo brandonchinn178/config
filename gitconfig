@@ -21,6 +21,7 @@ c = checkout
 p = push --force-with-lease
 pd = !git pull && git bd
 rc = rebase --continue
+cp = cherry-pick
 
 [merge]
 conflictstyle = diff3
