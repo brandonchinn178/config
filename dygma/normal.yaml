@@ -70,9 +70,6 @@ layer0:
     LSPACE3: LGUI
     RSPACE: SPACE
     RSPACE3: RGUI
-    RCTRL:
-      key: DEL
-      color: yellow
 
     LSPACE1:
       key: SHIFT_TO_1
@@ -181,9 +178,8 @@ layer1:
       color: yellow
       ctrl: true
     BACKSPACE:
-      key: BACKSPACE
+      key: DEL
       color: yellow
-      ctrl: true
 
     RSPACE1:
       key: ENTER
