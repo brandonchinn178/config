@@ -70,6 +70,7 @@ layer0:
     LSPACE3: LGUI
     RSPACE: SPACE
     RSPACE3: RGUI
+    RALT: RALT
 
     LSPACE1:
       key: SHIFT_TO_1
