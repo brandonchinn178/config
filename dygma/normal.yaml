@@ -78,7 +78,7 @@ layer0:
     RSPACE1:
       key: SHIFT_TO_1
       color: green
-    RSPACE2:
+    LCTRL:
       key: SHIFT_TO_9
       color: red
 
@@ -206,44 +206,44 @@ layer9:
       alt: true
 
     # spectacle half screens
-    K:
+    H:
       key: LEFT
       gui: true
       alt: true
-    QUOTE:
+    L:
       key: RIGHT
       gui: true
       alt: true
 
     # spectacle quarter screens
-    O:
+    U:
       key: LEFT
       color: orange
       ctrl: true
       alt: true
-    P:
+    I:
       key: UP
       color: orange
       ctrl: true
       alt: true
-    L:
+    J:
       key: DOWN
       color: orange
       ctrl: true
       alt: true
-    SEMICOLON:
+    K:
       key: RIGHT
       color: orange
       ctrl: true
       alt: true
 
     # mission control
-    A:
+    LSPACE1:
       key: LEFT
       ctrl: true
       alt: true
       shift: true
-    F:
+    RSPACE1:
       key: RIGHT
       ctrl: true
       alt: true
