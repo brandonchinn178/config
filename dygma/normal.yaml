@@ -185,6 +185,7 @@ layer1:
     RSPACE1:
       key: ENTER
       color: pink
+    ENTER: TRANSPARENT
 
     TAB: TAB
 
