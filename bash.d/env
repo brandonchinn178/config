@@ -17,6 +17,10 @@ export EDITOR=vim
 export CLICOLOR=xterm-color
 export LSCOLORS=exgxcxdxcxegedabagacad
 
+# jq
+
+export JQ_COLORS='1;33'
+
 # aws
 if [[ -f ~/.aws/credentials ]]; then
     $(export_aws)
