@@ -239,12 +239,12 @@ layer9:
       alt: true
 
     # mission control
-    LSPACE1:
+    RSPACE1:
       key: LEFT
       ctrl: true
       alt: true
       shift: true
-    RSPACE1:
+    RSPACE2:
       key: RIGHT
       ctrl: true
       alt: true
