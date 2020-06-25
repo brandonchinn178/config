@@ -1,0 +1,47 @@
+{
+  "variables": {
+    "yellow": "hsl(54, 100%, 50%)",
+    "ts-decorator-outside-function": "#FFB9FF",
+    "ts-decorator-inside-function": "#D7B9FF",
+  },
+  "globals": {
+    "background": "hsl(70, 0%, 15%)",
+  },
+  "rules": [
+    {
+      "name": "TS decorators: @-symbol",
+      "scope": "source.ts meta.class.ts meta.decorator.ts punctuation.decorator.ts",
+      "foreground": "var(ts-decorator-outside-function)",
+    },
+    {
+      "name": "TS decorators: function",
+      "scope": "source.ts meta.class.ts meta.decorator.ts meta.function-call.ts entity.name.function.ts",
+      "foreground": "var(ts-decorator-outside-function)",
+    },
+    {
+      "name": "TS decorators: plain",
+      "scope": "source.ts meta.class.ts meta.decorator.ts variable.other.readwrite.ts",
+      "foreground": "var(ts-decorator-outside-function)",
+    },
+    {
+      "name": "TS parameter decorators: @-symbol",
+      "scope": "source.ts meta.class.ts meta.method.declaration.ts meta.parameters.ts meta.decorator.ts punctuation.decorator.ts",
+      "foreground": "var(ts-decorator-inside-function)",
+    },
+    {
+      "name": "TS parameter decorators: function",
+      "scope": "source.ts meta.class.ts meta.method.declaration.ts meta.parameters.ts meta.decorator.ts meta.function-call.ts entity.name.function.ts",
+      "foreground": "var(ts-decorator-inside-function)",
+    },
+    {
+      "name": "TS parameter decorators: plain",
+      "scope": "source.ts meta.class.ts meta.method.declaration.ts meta.parameters.ts meta.decorator.ts variable.other.readwrite.ts",
+      "foreground": "var(ts-decorator-inside-function)",
+    },
+    {
+      "name": "TS decorators: other variables",
+      "scope": "source.ts meta.class.ts meta.decorator.ts meta.arrow.ts meta.array.literal.ts variable.other.readwrite.ts",
+      "foreground": "var(white)",
+    },
+  ],
+}
