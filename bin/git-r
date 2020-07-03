@@ -35,7 +35,7 @@ if [[ "${NO_ARGS}" == 1 ]]; then
     if [[ "$(git rev-parse --abbrev-ref HEAD)" == master ]]; then
         ARGS+=('HEAD~10')
     else
-        ARGS+=('master')
+        ARGS+=("$(git log --merges -n1 --pretty='format:%H')")
     fi
 fi
 
