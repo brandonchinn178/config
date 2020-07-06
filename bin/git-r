@@ -13,15 +13,12 @@ if [[ -d "$(git rev-parse --git-path rebase-merge)" ]]; then
     exit
 fi
 
-ARGS=("-i")
-NO_ARGS=1
+ARGS=()
 
 while [[ "$#" -gt 0 ]]; do
     case "$1" in
-        (*)
-            NO_ARGS=0
-            ARGS+=("$1")
-        ;;
+        (last-merge) ARGS+=("$(git log --merges -n1 --pretty='format:%H')") ;;
+        (*) ARGS+=("$1") ;;
     esac
     shift
 done
@@ -31,12 +28,12 @@ if [[ -n "$(git ls-files -m)" ]]; then
     git wip
 fi
 
-if [[ "${NO_ARGS}" == 1 ]]; then
+if [[ "${#ARGS[@]}" == 0 ]]; then
     if [[ "$(git rev-parse --abbrev-ref HEAD)" == master ]]; then
         ARGS+=('HEAD~10')
     else
-        ARGS+=("$(git log --merges -n1 --pretty='format:%H')")
+        ARGS+=("master")
     fi
 fi
 
-git rebase "${ARGS[@]}"
+git rebase -i "${ARGS[@]}"
