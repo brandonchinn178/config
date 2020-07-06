@@ -16,6 +16,7 @@ squash = commit --amend --no-edit
 touch = commit --amend -C HEAD --date now --no-verify --allow-empty
 unstage = reset HEAD
 l = log --oneline -10
+ll = log --oneline -20
 s = status -sb
 c = checkout
 p = push --force-with-lease
