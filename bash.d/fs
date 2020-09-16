@@ -10,18 +10,13 @@ function get_curr_dir() {
     echo $curr_dir
 }
 
-# cd and ls the new directory
-function ch() {
-    cd "$@" && ls
-}
-
 # cd into the git root
 function root() {
     cd "$(git rev-parse --show-toplevel)"
 }
 
 # rename the given file
-function rename() {
+function rn() {
     local old=${1?}
     local new=${2?}
     mv "${old}" "$(dirname "${old}")/${new}"
@@ -37,22 +32,3 @@ function chext() {
 
     mv "${old}" "${old%\.*}${ext}"
 }
-
-# Go to the given repo
-function repo() {
-    local name=${1?}
-    local repo=~/repos/"${name}"
-
-    if [[ ! -d "${repo}" ]]; then
-        echo "No repo: ${repo}"
-        return 1
-    fi
-
-    cd "${repo}"
-}
-function _repo_complete() {
-    local cur="${COMP_WORDS[COMP_CWORD]}"
-    local dir=~/repos
-    COMPREPLY=( $(compgen -W "$(ls "${dir}")" -- "${cur}") )
-}
-complete -F _repo_complete repo
