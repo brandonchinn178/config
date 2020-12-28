@@ -29,8 +29,11 @@ if [[ -n "$(git ls-files -m)" ]]; then
 fi
 
 if [[ "${#ARGS[@]}" == 0 ]]; then
-    if [[ "$(git rev-parse --abbrev-ref HEAD)" == master ]]; then
+    CURR_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+    if [[ "${CURR_BRANCH}" == master || "${CURR_BRANCH}" == main ]]; then
         ARGS+=('HEAD~10')
+    elif git branch | grep '\<main\>' &> /dev/null; then
+        ARGS+=("main")
     else
         ARGS+=("master")
     fi
