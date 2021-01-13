@@ -23,6 +23,7 @@ p = push --force-with-lease
 pd = !git pull && git bd
 rc = rebase --continue
 cp = cherry-pick
+wdiff = diff --color-words=.
 
 [merge]
 conflictstyle = diff3
