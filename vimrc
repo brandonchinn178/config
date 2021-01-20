@@ -58,3 +58,6 @@ noremap <leader>y "*y
 " Highlights
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
+
+" colors
+colorscheme default
