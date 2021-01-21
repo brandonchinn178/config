@@ -8,13 +8,13 @@ ZAP="\xE2\x9A\xA1\x0A"
 function get_vc_prompt() {
     if is_repo; then
         local repo=$(get_repo)
-        local label=$(git rev-parse --abbrev-ref HEAD)
+        local label=$(git branch --show-current)
         local commit=$(git rev-parse --short=12 HEAD)
 
         # for new git repos without an upstream repo name
         if [[ -z "${repo}" ]]; then
             echo "(${label})"
-        elif [[ $label == "HEAD" ]]; then
+        elif [[ -z "${label}" ]]; then
             echo "(${repo}:${commit})"
         else
             echo "(${repo}:${label})@${commit}"
