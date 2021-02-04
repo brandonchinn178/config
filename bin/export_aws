@@ -2,4 +2,6 @@
 #
 # Echo commands that export AWS credentials to the environment.
 
-awk '/=/ { print "export", toupper($1) "=" $3 }' ~/.aws/credentials
+if [[ -f ~/.aws/credentials ]]; then
+    awk '/=/ { print "export", toupper($1) "=" $3 }' ~/.aws/credentials
+fi
