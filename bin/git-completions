@@ -1,5 +1,0 @@
-#!/bin/bash
-
-function _git_r() {
-    __gitcomp_nl "$(__git_refs)"
-}
