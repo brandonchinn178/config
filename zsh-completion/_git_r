@@ -1,0 +1,12 @@
+#compdef git-r
+
+function _git_r {
+    emulate -L zsh
+
+    _git_rebase
+
+    __git_find_repo_path
+    if [[ ! -f "${__git_repo_path}/rebase-merge/interactive" ]]; then
+        __gitcomp 'last-merge'
+    fi
+}

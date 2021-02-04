@@ -2,8 +2,6 @@
 #
 # Interactively rebase, against master by default.
 
-source ~/.bash.d/git
-
 set -u -o pipefail
 
 # check if we're currently in a rebase

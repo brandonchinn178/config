@@ -1,25 +1,43 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 
 set -ex
 
-cd "$(dirname ${BASH_SOURCE[0]})"
+cd "$(dirname "${0:A}")"
 
-FILES=(
-    bash.d
-    bash_profile
-    bashrc
+files=(
+    bash-completion
     bin
     gitconfig
     inputrc
     vim
     vimrc
+    zsh-completion
+    zshrc
 )
 
-for FILE in "${FILES[@]}"; do
-    DEST="$HOME/.$FILE"
-    rm -rf "$DEST"
-    ln -sf "$PWD/$FILE" "$DEST"
+for file in "${files[@]}"; do
+    dest="${HOME}/.${file}"
+    rm -rf $dest
+    ln -sf "${PWD}/${file}" "$dest"
 done
+
+############### Upstream completion scripts ###############
+
+function download_file {
+    local src=$1
+    local dest=$2
+    shift 2
+
+    if [[ ! -f $dest ]]; then
+        mkdir -p "$(dirname $dest)"
+        curl -o $dest $src "$@"
+    fi
+}
+
+git_version='2.24.3'
+git_completion_url="https://raw.githubusercontent.com/git/git/v${git_version}/contrib/completion"
+download_file "${git_completion_url}/git-completion.bash" ~/.bash-completion/git-completion.bash
+download_file "${git_completion_url}/git-completion.zsh" ~/.zsh-completion/_git
 
 ############### Brew dependencies ###############
 
@@ -28,10 +46,3 @@ if ! type brew &> /dev/null; then
 fi
 
 brew bundle
-
-############### Upstream completion scripts ###############
-
-GIT_COMPLETION=/usr/local/bin/git-completion.bash
-if [[ ! -f "$GIT_COMPLETION" ]]; then
-    curl -o "$GIT_COMPLETION" https://raw.githubusercontent.com/git/git/v2.17.1/contrib/completion/git-completion.bash
-fi

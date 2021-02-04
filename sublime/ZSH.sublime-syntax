@@ -1,0 +1,13 @@
+%YAML 1.2
+---
+name: ZSH
+file_extensions: [zsh]
+first_line_match: '^#compdef'
+scope: source.zsh
+
+# TODO: replace with 'extends'
+# https://www.sublimetext.com/docs/syntax.html#inheritance
+contexts:
+  main:
+    - match: ''
+      push: 'Packages/ShellScript/Bash.sublime-syntax'
