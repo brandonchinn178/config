@@ -21,16 +21,17 @@ for FILE in "${FILES[@]}"; do
     ln -sf "$PWD/$FILE" "$DEST"
 done
 
+############### Brew dependencies ###############
+
 if ! type brew &> /dev/null; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 
+brew bundle
+
+############### Upstream completion scripts ###############
+
 GIT_COMPLETION=/usr/local/bin/git-completion.bash
 if [[ ! -f "$GIT_COMPLETION" ]]; then
     curl -o "$GIT_COMPLETION" https://raw.githubusercontent.com/git/git/v2.17.1/contrib/completion/git-completion.bash
-fi
-
-# python3
-if ! type python3 &> /dev/null; then
-    brew install python3
 fi

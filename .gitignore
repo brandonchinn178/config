@@ -2,3 +2,4 @@
 /nvim/bundle
 .netrwhist
 *.swp
+Brewfile.lock.json
