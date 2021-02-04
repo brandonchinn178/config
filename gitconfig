@@ -20,6 +20,7 @@ s = status -sb
 c = checkout
 p = push --force-with-lease
 pd = !git pull && git bd
+wip = !git add . && git commit -m '[ci skip] wip' --no-verify
 rc = rebase --continue
 cp = cherry-pick
 wdiff = diff --color-words=.

@@ -1,6 +1,0 @@
-#!/bin/bash
-
-set -u -o pipefail
-
-git add .
-git commit -m "[ci skip] wip" --no-verify
