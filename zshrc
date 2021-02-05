@@ -13,6 +13,7 @@ path+=~/.local/bin
 ############### Tab completions ###############
 
 autoload -Uz compinit && compinit
+autoload -Uz bashcompinit && bashcompinit
 
 zstyle ':completion:*' menu select
 zmodload zsh/complist
@@ -20,6 +21,10 @@ bindkey -M menuselect '^[[Z' reverse-menu-complete
 
 # git tab completions
 zstyle ':completion:*:*:git:*' script ~/.bash-completion/git-completion.bash
+
+if type stack &> /dev/null; then
+    eval "$(stack --bash-completion-script stack)"
+fi
 
 ############### Key bindings ###############
 

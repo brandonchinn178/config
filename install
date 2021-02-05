@@ -34,10 +34,20 @@ function download_file {
     fi
 }
 
+function gh_url {
+    local repo=$1
+    local tag=$2
+    local path=$3
+    echo "https://raw.githubusercontent.com/${repo}/${tag}/${path}"
+}
+
 git_version='2.24.3'
 git_completion_url="https://raw.githubusercontent.com/git/git/v${git_version}/contrib/completion"
-download_file "${git_completion_url}/git-completion.bash" ~/.bash-completion/git-completion.bash
-download_file "${git_completion_url}/git-completion.zsh" ~/.zsh-completion/_git
+download_file "$(gh_url 'git/git' 'v2.24.3' 'contrib/completion/git-completion.bash')" ~/.bash-completion/git-completion.bash
+download_file "$(gh_url 'git/git' 'v2.24.3' 'contrib/completion/git-completion.zsh')" ~/.zsh-completion/_git
+
+download_file "$(gh_url 'docker/cli' 'v20.10.2' 'contrib/completion/zsh/_docker')" ~/.zsh-completion/_docker
+download_file "$(gh_url 'docker/compose' '1.27.4' 'contrib/completion/zsh/_docker-compose')" ~/.zsh-completion/_docker-compose
 
 ############### Brew dependencies ###############
 
