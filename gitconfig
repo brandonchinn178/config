@@ -18,6 +18,7 @@ l = log --oneline -10
 ll = log --oneline -20
 s = status -sb
 c = checkout
+cb = checkout -b
 p = push --force-with-lease
 pd = !git pull && git bd
 wip = !git add . && git commit -m '[ci skip] wip' --no-verify
