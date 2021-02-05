@@ -92,6 +92,13 @@ function chext {
     mv $old "${old%\.*}${ext}"
 }
 
+############### AWS helpers ###############
+
+function ecr() {
+    aws ecr get-login-password --region us-west-2 \
+        | docker login --username AWS --password-stdin 766357520640.dkr.ecr.us-west-2.amazonaws.com
+}
+
 ############### Git helpers ###############
 
 # Exit code 0 if currently in a git repo.
