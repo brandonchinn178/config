@@ -26,8 +26,8 @@ zstyle ':completion:*:*:git:*' script ~/.bash-completion/git-completion.bash
 bindkey '^R' history-incremental-search-backward
 bindkey '^A' beginning-of-line
 bindkey '^E' end-of-line
-bindkey '^[b' vi-backward-word
-bindkey '^[f' vi-forward-word
+bindkey '^[b' emacs-backward-word
+bindkey '^[f' emacs-forward-word
 bindkey '^[^?' vi-backward-kill-word
 bindkey '^W' backward-delete-word
 
