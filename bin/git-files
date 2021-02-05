@@ -1,58 +1,94 @@
-#!/bin/bash
-#
-# Show modified or staged files in the given commit.
+#!/usr/bin/env zsh
 
-set -u -o pipefail
+set -eu -o pipefail
 
-usage='"
-usage: $0 [--status] [-s|--staged] [-m|--modified] [COMMIT]
+usage="
+Usage: git files [--status] [-s|--staged] [-m|--modified] [COMMIT]
 
-Show the files changed in the given commit (defaults to HEAD).
-"'
+Show the files changed in the given commit. At most one of --staged,
+--modified, and COMMIT may be provided.
 
-## Argument parsing
+Parameters:
+--status            Show the status of the file (see the man page for
+                    'git diff --diff-filter' for more information)
+-s, --staged        Show currently staged files
+-m, --modified      Show currently modified files
+COMMIT              Specify the commit to inspect. Defaults to HEAD.
+"
 
-STAGED=0
-MODIFIED=0
-STATUS=0
-ARGS=()
+function abort { print "$@" >&2; exit 1 }
+function abort_help { abort -f '%s\n' "$@" $usage }
 
-while [[ $# -gt 0 ]]; do
-    case "$1" in
-        (--help) eval echo "${usage}"; exit 0 ;;
-        (-s|--staged) STAGED=1 ;;
-        (-m|--modified) MODIFIED=1 ;;
-        (--status) STATUS=1 ;;
-        (*) ARGS+=("$1") ;;
+function parse_args {
+    local show_staged=0
+    local show_modified=0
+    local show_status=0
+    local pos_args=()
+
+    for arg in "$@"; do
+        case $arg in
+            (-s|--staged) show_staged=1 ;;
+            (-m|--modified) show_modified=1 ;;
+            (--status) show_status=1 ;;
+            (-*) abort_help ;;
+            (*) pos_args+=$1 ;;
+        esac
+    done
+
+    if [[ ${#pos_args} -gt 1 ]]; then
+        abort_help
+    fi
+
+    local target commit=
+    case "${show_staged}:${show_modified}:${#pos_args}" in
+        (1:0:0)
+            target=staged
+        ;;
+        (0:1:0)
+            target=modified
+        ;;
+        (0:0:1)
+            target=commit
+            commit=${pos_args[1]}
+        ;;
+        (0:0:0)
+            target=commit
+            commit=HEAD
+        ;;
+        (*)
+            abort "At most one of --staged, --modified, and COMMIT may be specified"
+        ;;
     esac
-    shift
-done
 
-if [[ "${#ARGS[@]}" -gt 1 ]]; then
-    eval echo "${usage}" >&2
-    exit 1
-fi
+    args=(
+        [target]=$target
+        [commit]=$commit
+        [with_status]=$show_status
+    )
+}
 
-if [[ "${#ARGS[@]}" == 1 ]]; then COMMIT_BIT=1; else COMMIT_BIT=0; fi
-if [[ $((STAGED + MODIFIED + COMMIT_BIT)) -gt 1 ]]; then
-    echo "At most one of --staged, --modified, and COMMIT may be specified" >&2
-    exit 1
-fi
+function git_files {
+    typeset -A args
+    parse_args "$@"
 
-COMMIT="${ARGS[0]:-HEAD}"
+    local flags=()
+    if [[ $args[with_status] == 1 ]]; then
+        flags+='--name-status'
+    else
+        flags+='--name-only'
+    fi
 
-## Main
+    case $args[target] in
+        (staged)
+            git diff $flags --staged
+        ;;
+        (modified)
+            git diff $flags
+        ;;
+        (commit)
+            git diff-tree $flags --no-commit-id -r $args[commit]
+        ;;
+    esac
+}
 
-if [[ "${STATUS}" == 1 ]]; then
-    FILE_FLAG='--name-status'
-else
-    FILE_FLAG='--name-only'
-fi
-
-if [[ "${MODIFIED}" == 1 ]]; then
-    git diff "${FILE_FLAG}"
-elif [[ "${STAGED}" == 1 ]]; then
-    git diff "${FILE_FLAG}" --staged
-else
-    git diff-tree "${FILE_FLAG}" --no-commit-id -r "${COMMIT}"
-fi
+git_files "$@"

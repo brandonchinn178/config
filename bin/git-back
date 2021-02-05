@@ -1,18 +1,33 @@
-#!/bin/bash
-#
-# Reset HEAD to X commits back.
+#!/usr/bin/env zsh
 
-set -u -o pipefail
+set -eu -o pipefail
 
-if [[ $# == 0 ]]; then
-    COMMIT="HEAD~1"
-elif ! [[ $1 =~ ^[0-9]+$ ]]; then
-    echo "Usage: git back [#]" >&2
-    exit 1
-else
-    COMMIT="HEAD~$1"
-fi
+usage="
+Usage: git back [NUM]
 
-echo "Previous commit: $(git rev-parse HEAD)"
-git reset "${COMMIT}"
-echo "Current commit: $(git rev-parse "${COMMIT}")"
+Reset HEAD to the given number of commits away.
+
+Parameters:
+NUM             The number of commits back to reset to. Defaults to 1.
+"
+
+function abort { print "$@" >&2; exit 1 }
+function abort_help { abort -f '%s\n' "$@" $usage }
+
+function git_back {
+    local num=${1:-1}
+
+    if ! [[ $num =~ ^[0-9]+$ ]]; then
+        abort_help
+    fi
+
+    local commit="HEAD~${num}"
+
+    print "Previous commit: $(git rev-parse HEAD)"
+
+    git reset $commit
+
+    print "Current commit: $(git rev-parse $commit)"
+}
+
+git_back "$@"

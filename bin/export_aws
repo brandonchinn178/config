@@ -1,6 +1,4 @@
-#!/bin/bash
-#
-# Echo commands that export AWS credentials to the environment.
+#!/usr/bin/env zsh
 
 if [[ -f ~/.aws/credentials ]]; then
     awk '/=/ { print "export", toupper($1) "=" $3 }' ~/.aws/credentials

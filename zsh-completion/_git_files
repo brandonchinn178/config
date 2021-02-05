@@ -5,9 +5,7 @@ function _git_files {
 
     local flags=(
         --status
-        -s
         --staged
-        -m
         --modified
     )
     __gitcomp "${flags}"

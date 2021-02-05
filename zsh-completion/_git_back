@@ -3,8 +3,6 @@
 function _git_back {
     emulate -L zsh
 
-    __gitcomp_builtin reset
-
     local numbers=( {1..9} )
     __gitcomp "$numbers"
 }
