@@ -7,7 +7,7 @@
     { "keys": ["super+shift+b"], "command": "unbound" },
     { "keys": ["super+minus"], "command": "unbound" },
     { "keys": ["super+shift+w"], "command": "close_all"},
-    { "keys": ["ctrl+super+s"], "command": "save_all"},
+    { "keys": ["alt+shift+s"], "command": "save_all"},
     { "keys": ["[","c"], "command": "git_gutter_prev_change", "context": [{"key": "six_is_in_command_mode"}, {"key": "six_is_accepting_input", "operand": false}]},
     { "keys": ["]","c"], "command": "git_gutter_next_change", "context": [{"key": "six_is_in_command_mode"}, {"key": "six_is_accepting_input", "operand": false}]},
     { "keys": ["ctrl+up"], "command": "select_lines", "args": {"forward": false} },
