@@ -196,17 +196,14 @@ function precmd {
     prompt_parts+="%F{153}%~%f"
 
     if in_git_repo; then
-        local branch=$(git branch --show-current)
-        local commit=${$(git rev-parse --short=12 HEAD 2> /dev/null):-<null>}
-
-        local git_prompt
-        if [[ -n $branch ]]; then
-            git_prompt="(${branch})@${commit}"
-        else
-            git_prompt="(${commit})"
+        local branch_display="$(git bb --display)"
+        if [[ -z $branch_display ]]; then
+            branch_display='N/A'
         fi
+        prompt_parts+="%F{green}[${branch_display}]%f"
 
-        prompt_parts+="%F{green}${git_prompt}%f"
+        local commit=$(git rev-parse --short=12 HEAD 2> /dev/null)
+        prompt_parts+="%F{magenta}(${commit:-<null>})%f"
     fi
 
     print ''

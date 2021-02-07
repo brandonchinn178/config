@@ -1,0 +1,342 @@
+#!/usr/bin/env python3
+
+import argparse
+import json
+import subprocess
+import sys
+from enum import Enum
+from pathlib import Path
+from typing import NamedTuple, Optional, TypeVar, Union
+
+##### Main #####
+
+def main() -> None:
+    command = parse_args()
+    data = load_data()
+
+    if command.mode == CLICommandMode.LIST_ALL:
+        for branch in get_all_registered_branches(data):
+            print_branch_info(data, branch)
+            print()
+    elif command.mode == CLICommandMode.SHOW_CURR:
+        print_branch_info(data, command.branch)
+    elif command.mode == CLICommandMode.GET_BASE:
+        info = get_branch_info(data, command.branch)
+        if info:
+            print(info.base)
+    elif command.mode == CLICommandMode.GET_DEPS:
+        info = get_branch_info(data, command.branch)
+        for dep in info.deps:
+            print(dep)
+    elif command.mode == CLICommandMode.DISPLAY:
+        try:
+            branch_display = display_branch_info(data, command.branch)
+            print(branch_display)
+        except NotOnBranchError:
+            pass
+    elif command.mode == CLICommandMode.SET_BASE:
+        base_branch = command.base
+        if not branch_exists(base_branch):
+            raise MissingBranchError(base_branch)
+
+        set_base_branch(data, command.branch, base_branch)
+        save_data(data)
+        print('Set `{}` as base branch for `{}`'.format(base_branch, command.branch))
+    elif command.mode == CLICommandMode.ADD_DEP:
+        dep_branch = command.dep
+        if not branch_exists(dep_branch):
+            raise MissingBranchError(dep_branch)
+
+        add_dep_branch(data, command.branch, dep_branch)
+        save_data(data)
+        print('Added `{}` as a branch dependency for `{}`'.format(dep_branch, command.branch))
+    elif command.mode == CLICommandMode.CLEAR:
+        # allow clearing branches that don't exist anymore
+        try:
+            branch = command.branch
+        except MissingBranchError as e:
+            branch = e.branch
+
+        delete_branch(data, branch)
+        save_data(data)
+        print('Deleted branch `{}` from base-branch database'.format(branch))
+    else:
+        raise NotImplementedError
+
+def print_branch_info(data: 'BaseBranchData', branch: str) -> None:
+    info = get_branch_info(data, branch)
+
+    if info is None:
+        raise UserError('Branch `{}` is not registered.'.format(branch))
+
+    print('\n'.join([
+        branch,
+        ' ├─ base = {}'.format(info.base),
+        ' └─ deps = [{}]'.format(', '.join(info.deps)),
+    ]))
+
+##### Data store #####
+
+class BranchInfo(NamedTuple):
+    base: str
+    deps: list[str]
+
+    @classmethod
+    def from_json(cls, o):
+        return cls(**o)
+
+    def to_json(self):
+        return self._asdict()
+
+class BaseBranchData(NamedTuple):
+    branches: dict[str, BranchInfo]
+
+    @classmethod
+    def from_json(cls, o):
+        branches = {
+            branch: BranchInfo.from_json(branch_info)
+            for branch, branch_info in o['branches'].items()
+        }
+        return cls(branches=branches)
+
+    def to_json(self):
+        return {
+            'branches': {
+                branch: branch_info.to_json()
+                for branch, branch_info in self.branches.items()
+            },
+        }
+
+def get_data_path() -> Path:
+    git_dir = git('rev-parse', '--git-common-dir')
+    return Path(git_dir) / 'base-branch-info'
+
+def load_data() -> BaseBranchData:
+    data_path = get_data_path()
+
+    if not data_path.exists():
+        return BaseBranchData(branches={})
+
+    data_text = data_path.read_text()
+    return BaseBranchData.from_json(json.loads(data_text))
+
+def save_data(data: BaseBranchData) -> None:
+    data_path = get_data_path()
+
+    data_text = json.dumps(data.to_json(), indent=2)
+    data_path.write_text(data_text)
+
+##### API #####
+
+class UserError(Exception):
+    pass
+
+class NotOnBranchError(UserError):
+    def __str__(self):
+        return 'Not currently on a branch'
+
+class MissingBranchError(UserError):
+    def __init__(self, branch: str):
+        self.branch = branch
+
+    def __str__(self):
+        return 'Branch `{}` does not exist'.format(self.branch)
+
+def get_all_registered_branches(data: BaseBranchData) -> list[str]:
+    return list(data.branches.keys())
+
+def get_branch_info(data: BaseBranchData, branch: str) -> Optional[BranchInfo]:
+    return data.branches.get(branch)
+
+def display_branch_info(data: BaseBranchData, branch: str) -> str:
+    info = get_branch_info(data, branch)
+
+    branch_display = ''
+
+    if info:
+        branch_display += info.base
+
+        if len(info.deps) > 0:
+            branch_display += ' + '
+            if len(info.deps) == 1:
+                branch_display += info.deps[0]
+            else:
+                branch_display += '{} others'.format(len(info.deps))
+
+        branch_display += ' > '
+
+    branch_display += branch
+
+    return branch_display
+
+def set_base_branch(data: BaseBranchData, branch: str, base_branch: str) -> None:
+    info = get_branch_info(data, branch)
+    if info is None:
+        info = BranchInfo(base=base_branch, deps=[])
+    else:
+        info.base = base_branch
+
+    data.branches[branch] = info
+
+def add_dep_branch(data: BaseBranchData, branch: str, dep_branch: str) -> None:
+    info = get_branch_info(data, branch)
+    if info is None:
+        raise UserError('Could not add branch dependency: `{}` is not a registered branch'.format(branch))
+    info.deps.append(dep_branch)
+
+def delete_branch(data: BaseBranchData, branch: str) -> None:
+    data.branches.pop(branch, None)
+    for branch_info in data.branches.values():
+        if branch in branch_info.deps:
+            branch_info.deps.remove(branch)
+
+##### Undefined helpers #####
+
+class Undefined:
+    pass
+
+UNDEFINED = Undefined()
+
+class UseUndefinedError(Exception):
+    pass
+
+##### Argument parsing #####
+
+CLICommandMode = Enum(
+    'CLICommandMode',
+    [
+        (x, x)
+        for x in (
+            'LIST_ALL',
+            'SHOW_CURR',
+            'GET_BASE',
+            'GET_DEPS',
+            'DISPLAY',
+            'SET_BASE',
+            'ADD_DEP',
+            'CLEAR',
+        )
+    ]
+)
+
+T = TypeVar('T')
+
+# Semantically indicates that a parameter is guaranteed to be defined
+# if the mode requires it to be.
+ModeDependent = Union[Undefined, T]
+
+class CLICommand:
+    def __init__(
+        self,
+        mode: CLICommandMode,
+        branch: ModeDependent[Optional[str]] = UNDEFINED,
+        base: ModeDependent[str] = UNDEFINED,
+        dep: ModeDependent[str] = UNDEFINED,
+    ):
+        self._mode = mode
+        self._branch = branch
+        self._base = base
+        self._dep = dep
+
+    @property
+    def mode(self):
+        return self._mode
+
+    @property
+    def branch(self) -> str:
+        if self._branch is UNDEFINED:
+            raise UseUndefinedError()
+
+        branch = self._branch
+
+        if branch is None:
+            branch = get_current_branch()
+
+        if not branch_exists(branch):
+            raise MissingBranchError(branch)
+
+        return branch
+
+    @property
+    def base(self) -> str:
+        if self._base is UNDEFINED:
+            raise UseUndefinedError()
+
+        return self._base
+
+    @property
+    def dep(self) -> str:
+        if self._dep is UNDEFINED:
+            raise UseUndefinedError()
+
+        return self._dep
+
+def parse_args() -> CLICommand:
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('branch', nargs='?')
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--list', '-l', action='store_true', default=None)
+    group.add_argument('--base', action='store_true', default=None)
+    group.add_argument('--deps', action='store_true', default=None)
+    group.add_argument('--display', action='store_true', default=None)
+    group.add_argument('--set-base')
+    group.add_argument('--add-dep')
+    group.add_argument('--clear', action='store_true', default=None)
+
+    args = parser.parse_args()
+
+    if args.list:
+        if args.branch is not None:
+            raise parser.error('`--list` or `-l` cannot be specified with any other arguments')
+
+        return CLICommand(mode=CLICommandMode.LIST_ALL)
+
+    if args.base:
+        return CLICommand(mode=CLICommandMode.GET_BASE, branch=args.branch)
+
+    if args.deps:
+        return CLICommand(mode=CLICommandMode.GET_DEPS, branch=args.branch)
+
+    if args.display:
+        return CLICommand(mode=CLICommandMode.DISPLAY, branch=args.branch)
+
+    if args.set_base:
+        return CLICommand(mode=CLICommandMode.SET_BASE, branch=args.branch, base=args.set_base)
+
+    if args.add_dep:
+        return CLICommand(mode=CLICommandMode.ADD_DEP, branch=args.branch, dep=args.add_dep)
+
+    if args.clear:
+        return CLICommand(mode=CLICommandMode.CLEAR, branch=args.branch)
+
+    return CLICommand(mode=CLICommandMode.SHOW_CURR, branch=args.branch)
+
+##### Git helpers #####
+
+def get_current_branch() -> str:
+    branch = git('branch', '--show-current')
+    if len(branch) == 0:
+        raise NotOnBranchError()
+    return branch
+
+def branch_exists(branch: str) -> bool:
+    try:
+        git('show-ref', branch)
+    except subprocess.CalledProcessError:
+        return False
+    else:
+        return True
+
+def git(*args) -> str:
+    return subprocess.check_output(['git'] + list(args)).decode().strip()
+
+##### Entrypoint #####
+
+if __name__ == '__main__':
+    try:
+        main()
+    except UserError as e:
+        print('(git-bb) ERROR: {}'.format(e), file=sys.stderr)
+        sys.exit(1)
