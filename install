@@ -5,13 +5,12 @@ set -ex
 cd "$(dirname "${0:A}")"
 
 files=(
-    bash-completion
     bin
     gitconfig
     inputrc
     vim
     vimrc
-    zsh-completion
+    zsh
     zshrc
 )
 
@@ -43,11 +42,11 @@ function gh_url {
 
 git_version='2.24.3'
 git_completion_url="https://raw.githubusercontent.com/git/git/v${git_version}/contrib/completion"
-download_file "$(gh_url 'git/git' 'v2.24.3' 'contrib/completion/git-completion.bash')" ~/.bash-completion/git-completion.bash
-download_file "$(gh_url 'git/git' 'v2.24.3' 'contrib/completion/git-completion.zsh')" ~/.zsh-completion/_git
+download_file "$(gh_url 'git/git' 'v2.24.3' 'contrib/completion/git-completion.bash')" ~/.local/bin/git-completion.bash
+download_file "$(gh_url 'git/git' 'v2.24.3' 'contrib/completion/git-completion.zsh')" ~/.local/zsh/_git
 
-download_file "$(gh_url 'docker/cli' 'v20.10.2' 'contrib/completion/zsh/_docker')" ~/.zsh-completion/_docker
-download_file "$(gh_url 'docker/compose' '1.27.4' 'contrib/completion/zsh/_docker-compose')" ~/.zsh-completion/_docker-compose
+download_file "$(gh_url 'docker/cli' 'v20.10.2' 'contrib/completion/zsh/_docker')" ~/.local/zsh/_docker
+download_file "$(gh_url 'docker/compose' '1.27.4' 'contrib/completion/zsh/_docker-compose')" ~/.local/zsh/_docker-compose
 
 ############### Brew dependencies ###############
 

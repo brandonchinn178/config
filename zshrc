@@ -3,7 +3,8 @@
 ############### Paths ###############
 
 fpath=(
-    ~/.zsh-completion
+    ~/.local/zsh
+    ~/.zsh
     $fpath
 )
 
@@ -20,7 +21,7 @@ zmodload zsh/complist
 bindkey -M menuselect '^[[Z' reverse-menu-complete
 
 # git tab completions
-zstyle ':completion:*:*:git:*' script ~/.bash-completion/git-completion.bash
+zstyle ':completion:*:*:git:*' script ~/.local/bin/git-completion.bash
 
 if type stack &> /dev/null; then
     eval "$(stack --bash-completion-script stack)"
