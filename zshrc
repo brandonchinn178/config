@@ -193,7 +193,7 @@ function precmd {
         prompt_parts+="%F{yellow}{%L}%f"
     fi
 
-    prompt_parts+="%F{green}%~%f"
+    prompt_parts+="%F{153}%~%f"
 
     if in_git_repo; then
         local branch=$(git branch --show-current)
@@ -206,7 +206,7 @@ function precmd {
             git_prompt="(${commit})"
         fi
 
-        prompt_parts+="%F{magenta}${git_prompt}%f"
+        prompt_parts+="%F{green}${git_prompt}%f"
     fi
 
     print ''
