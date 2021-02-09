@@ -4,9 +4,15 @@
 
 set -eu -o pipefail
 
+# find all branches that's not the current branch
+function all_merged_branches {
+    git branch --format="%(if)%(HEAD)%(then)%(else)%(refname:short)%(end)" --merged \
+        | grep -v master \
+        | grep -v main
+}
+
 function git_bd {
-    # find all branches that's not the current branch
-    local branches=( $(git branch --format="%(if)%(HEAD)%(then)*%(else) %(end) %(refname:short)" --merged | awk '/^[^*]/ { print $1 }') )
+    local branches=( $(all_merged_branches) )
 
     if [[ ${#branches} -gt 0 ]]; then
         print "Deleting branches: ${branches}"
