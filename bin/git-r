@@ -1,54 +1,22 @@
 #!/usr/bin/env zsh
-#
-# An alias for `git rebase`, with the following additions:
-#   * If not currently in a rebase, adds `--interactive`
-#   * If `last-merge` appears anywhere in the arg list, it'll be replaced
-#     with the last merge commit in the current history
-#   * If any files are modified, stashes them with `git wip`
-#   * If no arguments are provided, will rebase on top of 'master' or
-#     'main'. If currently on 'master' or 'main', will rebase on top of
-#     HEAD~10.
 
 set -eu -o pipefail
 
-function get_last_merge {
-    git log --merges -n1 --pretty='format:%H'
+function in_rebase {
+    [[ -d "$(git rev-parse --git-path rebase-merge)" ]]
+}
+
+function has_untracked_files {
+    [[ -n "$(git ls-files -m -o --exclude-standard)" ]]
 }
 
 function git_r {
-    # check if we're currently in a rebase
-    # https://stackoverflow.com/a/3921928
-    if [[ -d "$(git rev-parse --git-path rebase-merge)" ]]; then
-        git rebase "$@"
-        return
-    fi
-
-    local args=()
-
-    for arg in "$@"; do
-        case $arg in
-            (last-merge) arg="$(get_last_merge)" ;;
-        esac
-        args+=$arg
-    done
-
-    if [[ -n "$(git ls-files -m)" ]]; then
+    if ! in_rebase && has_untracked_files; then
         print 'Saving work...'
         git wip
     fi
 
-    if [[ ${#args} == 0 ]]; then
-        local base_branch=master
-        if [[ "$(git rev-parse --abbrev-ref HEAD)" == (master|main) ]]; then
-            base_branch='HEAD~10'
-        elif git branch | grep '\<main\>' &> /dev/null; then
-            base_branch='main'
-        fi
-
-        args+=$base_branch
-    fi
-
-    exec git rebase -i "${(@)args}"
+    exec git bb-rebase "$@"
 }
 
 git_r "$@"

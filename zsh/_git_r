@@ -8,5 +8,7 @@ function _git_r {
     __git_find_repo_path
     if [[ ! -f "${__git_repo_path}/rebase-merge/interactive" ]]; then
         __gitcomp 'last-merge'
+        __gitcomp '--onto-base-branch'
+        __gitcomp '--merge-deps'
     fi
 }
