@@ -52,6 +52,12 @@ def main() -> None:
         add_dep_branch(data, command.branch, dep_branch)
         save_data(data)
         print('Added `{}` as a branch dependency for `{}`'.format(dep_branch, command.branch))
+    elif command.mode == CLICommandMode.RM_DEP:
+        dep_branch = command.dep
+
+        rm_dep_branch(data, command.branch, dep_branch)
+        save_data(data)
+        print('Removed `{}` as a branch dependency for `{}`'.format(dep_branch, command.branch))
     elif command.mode == CLICommandMode.CLEAR:
         # allow clearing branches that don't exist anymore
         try:
@@ -192,6 +198,11 @@ def add_dep_branch(data: BaseBranchData, branch: str, dep_branch: str) -> None:
         raise UserError('Could not add branch dependency: `{}` is not a registered branch'.format(branch))
     info.deps.append(dep_branch)
 
+def rm_dep_branch(data: BaseBranchData, branch: str, dep_branch: str) -> None:
+    info = get_branch_info(data, branch)
+    if info and dep_branch in info.deps:
+        info.deps.remove(dep_branch)
+
 def delete_branch(data: BaseBranchData, branch: str) -> None:
     data.branches.pop(branch, None)
     for branch_info in data.branches.values():
@@ -223,6 +234,7 @@ CLICommandMode = Enum(
             'DISPLAY',
             'SET_BASE',
             'ADD_DEP',
+            'RM_DEP',
             'CLEAR',
         )
     ]
@@ -293,6 +305,7 @@ def parse_args() -> CLICommand:
     group.add_argument('--display', action='store_true', default=None)
     group.add_argument('--set-base')
     group.add_argument('--add-dep')
+    group.add_argument('--rm-dep')
     group.add_argument('--clear', action='store_true', default=None)
 
     args = parser.parse_args()
@@ -320,6 +333,9 @@ def parse_args() -> CLICommand:
 
     if args.add_dep:
         return CLICommand(mode=CLICommandMode.ADD_DEP, branch=args.branch, dep=args.add_dep)
+
+    if args.rm_dep:
+        return CLICommand(mode=CLICommandMode.RM_DEP, branch=args.branch, dep=args.rm_dep)
 
     if args.clear:
         return CLICommand(mode=CLICommandMode.CLEAR, branch=args.branch)
