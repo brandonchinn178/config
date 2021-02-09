@@ -1,0 +1,69 @@
+#!/usr/bin/env zsh
+
+set -eu -o pipefail
+
+function abort { print "$@" >&2; exit 1 }
+
+function prepend_line {
+    local line=${1?}
+    local file=${2?}
+    mv $file "${file}.bak"
+    cat <(print $line) "${file}.bak" > $file
+    rm "${file}.bak"
+}
+
+function get_editor {
+    local options=(
+        "${OLD_GIT_SEQUENCE_EDITOR:-}"
+        "$(git config sequence.editor)"
+        "${GIT_EDITOR:-}"
+        "$(git config core.editor)"
+        "${VISUAL:-}"
+        "${EDITOR:-}"
+        vi
+    )
+    local option
+    for option in $options; do
+        if [[ -n $option ]]; then
+            print $option
+            return
+        fi
+    done
+}
+
+function git_bb_rebase_editor {
+    local merge_deps=0
+    local args=()
+
+    local arg
+    for arg in "$@"; do
+        case $arg in
+            (--merge-deps) merge_deps=1 ;;
+            (*) args+=$arg ;;
+        esac
+    done
+
+    if [[ ${#args} != 1 ]]; then
+        abort "git-bb-rebase-editor got unknown arguments: $@"
+    fi
+
+    local file=${args[1]}
+
+    if [[ $merge_deps == 1 ]]; then
+        local deps=( $(git bb --deps) )
+        if [[ ${#deps} -gt 0 ]]; then
+            local exec_cmd=exec
+            if [[ "$(git config rebase.abbreviateCommands)" == true ]]; then
+                exec_cmd=x
+            fi
+
+            prepend_line "${exec_cmd} git merge --no-ff --no-edit --quiet ${deps}" $file
+        fi
+    fi
+
+    local editor="$(get_editor)"
+
+    exec $editor $file
+}
+
+git_bb_rebase_editor "$@"

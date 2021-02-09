@@ -1,0 +1,71 @@
+#!/usr/bin/env zsh
+
+set -eu -o pipefail
+
+function abort { print "$@" >&2; exit 1 }
+
+function git_bb_rebase {
+    # proxy to underlying git-rebase if currently in a rebase
+    if [[ -d "$(git rev-parse --git-path rebase-merge)" ]]; then
+        exec git rebase "$@"
+        return
+    fi
+
+    local args=("$@")
+
+    # calling with no arguments is equivalent to calling with the given args
+    if [[ ${#args} == 0 ]]; then
+        args=( 'last-merge' '--onto-base-branch' '--merge-deps' )
+    fi
+
+    local parsed_args=()
+    local onto_base_branch=0
+    local merge_deps=0
+
+    local arg
+    for arg in $args; do
+        case $arg in
+            (last-merge)
+                local last_merge="$(git log --merges -n1 --pretty='format:%H')"
+                if [[ -z $last_merge ]]; then
+                    abort 'error: Could not find a merge commit'
+                fi
+
+                parsed_args+=$last_merge
+            ;;
+            (--onto-base-branch)
+                onto_base_branch=1
+            ;;
+            (--merge-deps)
+                merge_deps=1
+            ;;
+            (*)
+                parsed_args+=$arg
+            ;;
+        esac
+    done
+
+    local editor_args=()
+
+    if [[ $onto_base_branch == 1 ]]; then
+        local base="$(git bb --base)"
+        if [[ -z $base ]]; then
+            abort 'Branch is not registered'
+        fi
+
+        parsed_args+=("--onto=${base}")
+    fi
+
+    if [[ $merge_deps == 1 ]]; then
+        editor_args+='--merge-deps'
+    fi
+
+    if [[ ${#editor_args} -gt 0 ]]; then
+        export OLD_GIT_SEQUENCE_EDITOR="${GIT_SEQUENCE_EDITOR:-}"
+        export GIT_SEQUENCE_EDITOR="git-bb-rebase-editor ${editor_args}"
+    fi
+
+    exec git rebase -i $parsed_args
+}
+
+git_bb_rebase "$@"
