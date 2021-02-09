@@ -114,7 +114,7 @@ function in_git_repo {
 
 # Change directory to root of the git repo
 function root {
-    cd "$(git rev-parse --show-toplevel)"
+    cd "$(git rev-parse --show-cdup)"
 }
 
 ############### Miscellaneous ###############
