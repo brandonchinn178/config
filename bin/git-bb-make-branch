@@ -1,0 +1,72 @@
+#!/usr/bin/env zsh
+
+set -eu -o pipefail
+
+default_base_branch=$(git bb --default-base-branch)
+
+usage="
+Usage: git bb-make-branch [--checkout] [--reset] BRANCH [BASE]
+
+Create a new branch. The new branch will have the provided BASE branch set as its
+base branch, and if '--reset' is NOT provided, will add the current branch as a
+dependency of the new branch.
+
+Parameters:
+BRANCH              The name of the branch to create
+BASE                The branch to base the new branch off of (defaults to ${default_base_branch})
+
+Options:
+--checkout          If provided, check out the new branch after creating it.
+--reset             If provided, reset the branch to the BASE branch. Will abort
+                    if any modified or untracked files are present.
+                    Implies --checkout.
+"
+
+function abort { print "$@" >&2; exit 1 }
+function abort_help { abort -f '%s\n' "$@" $usage }
+
+function git_bb_make_branch {
+    local checkout=0
+    local reset=0
+    local args=()
+
+    local arg
+    for arg in "$@"; do
+        case $arg in
+            (--checkout) checkout=1 ;;
+            (--reset) reset=1; checkout=1 ;;
+            (*) args+=$arg ;;
+        esac
+    done
+
+    if [[ ${#args} == 0 || ${#args} -gt 2 ]]; then
+        abort_help
+    fi
+
+    local branch=${args[1]}
+    local base=${args[2]:-$default_base_branch}
+
+    if [[ $reset == 1 &&  -n "$(git ls-files -o --exclude-standard)" ]]; then
+        abort "(--reset): There are modified files"
+    fi
+
+    local curr_branch=$(git branch --show-current)
+
+    git branch $branch
+    git bb --set-base $base $branch
+
+    if [[ $checkout == 1 ]]; then
+        git checkout $branch
+    fi
+
+    if [[ $reset == 1 ]]; then
+        git reset --quiet --hard $base
+        print "Reset to ${base}"
+    fi
+
+    if [[ $reset == 0 && $curr_branch != $base ]]; then
+        git bb --add-dep $curr_branch $branch
+    fi
+}
+
+git_bb_make_branch "$@"

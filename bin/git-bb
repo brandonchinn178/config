@@ -28,6 +28,8 @@ def main() -> None:
         info = get_branch_info(data, command.branch)
         for dep in info.deps:
             print(dep)
+    elif command.mode == CLICommandMode.GET_DEFAULT_BASE_BRANCH:
+        print(get_default_base_branch())
     elif command.mode == CLICommandMode.DISPLAY:
         try:
             branch_display = display_branch_info(data, command.branch)
@@ -148,6 +150,12 @@ def get_all_registered_branches(data: BaseBranchData) -> list[str]:
 def get_branch_info(data: BaseBranchData, branch: str) -> Optional[BranchInfo]:
     return data.branches.get(branch)
 
+def get_default_base_branch() -> str:
+    if branch_exists('main'):
+        return 'main'
+
+    return 'master'
+
 def display_branch_info(data: BaseBranchData, branch: str) -> str:
     info = get_branch_info(data, branch)
 
@@ -211,6 +219,7 @@ CLICommandMode = Enum(
             'SHOW_CURR',
             'GET_BASE',
             'GET_DEPS',
+            'GET_DEFAULT_BASE_BRANCH',
             'DISPLAY',
             'SET_BASE',
             'ADD_DEP',
@@ -280,6 +289,7 @@ def parse_args() -> CLICommand:
     group.add_argument('--list', '-l', action='store_true', default=None)
     group.add_argument('--base', action='store_true', default=None)
     group.add_argument('--deps', action='store_true', default=None)
+    group.add_argument('--default-base-branch', action='store_true', default=None)
     group.add_argument('--display', action='store_true', default=None)
     group.add_argument('--set-base')
     group.add_argument('--add-dep')
@@ -298,6 +308,9 @@ def parse_args() -> CLICommand:
 
     if args.deps:
         return CLICommand(mode=CLICommandMode.GET_DEPS, branch=args.branch)
+
+    if args.default_base_branch:
+        return CLICommand(mode=CLICommandMode.GET_DEFAULT_BASE_BRANCH, branch=args.branch)
 
     if args.display:
         return CLICommand(mode=CLICommandMode.DISPLAY, branch=args.branch)

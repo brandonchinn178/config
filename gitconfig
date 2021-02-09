@@ -1,6 +1,6 @@
 [user]
 name = Brandon Chinn
-email = brandonchinn178@gmail.com
+email = brandon@leapyear.io
 
 [rebase]
 autoSquash = true
@@ -18,7 +18,9 @@ l = log --oneline -10
 ll = log --oneline -20
 s = status -sb
 c = checkout
-cb = checkout -b
+mb = bb-make-branch
+b = mb --checkout
+cb = mb --reset
 p = push --force-with-lease
 pd = !git pull && git bd
 wip = !git add . && git commit -m '[ci skip] wip' --no-verify
