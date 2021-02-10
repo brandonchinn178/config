@@ -30,12 +30,32 @@ fi
 ############### Key bindings ###############
 
 bindkey '^R' history-incremental-search-backward
+
 bindkey '^A' beginning-of-line
 bindkey '^E' end-of-line
-bindkey '^[b' emacs-backward-word
-bindkey '^[f' emacs-forward-word
-bindkey '^[^?' vi-backward-kill-word
-bindkey '^W' backward-delete-word
+
+function backward-word-segment {
+    local WORDCHARS="$(tr -d '/-' <<< $WORDCHARS)"
+    zle emacs-backward-word
+}
+zle -N backward-word-segment
+bindkey '^[b' backward-word-segment
+
+function forward-word-segment {
+    local WORDCHARS="$(tr -d '/-' <<< $WORDCHARS)"
+    zle emacs-forward-word
+}
+zle -N forward-word-segment
+bindkey '^[f' forward-word-segment
+
+function backward-kill-word-segment {
+    local WORDCHARS="$(tr -d '/-' <<< $WORDCHARS)"
+    zle vi-backward-kill-word
+}
+zle -N backward-kill-word-segment
+bindkey '^[^?' backward-kill-word-segment
+
+bindkey '^W' backward-kill-word
 
 ############### Colors ###############
 
