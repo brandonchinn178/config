@@ -16,7 +16,7 @@ function git_bd {
 
     if [[ ${#branches} -gt 0 ]]; then
         print "Deleting branches: ${branches}"
-        git branch -d $branches
+        git db $branches
     else
         print 'No merged branches to delete'
     fi

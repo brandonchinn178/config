@@ -21,6 +21,7 @@ c = checkout
 mb = bb-make-branch
 b = mb --checkout
 cb = mb --reset
+db = bb-delete-branch
 p = push --force-with-lease
 pd = !git pull && git bd
 wip = !git add . && git commit -m '[ci skip] wip' --no-verify
