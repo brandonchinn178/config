@@ -1,0 +1,16 @@
+#!/usr/bin/env zsh
+
+set -eu -o pipefail
+
+function git_bb_log {
+    local start=HEAD~10
+
+    local base="$(git bb --base)"
+    if [[ -n $base ]]; then
+        start="$(git merge-base $base HEAD)"
+    fi
+
+    exec git log --first-parent "$@" "${start}^".."HEAD"
+}
+
+git_bb_log "$@"
