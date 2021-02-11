@@ -36,6 +36,16 @@ def main() -> None:
             print(branch_display)
         except NotOnBranchError:
             pass
+    elif command.mode == CLICommandMode.RENAME_TO:
+        # allow renaming branches that don't exist anymore
+        try:
+            branch = command.branch
+        except MissingBranchError as e:
+            branch = e.branch
+
+        rename_branch(data, branch, command.new_branch)
+        save_data(data)
+        print('Renamed branch `{}` to `{}`'.format(branch, command.new_branch))
     elif command.mode == CLICommandMode.SET_BASE:
         base_branch = command.base
         if not branch_exists(base_branch):
@@ -183,6 +193,11 @@ def display_branch_info(data: BaseBranchData, branch: str) -> str:
 
     return branch_display
 
+def rename_branch(data: BaseBranchData, branch: str, new_branch: str) -> None:
+    info = data.branches.pop(branch, None)
+    if info:
+        data.branches[new_branch] = info
+
 def set_base_branch(data: BaseBranchData, branch: str, base_branch: str) -> None:
     info = get_branch_info(data, branch)
     if info is None:
@@ -232,6 +247,7 @@ CLICommandMode = Enum(
             'GET_DEPS',
             'GET_DEFAULT_BASE_BRANCH',
             'DISPLAY',
+            'RENAME_TO',
             'SET_BASE',
             'ADD_DEP',
             'RM_DEP',
@@ -250,12 +266,15 @@ class CLICommand:
     def __init__(
         self,
         mode: CLICommandMode,
+        *,
         branch: ModeDependent[Optional[str]] = UNDEFINED,
+        new_branch: ModeDependent[str] = UNDEFINED,
         base: ModeDependent[str] = UNDEFINED,
         dep: ModeDependent[str] = UNDEFINED,
     ):
         self._mode = mode
         self._branch = branch
+        self._new_branch = new_branch
         self._base = base
         self._dep = dep
 
@@ -277,6 +296,13 @@ class CLICommand:
             raise MissingBranchError(branch)
 
         return branch
+
+    @property
+    def new_branch(self) -> str:
+        if self._new_branch is UNDEFINED:
+            raise UseUndefinedError()
+
+        return self._new_branch
 
     @property
     def base(self) -> str:
@@ -303,6 +329,7 @@ def parse_args() -> CLICommand:
     group.add_argument('--deps', action='store_true', default=None)
     group.add_argument('--default-base-branch', action='store_true', default=None)
     group.add_argument('--display', action='store_true', default=None)
+    group.add_argument('--rename-to')
     group.add_argument('--set-base')
     group.add_argument('--add-dep')
     group.add_argument('--rm-dep')
@@ -327,6 +354,9 @@ def parse_args() -> CLICommand:
 
     if args.display:
         return CLICommand(mode=CLICommandMode.DISPLAY, branch=args.branch)
+
+    if args.rename_to:
+        return CLICommand(mode=CLICommandMode.RENAME_TO, branch=args.branch, new_branch=args.rename_to)
 
     if args.set_base:
         return CLICommand(mode=CLICommandMode.SET_BASE, branch=args.branch, base=args.set_base)

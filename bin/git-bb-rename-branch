@@ -1,0 +1,30 @@
+#!/usr/bin/env zsh
+
+set -eu -o pipefail
+
+usage="
+Usage: git bb-rename-branch [OLD] NEW
+
+Rename the given branch (defaults to current branch) to a new branch name.
+"
+
+function abort { print "$@" >&2; exit 1 }
+function abort_help { abort -f '%s\n' "$@" $usage }
+
+function git_bb_rename_branch {
+    local old new
+    if [[ $# == 1 ]]; then
+        old=$(git branch --show-current)
+        new=$1
+    elif [[ $# == 2 ]]; then
+        old=$1
+        new=$2
+    else
+        abort_help
+    fi
+
+    git branch -m $old $new
+    git bb --rename-to $new $old
+}
+
+git_bb_rename_branch "$@"
