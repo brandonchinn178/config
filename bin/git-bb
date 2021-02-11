@@ -21,13 +21,19 @@ def main() -> None:
     elif command.mode == CLICommandMode.SHOW_CURR:
         print_branch_info(data, command.branch)
     elif command.mode == CLICommandMode.GET_BASE:
-        info = get_branch_info(data, command.branch)
-        if info:
-            print(info.base)
+        try:
+            info = get_branch_info(data, command.branch)
+            if info:
+                print(info.base)
+        except NotOnBranchError:
+            pass
     elif command.mode == CLICommandMode.GET_DEPS:
-        info = get_branch_info(data, command.branch)
-        for dep in info.deps:
-            print(dep)
+        try:
+            info = get_branch_info(data, command.branch)
+            for dep in info.deps:
+                print(dep)
+        except NotOnBranchError:
+            pass
     elif command.mode == CLICommandMode.GET_DEFAULT_BASE_BRANCH:
         print(get_default_base_branch())
     elif command.mode == CLICommandMode.DISPLAY:
