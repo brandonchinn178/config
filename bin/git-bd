@@ -7,8 +7,8 @@ set -eu -o pipefail
 # find all branches that's not the current branch
 function all_merged_branches {
     git branch --format="%(if)%(HEAD)%(then)%(else)%(refname:short)%(end)" --merged \
-        | grep -v master \
-        | grep -v main
+        | grep -v '^master$' \
+        | grep -v '^main$'
 }
 
 function git_bd {
