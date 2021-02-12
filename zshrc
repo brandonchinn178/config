@@ -140,6 +140,7 @@ function root {
 ############### Miscellaneous ###############
 
 alias grep="grep --color"
+alias dc=docker-compose
 
 function subl {
     local target=("$@")
