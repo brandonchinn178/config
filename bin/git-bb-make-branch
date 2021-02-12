@@ -5,7 +5,7 @@ set -eu -o pipefail
 default_base_branch=$(git bb --default-base-branch)
 
 usage="
-Usage: git bb-make-branch [--checkout] [--reset] BRANCH [BASE]
+Usage: git bb-make-branch [--checkout] [--reset] [-f|--force] BRANCH [BASE]
 
 Create a new branch. The new branch will have the provided BASE branch set as its
 base branch, and if '--reset' is NOT provided, will add the current branch as a
@@ -16,10 +16,10 @@ BRANCH              The name of the branch to create
 BASE                The branch to base the new branch off of (defaults to ${default_base_branch})
 
 Options:
---checkout          If provided, check out the new branch after creating it.
---reset             If provided, reset the branch to the BASE branch. Will abort
-                    if any modified or untracked files are present.
-                    Implies --checkout.
+--checkout          Check out the new branch after creating it.
+--reset             Reset the branch to the BASE branch. Will abort if any modified
+                    or untracked files are present. Implies --checkout.
+-f, --force         If --reset is provided, don't check for modified or untracked files.
 "
 
 function abort { print "$@" >&2; exit 1 }
@@ -28,6 +28,7 @@ function abort_help { abort -f '%s\n' "$@" $usage }
 function git_bb_make_branch {
     local checkout=0
     local reset=0
+    local force=0
     local args=()
 
     local arg
@@ -35,6 +36,7 @@ function git_bb_make_branch {
         case $arg in
             (--checkout) checkout=1 ;;
             (--reset) reset=1; checkout=1 ;;
+            (-f|--force) force=1 ;;
             (*) args+=$arg ;;
         esac
     done
@@ -46,7 +48,7 @@ function git_bb_make_branch {
     local branch=${args[1]}
     local base=${args[2]:-$default_base_branch}
 
-    if [[ $reset == 1 &&  -n "$(git ls-files -o --exclude-standard)" ]]; then
+    if [[ $reset == 1 && $force == 0 && -n "$(git ls-files -o --exclude-standard)" ]]; then
         abort "(--reset): There are modified files"
     fi
 
