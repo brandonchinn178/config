@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
 import argparse
+import dataclasses
 import json
 import subprocess
 import sys
 from enum import Enum
 from pathlib import Path
-from typing import NamedTuple, Optional, TypeVar, Union
+from typing import Optional, TypeVar, Union
 
 ##### Main #####
 
@@ -101,7 +102,8 @@ def print_branch_info(data: 'BaseBranchData', branch: str) -> None:
 
 ##### Data store #####
 
-class BranchInfo(NamedTuple):
+@dataclasses.dataclass
+class BranchInfo:
     base: str
     deps: list[str]
 
@@ -110,9 +112,10 @@ class BranchInfo(NamedTuple):
         return cls(**o)
 
     def to_json(self):
-        return self._asdict()
+        return dataclasses.asdict(self)
 
-class BaseBranchData(NamedTuple):
+@dataclasses.dataclass
+class BaseBranchData:
     branches: dict[str, BranchInfo]
 
     @classmethod
