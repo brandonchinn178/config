@@ -11,12 +11,12 @@ function all_merged_branches {
         | grep -v '^main$'
 }
 
-function git_bd {
+function git_delete_merged {
     local branches=( $(all_merged_branches) )
 
     if [[ ${#branches} -gt 0 ]]; then
         print "Deleting branches: ${branches}"
-        git db $branches
+        git bb-delete-branch $branches
     else
         print 'No merged branches to delete'
     fi
@@ -29,4 +29,4 @@ function git_bd {
     done
 }
 
-git_bd "$@"
+git_delete_merged "$@"
