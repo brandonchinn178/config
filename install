@@ -40,8 +40,6 @@ function gh_url {
     echo "https://raw.githubusercontent.com/${repo}/${tag}/${path}"
 }
 
-git_version='2.24.3'
-git_completion_url="https://raw.githubusercontent.com/git/git/v${git_version}/contrib/completion"
 download_file "$(gh_url 'git/git' 'v2.24.3' 'contrib/completion/git-completion.bash')" ~/.local/bin/git-completion.bash
 download_file "$(gh_url 'git/git' 'v2.24.3' 'contrib/completion/git-completion.zsh')" ~/.local/zsh/_git
 
