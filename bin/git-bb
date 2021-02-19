@@ -220,6 +220,10 @@ def add_dep_branch(data: BaseBranchData, branch: str, dep_branch: str) -> None:
     info = get_branch_info(data, branch)
     if info is None:
         raise UserError('Could not add branch dependency: `{}` is not a registered branch'.format(branch))
+    if dep_branch in info.deps:
+        raise UserError('Could not add branch dependency: `{}` is already a dependency'.format(branch))
+    if dep_branch == info.base:
+        raise UserError('Could not add branch dependency: `{}` is the base branch'.format(branch))
     info.deps.append(dep_branch)
 
 def rm_dep_branch(data: BaseBranchData, branch: str, dep_branch: str) -> None:
