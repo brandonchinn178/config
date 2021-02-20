@@ -1,0 +1,5 @@
+#compdef git-bb-log
+
+function _git_bb_log {
+    _git_log
+}

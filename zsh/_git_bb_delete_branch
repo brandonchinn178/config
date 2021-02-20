@@ -1,0 +1,5 @@
+#compdef git-bb-delete-branch
+
+function _git_bb_delete_branch {
+    __gitcomp_direct "$(__git_heads)"
+}

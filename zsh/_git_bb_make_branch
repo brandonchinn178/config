@@ -1,0 +1,13 @@
+#compdef git-bb-make-branch
+
+function _git_bb_make_branch {
+    emulate -L zsh
+
+    local flags=(
+        --checkout
+        --reset
+        --force
+    )
+    __gitcomp "${flags}"
+    __git_complete_refs
+}
