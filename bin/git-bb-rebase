@@ -4,6 +4,10 @@ set -eu -o pipefail
 
 function abort { print "$@" >&2; exit 1 }
 
+function get_last_merge {
+    git log --merges -n1 --pretty='format:%H'
+}
+
 function git_bb_rebase {
     # proxy to underlying git-rebase if currently in a rebase
     if [[ -d "$(git rev-parse --git-path rebase-merge)" ]]; then
@@ -15,7 +19,7 @@ function git_bb_rebase {
 
     # calling with no arguments is equivalent to calling with the given args
     if [[ ${#args} == 0 ]]; then
-        args=( 'last-merge' '--onto-base-branch' '--merge-deps' )
+        args=( 'last-merge-or-base' '--onto-base-branch' '--merge-deps' )
     fi
 
     local parsed_args=()
@@ -26,12 +30,24 @@ function git_bb_rebase {
     for arg in $args; do
         case $arg in
             (last-merge)
-                local last_merge="$(git log --merges -n1 --pretty='format:%H')"
+                local last_merge="$(get_last_merge)"
                 if [[ -z $last_merge ]]; then
                     abort 'error: Could not find a merge commit'
                 fi
 
                 parsed_args+=$last_merge
+            ;;
+            (last-merge-or-base)
+                local target="$(get_last_merge)"
+                if [[ -z $target ]]; then
+                    local base="$(git bb --base)"
+                    if [[ -z $base ]]; then
+                        abort 'error: Could not find a merge commit or base branch'
+                    fi
+                    target=$base
+                fi
+
+                parsed_args+=$target
             ;;
             (--onto-base-branch)
                 onto_base_branch=1
