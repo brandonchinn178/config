@@ -1,0 +1,14 @@
+#compdef git-bb-rebase
+
+function _git_bb_rebase {
+    _git_rebase
+
+    emulate -L zsh
+    local flags=(
+        last-merge
+        last-merge-or-base
+        --onto-base-branch
+        --merge-deps
+    )
+    __gitcomp "${flags}"
+}
