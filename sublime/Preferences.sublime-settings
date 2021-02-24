@@ -47,6 +47,9 @@
         ".terraform",
         "coverage",
         "target",
+        ".dart_tool",
+        "build",
+        ".next",
         "lcov-report",
         ".yarn"
     ],
