@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+usage='"
+usage: $0 (on|off)
+
+Starcraft commands
+
+Commands:
+* on        Turn on starcraft keyboard configuration
+* off       Turn off starcraft keyboard configuration
+"'
+
+ARGS=()
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        (--help|-h)
+            eval echo "${usage}"
+            exit
+        ;;
+        (-*)
+            echo "Unknown flag: ${1}" >&2
+            eval echo "${usage}" >&2
+            exit 1
+        ;;
+        (*) ARGS+=("$1") ;;
+    esac
+    shift
+done
+
+if [[ "${#ARGS[@]}" != 1 ]]; then
+    eval echo "${usage}" >&2
+    exit 1
+fi
+
+COMMAND="${ARGS[0]}"
+
+keyboardOn() {
+    dygma sync ~/repos/config/dygma/starcraft.yaml -y
+}
+
+keyboardOff() {
+    dygma sync ~/repos/config/dygma/normal.yaml -y
+}
+
+main() {
+    case "${COMMAND}" in
+        (on) keyboardOn ;;
+        (off) keyboardOff ;;
+        (*)
+            eval echo "${usage}" >&2
+            exit 1
+        ;;
+    esac
+}
+
+main

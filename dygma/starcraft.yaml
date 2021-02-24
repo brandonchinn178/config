@@ -1,0 +1,192 @@
+palette:
+  blue: [74, 255, 255]
+  dark_blue: [0, 0, 255]
+  yellow: [248, 231, 28]
+  green: [65, 255, 5]
+  red: [208, 2, 27]
+  orange: [245, 166, 35]
+
+layer0:
+  base_color: blue
+  keymap:
+    Q: Q
+    W: W
+    E: E
+    R: R
+    T: T
+    CAPS_LOCK: CAPS_LOCK
+    A: A
+    S: S
+    D: D
+    F: F
+    G: G
+    Z: Z
+    X: X
+    C: C
+    V: V
+    B: B
+
+    TAB: TAB
+    LSPACE2: SPACE
+    LSHIFT: LSHIFT
+    LALT: LALT
+    LCTRL: LCTRL
+    LSPACE3: LGUI
+
+    LSPACE:
+      key: SHIFT_TO_1
+      color: red
+    LSPACE1:
+      key: SHIFT_TO_2
+      color: yellow
+
+    LGUI:
+      key: SHIFT_TO_8
+      color: orange
+    RSPACE1:
+      key: LOCK_TO_9
+      color: green
+    ENTER: ENTER
+
+layer1:
+  base_color: red
+  keymap:
+    F:
+      key: ONE
+      color: yellow
+    D:
+      key: TWO
+      color: yellow
+    S:
+      key: THREE
+      color: yellow
+    V:
+      key: FOUR
+      color: yellow
+    C:
+      key: FIVE
+      color: yellow
+    X:
+      key: SIX
+      color: yellow
+
+    W:
+      key: F1
+      color: dark_blue
+    E:
+      key: F2
+      color: dark_blue
+
+    A: TRANSPARENT
+    LSHIFT: TRANSPARENT
+
+layer2:
+  base_color: yellow
+  keymap:
+    F:
+      key: ONE
+      ctrl: true
+    D:
+      key: TWO
+      ctrl: true
+    S:
+      key: THREE
+      ctrl: true
+    V:
+      key: FOUR
+      ctrl: true
+    C:
+      key: FIVE
+      ctrl: true
+    X:
+      key: SIX
+      ctrl: true
+
+## Flipped keyboard ##
+
+layer8:
+  base_color: orange
+  keymap:
+    T: Y
+    R: U
+    E: I
+    W: O
+    Q: P
+    G: H
+    F: J
+    D: K
+    S: L
+    B: N
+    V: M
+
+## STANDARD ##
+
+layer9:
+  base_color: green
+  keymap:
+    # required
+    RSPACE1:
+      key: TRANSPARENT
+      color: blue
+
+    ESC: BACKTICK
+    ONE: ONE
+    TWO: TWO
+    THREE: THREE
+    FOUR: FOUR
+    FIVE: FIVE
+    SIX: SIX
+    SEVEN: SEVEN
+    EIGHT: EIGHT
+    NINE: NINE
+    ZERO: ZERO
+    MINUS: MINUS
+    EQUAL: EQUAL
+    BACKSPACE: BACKSPACE
+    TAB: TAB
+    Q: Q
+    W: W
+    E: E
+    R: R
+    T: T
+    Y: Y
+    U: U
+    I: I
+    O: O
+    P: P
+    LBRACK: LBRACK
+    RBRACK: RBRACK
+    BACKSLASH: BACKSLASH
+    CAPS_LOCK: CAPS_LOCK
+    A: A
+    S: S
+    D: D
+    F: F
+    G: G
+    H: H
+    J: J
+    K: K
+    L: L
+    SEMICOLON: SEMICOLON
+    QUOTE: QUOTE
+    # ENTER: ENTER
+    LSHIFT: LSHIFT
+    Z: Z
+    X: X
+    C: C
+    V: V
+    B: B
+    N: N
+    M: M
+    COMMA: COMMA
+    PERIOD: PERIOD
+    SLASH: SLASH
+    RSHIFT: RSHIFT
+    LGUI: LCTRL
+    LALT: LALT
+    LSPACE3: LGUI
+    LSPACE: SPACE
+    RSPACE: SPACE
+    RSPACE3: RGUI
+    RALT: RALT
+    RCTRL: RCTRL

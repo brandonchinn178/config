@@ -147,6 +147,7 @@ function root {
 
 alias grep="grep --color"
 alias dc='docker compose'
+alias sc=starcraft
 
 export EDITOR=vim
 eval "$(export_aws)"
