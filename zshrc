@@ -142,15 +142,6 @@ function root {
 alias grep="grep --color"
 alias dc=docker-compose
 
-function subl {
-    local target=("$@")
-    if [[ ${#target} == 0 ]]; then
-        target+=.
-    fi
-
-    open -a 'Sublime Text' $target
-}
-
 export EDITOR=vim
 eval "$(export_aws)"
 
