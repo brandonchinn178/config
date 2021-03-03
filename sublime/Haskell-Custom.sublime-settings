@@ -1,0 +1,6 @@
+{
+  "color_scheme": "Packages/User/Haskell-Custom.tmTheme",
+  "extensions": ["hs", "cpphs"],
+  "rulers": [100],
+  "tab_size": 2
+}
