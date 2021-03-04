@@ -19,7 +19,7 @@ function git_bb_rebase {
 
     # calling with no arguments is equivalent to calling with the given args
     if [[ ${#args} == 0 ]]; then
-        args=( 'last-merge-or-base' '--onto-base-branch' '--merge-deps' )
+        args=( 'detect-base' '--onto-base-branch' '--merge-deps' )
     fi
 
     local parsed_args=()
@@ -37,14 +37,36 @@ function git_bb_rebase {
 
                 parsed_args+=$last_merge
             ;;
-            (last-merge-or-base)
+            (detect-base)
+                # If the current branch IS NOT using the 'git-bb' system, resolve to the last
+                # merge commit.
+                #
+                # If the current branch IS using the 'git-bb' system, we have four scenarios:
+                #   1. The commit we branched off from the base branch IS a merge commit
+                #   2. The commit we branched off from the base branch IS a merge commit AND
+                #      the current branch has dependencies.
+                #   3. The commit we branched off from the base branch IS NOT a merge commit
+                #   4. The commit we branched off from the base branch IS NOT a merge commit AND
+                #      the current branch has dependencies.
+                #
+                # In scenarios 1, 2, and 4, there should be *some* merge commit in history, so
+                # resolve to the latest merge commit. In scenario 3, resolve to the commit we
+                # branched off the base branch.
+
                 local target="$(get_last_merge)"
-                if [[ -z $target ]]; then
-                    local base="$(git bb --base)"
-                    if [[ -z $base ]]; then
-                        abort 'error: Could not find a merge commit or base branch'
+
+                local base="$(git bb --base)"
+                if [[ -n $base ]]; then
+                    local base_in_curr_history="$(git merge-base $base HEAD)"
+                    local merges_in_curr_history="$(git log --merges "${base_in_curr_history}^".."HEAD")"
+                    if [[ -z "${merges_in_curr_history}" ]]; then
+                        # this should be scenario 3
+                        target=$base_in_curr_history
                     fi
-                    target=$base
+                fi
+
+                if [[ -z $target ]]; then
+                    abort 'error: Could not find an appropriate rebase target'
                 fi
 
                 parsed_args+=$target
