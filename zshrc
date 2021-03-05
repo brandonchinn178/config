@@ -34,6 +34,8 @@ bindkey '^R' history-incremental-search-backward
 bindkey '^A' beginning-of-line
 bindkey '^E' end-of-line
 
+export WORDCHARS="${WORDCHARS}|"
+
 function backward-word-segment {
     local WORDCHARS="$(tr -d '/-' <<< $WORDCHARS)"
     zle emacs-backward-word
