@@ -48,7 +48,7 @@ function git_bb_make_branch {
     local branch=${args[1]}
     local base=${args[2]:-$default_base_branch}
 
-    if [[ $reset == 1 && $force == 0 && -n "$(git ls-files -o --exclude-standard)" ]]; then
+    if [[ $reset == 1 && $force == 0 && -n "$(git ls-files -m -o --exclude-standard)" ]]; then
         abort "(--reset): There are modified files"
     fi
 
