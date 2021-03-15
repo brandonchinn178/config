@@ -10,7 +10,12 @@ function git_bb_log {
         start="$(git merge-base $base HEAD)"
     fi
 
-    exec git log --first-parent "$@" "${start}^".."HEAD"
+    local range="${start}^".."HEAD"
+    if ! git show "${start}^" &> /dev/null; then
+        range=--root
+    fi
+
+    exec git log --first-parent "$@" $range
 }
 
 git_bb_log "$@"
