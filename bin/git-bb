@@ -202,10 +202,24 @@ def display_branch_info(data: BaseBranchData, branch: str) -> str:
 
     return branch_display
 
-def rename_branch(data: BaseBranchData, branch: str, new_branch: str) -> None:
-    info = data.branches.pop(branch, None)
-    if info:
-        data.branches[new_branch] = info
+def rename_branch(data: BaseBranchData, old_branch: str, new_branch: str) -> None:
+    new_branch_data = {}
+
+    for branch, info in data.branches.items():
+        if branch == old_branch:
+            branch = new_branch
+        else:
+            info = BranchInfo(
+                base=info.base if info.base != old_branch else new_branch,
+                deps=[
+                    dep if dep != old_branch else new_branch
+                    for dep in info.deps
+                ],
+            )
+
+        new_branch_data[branch] = info
+
+    data.branches = new_branch_data
 
 def set_base_branch(data: BaseBranchData, branch: str, base_branch: str) -> None:
     info = get_branch_info(data, branch)
