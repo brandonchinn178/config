@@ -3,19 +3,35 @@
 set -eu -o pipefail
 
 function git_bb_log {
-    local start=HEAD~10
+    local args=()
+    local flags=()
+    for arg in "$@"; do
+        case $arg in
+            (-*) flags+=$arg ;;
+            (*) args+=$arg ;;
+        esac
+    done
 
-    local base="$(git bb --base)"
-    if [[ -n $base ]]; then
-        start="$(git merge-base $base HEAD)"
+    if [[ ${#args} -gt 1 ]]; then
+        echo 'Cannot pass multiple arguments to git-bb-log' >&2
+        return 1
     fi
 
-    local range="${start}^".."HEAD"
+    local target=${args[1]:-HEAD}
+
+    local start=HEAD~10
+
+    local base="$(git bb --base ${args[1]:-})"
+    if [[ -n $base ]]; then
+        start="$(git merge-base $base $target)"
+    fi
+
+    local range="${start}^..${target}"
     if ! git show "${start}^" &> /dev/null; then
         range=--root
     fi
 
-    exec git log --first-parent "$@" $range
+    exec git log --first-parent $flags $range
 }
 
 git_bb_log "$@"
