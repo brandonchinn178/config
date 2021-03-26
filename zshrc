@@ -34,7 +34,7 @@ bindkey '^R' history-incremental-search-backward
 bindkey '^A' beginning-of-line
 bindkey '^E' end-of-line
 
-export WORDCHARS="*?_-.[]~=/&;!#$%^(){}<>|@"
+export WORDCHARS="*?_-.[]~=/&;!#$%^(){}<>|@'\":"
 
 function backward-word-segment {
     local WORDCHARS="$(tr -d '/-' <<< $WORDCHARS)"
