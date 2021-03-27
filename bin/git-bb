@@ -196,6 +196,10 @@ def display_branch_info(data: BaseBranchData, branch: str) -> str:
             else:
                 branch_display += '{} others'.format(len(info.deps))
 
+        commits_after_base = int(git('rev-list', '--count', '--first-parent', '{}..HEAD'.format(info.base)))
+        if commits_after_base > 0:
+            branch_display += ' > [+{}]'.format(commits_after_base)
+
         branch_display += ' > '
 
     branch_display += branch
