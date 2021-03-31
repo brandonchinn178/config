@@ -190,11 +190,9 @@ def display_branch_info(data: BaseBranchData, branch: str) -> str:
         branch_display += info.base
 
         if len(info.deps) > 0:
-            branch_display += ' + '
-            if len(info.deps) == 1:
-                branch_display += info.deps[0]
-            else:
-                branch_display += '{} others'.format(len(info.deps))
+            num_deps = len(info.deps)
+            branch_display += ' + {} '.format(num_deps)
+            branch_display += 'other' if num_deps == 1 else 'others'
 
         commits_after_base = int(git('rev-list', '--count', '--first-parent', '{}..HEAD'.format(info.base)))
         if commits_after_base > 0:
