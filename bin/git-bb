@@ -52,7 +52,7 @@ def main() -> None:
 
         rename_branch(data, branch, command.new_branch)
         save_data(data)
-        print('Renamed branch `{}` to `{}`'.format(branch, command.new_branch))
+        print(f'Renamed branch `{branch}` to `{command.new_branch}`')
     elif command.mode == CLICommandMode.SET_BASE:
         base_branch = command.base
         if not branch_exists(base_branch):
@@ -60,7 +60,7 @@ def main() -> None:
 
         set_base_branch(data, command.branch, base_branch)
         save_data(data)
-        print('Set `{}` as base branch for `{}`'.format(base_branch, command.branch))
+        print(f'Set `{base_branch}` as base branch for `{command.branch}`')
     elif command.mode == CLICommandMode.ADD_DEP:
         dep_branch = command.dep
         if not branch_exists(dep_branch):
@@ -68,13 +68,13 @@ def main() -> None:
 
         add_dep_branch(data, command.branch, dep_branch)
         save_data(data)
-        print('Added `{}` as a branch dependency for `{}`'.format(dep_branch, command.branch))
+        print('Added `{dep_branch}` as a branch dependency for `{command.branch}`')
     elif command.mode == CLICommandMode.RM_DEP:
         dep_branch = command.dep
 
         rm_dep_branch(data, command.branch, dep_branch)
         save_data(data)
-        print('Removed `{}` as a branch dependency for `{}`'.format(dep_branch, command.branch))
+        print('Removed `{dep_branch}` as a branch dependency for `{command.branch}`')
     elif command.mode == CLICommandMode.CLEAR:
         # allow clearing branches that don't exist anymore
         try:
@@ -84,7 +84,7 @@ def main() -> None:
 
         delete_branch(data, branch)
         save_data(data)
-        print('Deleted branch `{}` from base-branch database'.format(branch))
+        print(f'Deleted branch `{branch}` from base-branch database')
     else:
         raise NotImplementedError
 
@@ -92,12 +92,13 @@ def print_branch_info(data: 'BaseBranchData', branch: str) -> None:
     info = get_branch_info(data, branch)
 
     if info is None:
-        raise UserError('Branch `{}` is not registered.'.format(branch))
+        raise UserError(f'Branch `{branch}` is not registered.')
 
+    deps = ', '.join(info.deps)
     print('\n'.join([
         branch,
-        ' ├─ base = {}'.format(info.base),
-        ' └─ deps = [{}]'.format(', '.join(info.deps)),
+        f' ├─ base = {info.base}',
+        f' └─ deps = [{deps}]',
     ]))
 
 ##### Data store #####
@@ -167,7 +168,7 @@ class MissingBranchError(UserError):
         self.branch = branch
 
     def __str__(self):
-        return 'Branch `{}` does not exist'.format(self.branch)
+        return f'Branch `{self.branch}` does not exist'
 
 def get_all_registered_branches(data: BaseBranchData) -> list[str]:
     return list(data.branches.keys())
@@ -191,12 +192,12 @@ def display_branch_info(data: BaseBranchData, branch: str) -> str:
 
         if len(info.deps) > 0:
             num_deps = len(info.deps)
-            branch_display += ' + {} '.format(num_deps)
+            branch_display += f' + {num_deps} '
             branch_display += 'other' if num_deps == 1 else 'others'
 
-        commits_after_base = int(git('rev-list', '--count', '--first-parent', '{}..HEAD'.format(info.base)))
+        commits_after_base = int(git('rev-list', '--count', '--first-parent', f'{info.base}..HEAD'))
         if commits_after_base > 0:
-            branch_display += ' > [+{}]'.format(commits_after_base)
+            branch_display += f' > [+{commits_after_base}]'
 
         branch_display += ' > '
 
@@ -235,11 +236,11 @@ def set_base_branch(data: BaseBranchData, branch: str, base_branch: str) -> None
 def add_dep_branch(data: BaseBranchData, branch: str, dep_branch: str) -> None:
     info = get_branch_info(data, branch)
     if info is None:
-        raise UserError('Could not add branch dependency: `{}` is not a registered branch'.format(branch))
+        raise UserError('Could not add branch dependency: `{branch}` is not a registered branch')
     if dep_branch in info.deps:
-        raise UserError('Could not add branch dependency: `{}` is already a dependency'.format(branch))
+        raise UserError('Could not add branch dependency: `{branch}` is already a dependency')
     if dep_branch == info.base:
-        raise UserError('Could not add branch dependency: `{}` is the base branch'.format(branch))
+        raise UserError('Could not add branch dependency: `{branch}` is the base branch')
     info.deps.append(dep_branch)
 
 def rm_dep_branch(data: BaseBranchData, branch: str, dep_branch: str) -> None:
@@ -426,5 +427,5 @@ if __name__ == '__main__':
     try:
         main()
     except UserError as e:
-        print('(git-bb) ERROR: {}'.format(e), file=sys.stderr)
+        print(f'(git-bb) ERROR: {e}', file=sys.stderr)
         sys.exit(1)
