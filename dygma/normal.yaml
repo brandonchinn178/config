@@ -185,16 +185,18 @@ layer1:
     RSPACE1:
       key: ENTER
       color: pink
-    ENTER: TRANSPARENT
+    ENTER: ENTER
 
     TAB: TAB
 
-    # copy over modifier keys for use with arrow keys
-    LSHIFT: TRANSPARENT
-    LGUI: TRANSPARENT
-    LSPACE2: TRANSPARENT
-    LSPACE3: TRANSPARENT
-    RSHIFT: TRANSPARENT
+    # modifier keys
+    F: LALT
+    LSHIFT: LSHIFT
+    LGUI: LCTRL
+    LSPACE2: LALT
+    LSPACE3: LGUI
+    RSHIFT: RSHIFT
+    RSPACE: RGUI
 
 # Spectacle
 layer9:
