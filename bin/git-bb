@@ -68,13 +68,13 @@ def main() -> None:
 
         add_dep_branch(data, command.branch, dep_branch)
         save_data(data)
-        print('Added `{dep_branch}` as a branch dependency for `{command.branch}`')
+        print(f'Added `{dep_branch}` as a branch dependency for `{command.branch}`')
     elif command.mode == CLICommandMode.RM_DEP:
         dep_branch = command.dep
 
         rm_dep_branch(data, command.branch, dep_branch)
         save_data(data)
-        print('Removed `{dep_branch}` as a branch dependency for `{command.branch}`')
+        print(f'Removed `{dep_branch}` as a branch dependency for `{command.branch}`')
     elif command.mode == CLICommandMode.CLEAR:
         # allow clearing branches that don't exist anymore
         try:
