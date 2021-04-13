@@ -7,7 +7,7 @@ import subprocess
 import sys
 from enum import Enum
 from pathlib import Path
-from typing import Optional, TypeVar, Union
+from typing import Dict, List, Optional, TypeVar, Union
 
 ##### Main #####
 
@@ -106,7 +106,7 @@ def print_branch_info(data: 'BaseBranchData', branch: str) -> None:
 @dataclasses.dataclass
 class BranchInfo:
     base: str
-    deps: list[str]
+    deps: List[str]
 
     @classmethod
     def from_json(cls, o):
@@ -117,7 +117,7 @@ class BranchInfo:
 
 @dataclasses.dataclass
 class BaseBranchData:
-    branches: dict[str, BranchInfo]
+    branches: Dict[str, BranchInfo]
 
     @classmethod
     def from_json(cls, o):
@@ -170,7 +170,7 @@ class MissingBranchError(UserError):
     def __str__(self):
         return f'Branch `{self.branch}` does not exist'
 
-def get_all_registered_branches(data: BaseBranchData) -> list[str]:
+def get_all_registered_branches(data: BaseBranchData) -> List[str]:
     return list(data.branches.keys())
 
 def get_branch_info(data: BaseBranchData, branch: str) -> Optional[BranchInfo]:
