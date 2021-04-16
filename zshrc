@@ -142,7 +142,7 @@ function root {
 ############### Miscellaneous ###############
 
 alias grep="grep --color"
-alias dc=docker-compose
+alias dc='docker compose'
 
 export EDITOR=vim
 eval "$(export_aws)"
