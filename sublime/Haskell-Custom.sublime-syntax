@@ -429,6 +429,8 @@ contexts:
             - match: \)
               scope: keyword.operator.haskell
               pop: true
+            - match: '\b{{var_id}}\b'
+              scope: entity.name.function.haskell
             - include: expression_stuff
         - match: '\b{{type_id}}\b'
           scope: storage.type.haskell storage.data.haskell

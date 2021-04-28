@@ -470,6 +470,28 @@ Find more themes at : https://github.com/daylerees/colour-schemes
                 <string>#BCBC5E</string>
             </dict>
         </dict>
+        <dict>
+            <key>name</key>
+            <string>Export list: function within type, e.g. `Show (show)`</string>
+            <key>scope</key>
+            <string>meta.declaration.export.data.haskell entity.name.function.haskell</string>
+            <key>settings</key>
+            <dict>
+                <key>foreground</key>
+                <string>#8DBC2F</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>name</key>
+            <string>Export list: comma within type, e.g. `Foo (a, b)`</string>
+            <key>scope</key>
+            <string>meta.declaration.export.data.haskell punctuation</string>
+            <key>settings</key>
+            <dict>
+                <key>foreground</key>
+                <string>#8DBC2F</string>
+            </dict>
+        </dict>
         <!-- Haskell end -->
         <dict>
             <key>name</key>
