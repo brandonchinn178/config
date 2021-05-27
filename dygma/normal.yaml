@@ -158,6 +158,10 @@ layer1:
       key: Z
       color: yellow
       ctrl: true
+    X:
+      key: X
+      color: yellow
+      ctrl: true
     C:
       key: C
       color: yellow

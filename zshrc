@@ -34,6 +34,10 @@ bindkey '^R' history-incremental-search-backward
 bindkey '^A' beginning-of-line
 bindkey '^E' end-of-line
 
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey '^X' edit-command-line
+
 export WORDCHARS="*?_-.[]~=/&;!#$%^(){}<>|@'\":"
 
 function backward-word-segment {
