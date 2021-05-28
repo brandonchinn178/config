@@ -58,5 +58,10 @@
     "show_definitions": false,
     "show_navigation_bar": false,
     "translate_tabs_to_spaces": true,
-    "enable_typescript_language_service": false
+    "enable_typescript_language_service": false,
+    "caret_style": "smooth",
+    "caret_extra_top": 1,
+    "caret_extra_bottom": 1,
+    "caret_extra_width": 1,
+    "fold_buttons": false,
 }
