@@ -54,7 +54,7 @@
     "git_diff_target": "head",
     "gpu_window_buffer": false,
     "ignored_packages": ["Vintage"],
-    "scroll_past_end": true,
+    "scroll_past_end": 0.5,
     "show_definitions": false,
     "show_navigation_bar": false,
     "translate_tabs_to_spaces": true,
@@ -64,4 +64,8 @@
     "caret_extra_bottom": 1,
     "caret_extra_width": 1,
     "fold_buttons": false,
+    "auto_complete_use_index": false,
+    "auto_complete_include_snippets": false,
+    "show_rel_path": true,
+    "show_project_first": true,
 }
