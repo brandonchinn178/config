@@ -3,6 +3,7 @@
 import argparse
 import dataclasses
 import json
+import re
 import subprocess
 import sys
 from enum import Enum
@@ -175,12 +176,6 @@ def get_all_registered_branches(data: BaseBranchData) -> List[str]:
 
 def get_branch_info(data: BaseBranchData, branch: str) -> Optional[BranchInfo]:
     return data.branches.get(branch)
-
-def get_default_base_branch() -> str:
-    if branch_exists('main'):
-        return 'main'
-
-    return 'master'
 
 def display_branch_info(data: BaseBranchData, branch: str) -> str:
     info = get_branch_info(data, branch)
@@ -412,11 +407,21 @@ def get_current_branch() -> str:
 
 def branch_exists(branch: str) -> bool:
     try:
-        git('show-ref', branch)
+        git('show-ref', '--heads', branch)
     except subprocess.CalledProcessError:
         return False
     else:
         return True
+
+def get_default_base_branch() -> str:
+    if branch_exists('main'):
+        return 'main'
+
+    if branch_exists('master'):
+        return 'master'
+
+    remote_info = git('remote', 'show', 'origin')
+    return re.search('HEAD branch: (.*)$', remote_info, flags=re.M).group(1)
 
 def git(*args) -> str:
     return subprocess.check_output(['git'] + list(args)).decode().strip()
