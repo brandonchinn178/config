@@ -27,7 +27,7 @@ function git_back {
 
     git reset $commit
 
-    print "Current commit: $(git rev-parse $commit)"
+    print "Current commit: $(git rev-parse HEAD)"
 }
 
 git_back "$@"
