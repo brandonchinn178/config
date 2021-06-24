@@ -68,4 +68,6 @@
     "auto_complete_include_snippets": false,
     "show_rel_path": true,
     "show_project_first": true,
+    "hide_tab_scrolling_buttons": true,
+    "hide_new_tab_button": true,
 }
