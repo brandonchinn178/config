@@ -82,6 +82,26 @@ layer0:
       key: SHIFT_TO_9
       color: red
 
+    # mission control
+    FN:
+      key: LEFT
+      ctrl: true
+      alt: true
+      shift: true
+      color: orange
+    RCTRL:
+      key: RIGHT
+      ctrl: true
+      alt: true
+      shift: true
+      color: orange
+    RGUI:
+      key: UP
+      ctrl: true
+      alt: true
+      shift: true
+      color: yellow
+
 # Special keys
 layer1:
   base_color: green
@@ -243,15 +263,3 @@ layer9:
       color: orange
       ctrl: true
       alt: true
-
-    # mission control
-    RSPACE1:
-      key: LEFT
-      ctrl: true
-      alt: true
-      shift: true
-    RSPACE2:
-      key: RIGHT
-      ctrl: true
-      alt: true
-      shift: true
