@@ -1,3 +1,5 @@
+cask "maccy"
+
 brew "colordiff"
 brew "grip"
 brew "jq"

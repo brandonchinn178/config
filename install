@@ -53,3 +53,13 @@ if ! type brew &> /dev/null; then
 fi
 
 brew bundle
+
+############### Application settings ###############
+
+# Maccy
+defaults write org.p0deje.Maccy pasteByDefault -string '1'
+defaults write org.p0deje.Maccy popupPosition -string 'center'
+defaults write org.p0deje.Maccy hideFooter -string '1'
+defaults write org.p0deje.Maccy hideTitle -string '1'
+defaults write org.p0deje.Maccy KeyboardShortcuts_popup -string '{"carbonModifiers":4096,"carbonKeyCode":9}'
+defaults write org.p0deje.Maccy enabledPasteboardTypes -array 'public.utf8-plain-text'
