@@ -407,7 +407,7 @@ def get_current_branch() -> str:
 
 def branch_exists(branch: str) -> bool:
     try:
-        git('show-ref', '--heads', branch)
+        git('show-ref', branch)
     except subprocess.CalledProcessError:
         return False
     else:
