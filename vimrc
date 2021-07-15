@@ -61,3 +61,6 @@ match ExtraWhitespace /\s\+$/
 
 " colors
 colorscheme default
+
+" ctrl+v is configured for Maccy, so we'll need to remap visual-block
+nnoremap <C-B> <C-V>
