@@ -5,11 +5,17 @@ set -eu -o pipefail
 function git_bb_log {
     local args=()
     local flags=()
-    for arg in "$@"; do
-        case $arg in
-            (-*) flags+=$arg ;;
-            (*) args+=$arg ;;
+    local extra_flags=()
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            (--)
+                extra_flags=("$@")
+                break
+            ;;
+            (-*) flags+=$1 ;;
+            (*) args+=$1 ;;
         esac
+        shift
     done
 
     if [[ ${#args} -gt 1 ]]; then
@@ -31,7 +37,7 @@ function git_bb_log {
         range=--root
     fi
 
-    exec git log --first-parent $flags $range
+    exec git log --first-parent $flags $range $extra_flags
 }
 
 git_bb_log "$@"
