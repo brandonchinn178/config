@@ -190,6 +190,10 @@ layer1:
       key: V
       color: yellow
       ctrl: true
+    B:
+      key: B
+      color: yellow
+      ctrl: true
     U:
       key: U
       color: yellow
