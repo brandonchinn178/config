@@ -78,7 +78,7 @@ layer0:
     RSPACE1:
       key: SHIFT_TO_1
       color: green
-    RSPACE2:
+    LALT:
       key: LOCK_TO_2
       color: pink
     LCTRL:
@@ -225,7 +225,6 @@ layer1:
     TAB: TAB
 
     # modifier keys
-    F: LALT
     LSHIFT: LSHIFT
     LGUI: LCTRL
     LSPACE2: LALT
@@ -252,7 +251,7 @@ layer2:
     RSPACE1:
       key: SHIFT_TO_1
       color: green
-    RSPACE2: TRANSPARENT
+    LALT: TRANSPARENT
 
 # Spectacle
 layer9:
