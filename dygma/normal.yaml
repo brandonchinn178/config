@@ -165,6 +165,10 @@ layer1:
       key: R
       color: yellow
       ctrl: true
+    T:
+      key: T
+      color: yellow
+      ctrl: true
     A:
       key: A
       color: yellow
