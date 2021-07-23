@@ -78,6 +78,9 @@ layer0:
     RSPACE1:
       key: SHIFT_TO_1
       color: green
+    RSPACE2:
+      key: LOCK_TO_2
+      color: pink
     LCTRL:
       key: SHIFT_TO_9
       color: red
@@ -225,6 +228,27 @@ layer1:
     LSPACE3: LGUI
     RSHIFT: RSHIFT
     RSPACE: RGUI
+
+# Numpad
+layer2:
+  base_color: pink
+  keymap:
+    RSPACE: ZERO
+    M: ONE
+    COMMA: TWO
+    PERIOD: THREE
+    J: FOUR
+    K: FIVE
+    L: SIX
+    U: SEVEN
+    I: EIGHT
+    O: NINE
+    ENTER: ENTER
+
+    RSPACE1:
+      key: SHIFT_TO_1
+      color: green
+    RSPACE2: TRANSPARENT
 
 # Spectacle
 layer9:
