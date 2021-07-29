@@ -260,3 +260,8 @@ ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=cyan'
 
 source /usr/local/opt/fzf/shell/completion.zsh
 source /usr/local/opt/fzf/shell/key-bindings.zsh
+
+############### volta ###############
+
+export VOLTA_HOME="${HOME}/.volta"
+export PATH="${VOLTA_HOME}/bin:${PATH}"
