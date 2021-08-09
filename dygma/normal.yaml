@@ -247,6 +247,7 @@ layer2:
     I: EIGHT
     O: NINE
     ENTER: ENTER
+    BACKSPACE: BACKSPACE
 
     RSPACE1:
       key: SHIFT_TO_1
