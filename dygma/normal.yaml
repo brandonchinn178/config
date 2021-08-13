@@ -78,9 +78,9 @@ layer0:
     RSPACE1:
       key: SHIFT_TO_1
       color: green
-    LALT:
-      key: LOCK_TO_2
-      color: pink
+    # LALT:
+    #   key: LOCK_TO_2
+    #   color: pink
     LCTRL:
       key: SHIFT_TO_9
       color: red
