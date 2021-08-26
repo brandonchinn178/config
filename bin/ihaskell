@@ -8,7 +8,7 @@ import sys
 import webbrowser
 from pathlib import Path
 
-IHASKELL_IMAGE = "gibiansky/ihaskell"
+IHASKELL_IMAGE = "ghcr.io/jamesdbrock/ihaskell-notebook:master"
 CONTAINER_NAME = "ihaskell"
 PORT = 8888
 
@@ -17,7 +17,7 @@ def main():
 
     if args.mount_dir:
         mount_dir = Path(args.mount_dir).resolve()
-        mount_flags = ["--volume", f"{mount_dir}:/home/jovyan/src"]
+        mount_flags = ["--volume", f"{mount_dir}:/home/jovyan/work"]
     else:
         mount_flags = []
 
@@ -25,8 +25,10 @@ def main():
         "docker", "run",
             "--name", CONTAINER_NAME,
             "--publish", f"{PORT}:8888",
+            "--workdir", "/home/jovyan/work",
             *mount_flags,
             IHASKELL_IMAGE,
+            "jupyter", "lab",
     ])
 
     try:
@@ -67,13 +69,13 @@ def wait_for_container():
 
 def get_token():
     while True:
-        notebooks_proc = subprocess.check_output([
+        servers_proc = subprocess.check_output([
             "docker", "exec", CONTAINER_NAME,
-            "jupyter", "notebook", "list", "--json",
+            "jupyter", "server", "list", "--json",
         ])
-        notebook = notebooks_proc.decode().split("\n")[0]
-        if notebook:
-            return json.loads(notebook)["token"]
+        server = servers_proc.decode().split("\n")[0]
+        if server:
+            return json.loads(server)["token"]
 
 if __name__ == "__main__":
     main()
