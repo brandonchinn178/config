@@ -261,6 +261,9 @@ ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=cyan'
 source /usr/local/opt/fzf/shell/completion.zsh
 source /usr/local/opt/fzf/shell/key-bindings.zsh
 
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
+
 ############### volta ###############
 
 export VOLTA_HOME="${HOME}/.volta"

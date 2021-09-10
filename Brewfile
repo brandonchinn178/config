@@ -1,6 +1,7 @@
 cask "maccy"
 
 brew "colordiff"
+brew "fd"
 brew "fzf"
 brew "grip"
 brew "jq"
