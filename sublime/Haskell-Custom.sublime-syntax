@@ -293,11 +293,13 @@ contexts:
     - include: fixity_declaration
 
   function_definition:
-    - match: '^\s*(?!\b(let|in|case|where)\b)({{var_id}}|\({{type_id}}\))\s+(?![^\w\s=''"\(\[])(?=((([\w\.,''"_]+|(?:\w+\@)?\(.*\)|\[.*\])\s+)*))'
+    - match: '^(\s*)(?!\b(let|in|case|where)\b)({{var_id}}|\({{type_id}}\))\s+(?![^\w\s=''"\(\[])(?=((([\w\.,''"_]+|(?:\w+\@)?\(.*\)|\[.*\])\s+)*))'
       captures:
-        2: entity.name.function.haskell
+        3: entity.name.function.haskell
       push:
         - meta_scope: meta.definition.function.haskell
+        - match: ^(?!\1\s)
+          pop: true
         - match: '=|\|'
           scope: keyword.operator.haskell
           pop: true
