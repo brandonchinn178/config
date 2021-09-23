@@ -1,0 +1,9 @@
+{
+  "extensions": [
+    "json",
+    "sublime-settings",
+    "sublime-commands",
+    "sublime-color-scheme",
+  ],
+  "tab_size": 2,
+}

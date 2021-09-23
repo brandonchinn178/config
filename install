@@ -4,6 +4,19 @@ set -ex
 
 cd "$(dirname "${0:A}")"
 
+# `link foo bar` creates a symlink from `foo` to `bar`.
+# Note: this is the opposite of `ln`, which links the
+# other direction
+function link {
+    local target=$1
+    local src=$2
+    mkdir -p "$(dirname "$target")"
+    rm -rf "$target"
+    ln -sf "$src" "$target"
+}
+
+############### HOME dotfiles ###############
+
 files=(
     bin
     gitconfig
@@ -15,9 +28,7 @@ files=(
 )
 
 for file in "${files[@]}"; do
-    dest="${HOME}/.${file}"
-    rm -rf $dest
-    ln -sf "${PWD}/${file}" "$dest"
+    link "${HOME}/.${file}" "${PWD}/${file}"
 done
 
 ############### Upstream completion scripts ###############
@@ -64,3 +75,6 @@ defaults write org.p0deje.Maccy hideTitle -string '1'
 defaults write org.p0deje.Maccy maxMenuItems -string '10'
 defaults write org.p0deje.Maccy KeyboardShortcuts_popup -string '{"carbonModifiers":4096,"carbonKeyCode":9}'
 defaults write org.p0deje.Maccy enabledPasteboardTypes -array 'public.utf8-plain-text'
+
+# Sublime Text
+link "${HOME}/Library/Application Support/Sublime Text 3/Packages/User" "${PWD}/sublime"
