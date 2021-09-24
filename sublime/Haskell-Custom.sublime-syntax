@@ -287,8 +287,8 @@ contexts:
         - include: type
 
   function_declarations:
-    - include: function_signature
     - include: function_definition
+    - include: function_signature
     - include: infix_function_definition
     - include: fixity_declaration
 
