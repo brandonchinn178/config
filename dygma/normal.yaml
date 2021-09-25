@@ -224,13 +224,16 @@ layer1:
 
     TAB: TAB
 
+    RSPACE:
+      key: SPACE
+      ctrl: true
+
     # modifier keys
     LSHIFT: LSHIFT
     LGUI: LCTRL
     LSPACE2: LALT
     LSPACE3: LGUI
     RSHIFT: RSHIFT
-    RSPACE: RGUI
 
 # Numpad
 layer2:
