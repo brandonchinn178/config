@@ -6,7 +6,7 @@ function _git_bb_rebase {
     emulate -L zsh
     local flags=(
         last-merge
-        last-merge-or-base
+        detect-base
         --onto-base-branch
         --merge-deps
     )

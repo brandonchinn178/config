@@ -22,7 +22,7 @@ function git_bb_rebase {
         args=( 'detect-base' '--onto-base-branch' '--merge-deps' )
     fi
 
-    local parsed_args=()
+    local rebase_args=()
     local onto_base_branch=0
     local merge_deps=0
 
@@ -35,7 +35,7 @@ function git_bb_rebase {
                     abort 'error: Could not find a merge commit'
                 fi
 
-                parsed_args+=$last_merge
+                rebase_args+=$last_merge
             ;;
             (detect-base)
                 # If the current branch IS NOT using the 'git-bb' system, resolve to the last
@@ -69,7 +69,7 @@ function git_bb_rebase {
                     abort 'error: Could not find an appropriate rebase target'
                 fi
 
-                parsed_args+=$target
+                rebase_args+=$target
             ;;
             (--onto-base-branch)
                 onto_base_branch=1
@@ -78,7 +78,7 @@ function git_bb_rebase {
                 merge_deps=1
             ;;
             (*)
-                parsed_args+=$arg
+                rebase_args+=$arg
             ;;
         esac
     done
@@ -91,19 +91,25 @@ function git_bb_rebase {
             abort 'Branch is not registered'
         fi
 
-        parsed_args+=("--onto=${base}")
+        rebase_args+=("--onto=${base}")
     fi
 
     if [[ $merge_deps == 1 ]]; then
-        editor_args+='--merge-deps'
+        local dep
+        for dep in $(git bb --deps); do
+            editor_args+=(--merge-branch $dep)
+        done
     fi
 
-    if [[ ${#editor_args} -gt 0 ]]; then
-        export OLD_GIT_SEQUENCE_EDITOR="${GIT_SEQUENCE_EDITOR:-}"
-        export GIT_SEQUENCE_EDITOR="git-bb-rebase-editor ${editor_args}"
-    fi
+    editor_args+=(
+        --rebase-args
+        "${args} " # add an extra space to prevent parsing as a flag
+    )
 
-    exec git rebase -i $parsed_args
+    export OLD_GIT_SEQUENCE_EDITOR="${GIT_SEQUENCE_EDITOR:-}"
+    export GIT_SEQUENCE_EDITOR="git-bb-rebase-editor ${(@q)editor_args}"
+
+    exec git rebase -i $rebase_args
 }
 
 git_bb_rebase "$@"

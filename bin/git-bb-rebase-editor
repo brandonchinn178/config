@@ -1,69 +1,80 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env python3
 
-set -eu -o pipefail
+import argparse
+import os
+import subprocess
+from pathlib import Path
 
-function abort { print "$@" >&2; exit 1 }
+ENV = os.environ
+CONFIG = dict(
+    line.split('=', 1)
+    for line in subprocess.check_output(['git', 'config', '--list']).decode().split('\n')
+    if line.strip() != ''
+)
 
-function prepend_line {
-    local line=${1?}
-    local file=${2?}
-    mv $file "${file}.bak"
-    cat <(print $line) "${file}.bak" > $file
-    rm "${file}.bak"
-}
+def main():
+    args = parse_args()
 
-function get_editor {
-    local options=(
-        "${OLD_GIT_SEQUENCE_EDITOR:-}"
-        "$(git config sequence.editor)"
-        "${GIT_EDITOR:-}"
-        "$(git config core.editor)"
-        "${VISUAL:-}"
-        "${EDITOR:-}"
-        vi
+    lines = args.file.read_text().split('\n')
+    update_rebase_commands(lines, args)
+    args.file.write_text('\n'.join(lines))
+
+    editor = get_editor()
+    os.execlp(editor, editor, args.file.as_posix())
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'file',
+        help='The file containing rebase commands to execute',
+        type=Path,
     )
-    local option
-    for option in $options; do
-        if [[ -n $option ]]; then
-            print $option
-            return
-        fi
-    done
-}
+    parser.add_argument(
+        '--merge-branch',
+        help='Merge the given branch(es) before any other command',
+        dest='merge_branches',
+        action='append',
+        default=[],
+    )
+    parser.add_argument(
+        '--rebase-args',
+        help='The rebase arguments, to print as helpful info',
+    )
+    return parser.parse_args()
 
-function git_bb_rebase_editor {
-    local merge_deps=0
-    local args=()
+def update_rebase_commands(lines, args):
+    if len(args.merge_branches) > 0:
+        exec_cmd = 'x' if CONFIG.get('rebase.abbreviatecommands') == 'true' else 'exec'
+        branches = ' '.join(args.merge_branches)
+        lines.insert(0, f'{exec_cmd} git merge --no-ff --no-edit --quiet {branches}')
 
-    local arg
-    for arg in "$@"; do
-        case $arg in
-            (--merge-deps) merge_deps=1 ;;
-            (*) args+=$arg ;;
-        esac
-    done
+    comment_section_start_line = next(
+        i
+        for i, line in enumerate(lines)
+        if line.startswith('# Rebase')
+    )
+    insert_all(
+        lines,
+        comment_section_start_line,
+        f'# Running: git rebase -i {args.rebase_args}',
+        '#',
+    )
 
-    if [[ ${#args} != 1 ]]; then
-        abort "git-bb-rebase-editor got unknown arguments: $@"
-    fi
+def get_editor():
+    editors = (
+        ENV.get('OLD_GIT_SEQUENCE_EDITOR'),
+        CONFIG.get('sequence.editor'),
+        ENV.get('GIT_EDITOR'),
+        CONFIG.get('core.editor'),
+        ENV.get('VISUAL'),
+        ENV.get('EDITOR'),
+        'vi',
+    )
+    return next(x for x in editors if x)
 
-    local file=${args[1]}
+# https://stackoverflow.com/a/39541404
+def insert_all(l, i, *xs):
+    l[i:i] = xs
 
-    if [[ $merge_deps == 1 ]]; then
-        local deps=( $(git bb --deps) )
-        if [[ ${#deps} -gt 0 ]]; then
-            local exec_cmd=exec
-            if [[ "$(git config rebase.abbreviateCommands)" == true ]]; then
-                exec_cmd=x
-            fi
-
-            prepend_line "${exec_cmd} git merge --no-ff --no-edit --quiet ${deps}" $file
-        fi
-    fi
-
-    local editor="$(get_editor)"
-
-    exec $editor $file
-}
-
-git_bb_rebase_editor "$@"
+if __name__ == '__main__':
+    main()
