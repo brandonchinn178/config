@@ -27,7 +27,7 @@ files=(
     zshrc
 )
 
-for file in "${files[@]}"; do
+for file in $files; do
     link "${HOME}/.${file}" "${PWD}/${file}"
 done
 
@@ -75,6 +75,62 @@ defaults write org.p0deje.Maccy hideTitle -string '1'
 defaults write org.p0deje.Maccy maxMenuItems -string '10'
 defaults write org.p0deje.Maccy KeyboardShortcuts_popup -string '{"carbonModifiers":4096,"carbonKeyCode":9}'
 defaults write org.p0deje.Maccy enabledPasteboardTypes -array 'public.utf8-plain-text'
+
+# Rectangle
+defaults write com.knollsoft.Rectangle hideMenubarIcon -int 1
+defaults write com.knollsoft.Rectangle subsequentExecutionMode -int 2
+defaults write com.knollsoft.Rectangle windowSnapping -int 2
+rect_disabled_prefs=(
+    bottomHalf
+    center
+    centerThird
+    firstThird
+    firstTwoThirds
+    larger
+    lastThird
+    lastTwoThirds
+    maximizeHeight
+    nextDisplay
+    previousDisplay
+    restore
+    smaller
+    topHalf
+)
+for key in $rect_disabled_prefs; do
+    defaults write com.knollsoft.Rectangle $key -dict
+done
+# https://github.com/rxhanson/Rectangle/blob/master/TerminalCommands.md#only-allow-drag-to-snap-when-modifier-keys-are-pressed
+rect_modifier_cmd=$(( 1 << 20 ))
+rect_modifier_option=$(( 1 << 19 ))
+rect_modifier_ctrl=$(( 1 << 18 ))
+rect_modifier_shift=$(( 1 << 17 ))
+rect_modifier_fn=$(( 1 << 23 ))
+rect_key_left=123
+rect_key_right=124
+rect_key_down=125
+rect_key_up=126
+defaults write com.knollsoft.Rectangle leftHalf -dict \
+    keyCode $rect_key_left \
+    modifierFlags $(( rect_modifier_cmd | rect_modifier_option ))
+defaults write com.knollsoft.Rectangle rightHalf -dict \
+    keyCode $rect_key_right \
+    modifierFlags $(( rect_modifier_cmd | rect_modifier_option ))
+defaults write com.knollsoft.Rectangle maximize -dict \
+    keyCode $rect_key_up \
+    modifierFlags $(( rect_modifier_cmd | rect_modifier_option ))
+defaults write com.knollsoft.Rectangle topLeft -dict \
+    keyCode $rect_key_left \
+    modifierFlags $(( rect_modifier_ctrl | rect_modifier_option ))
+defaults write com.knollsoft.Rectangle topRight -dict \
+    keyCode $rect_key_up \
+    modifierFlags $(( rect_modifier_ctrl | rect_modifier_option ))
+defaults write com.knollsoft.Rectangle bottomLeft -dict \
+    keyCode $rect_key_down \
+    modifierFlags $(( rect_modifier_ctrl | rect_modifier_option ))
+defaults write com.knollsoft.Rectangle bottomRight -dict \
+    keyCode $rect_key_right \
+    modifierFlags $(( rect_modifier_ctrl | rect_modifier_option ))
+
 
 # Sublime Text
 link "${HOME}/Library/Application Support/Sublime Text 3/Packages/User" "${PWD}/sublime"
