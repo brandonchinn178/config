@@ -26,7 +26,7 @@ bd = bb-delete-branch
 bD = bb-delete-branch -D
 p = push --force-with-lease
 pd = !git pull && git delete-merged
-wip = !git add . && git commit -m '[ci skip] wip' --no-verify
+wip = !git add -A && git commit -m '[ci skip] wip' --no-verify
 rc = rebase --continue
 cp = cherry-pick
 wdiff = diff --color-words=.
