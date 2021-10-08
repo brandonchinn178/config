@@ -159,17 +159,6 @@ function __get_time {
     strftime '%s.%N'
 }
 
-function __print_rjust {
-    print -P -f '%*s' "${COLUMNS}" "$1"
-}
-
-# prints time on the right, then resets to start of line
-function __print_time_rjust {
-    # color commands wreck the right-justification, so right-justify it
-    # first, then color it
-    print -P -f %s '%F{230}' "$(__print_rjust '%D{%F %T} 🕰️')" '%f' $'\r'
-}
-
 __ZSH_TIMESTAMP_BEGIN_PREV_CMD=
 
 function precmd {
@@ -178,7 +167,7 @@ function precmd {
     # if a previous command was run
     if [[ -n "${__ZSH_TIMESTAMP_BEGIN_PREV_CMD}" ]]; then
         # show ending time
-        __print_time_rjust
+        _print_time --end $'\r'
 
         # get elapsed time
         local elapsed_time="$(print -f '%.4f' "$(( $(__get_time) - __ZSH_TIMESTAMP_BEGIN_PREV_CMD ))")"
@@ -190,7 +179,7 @@ function precmd {
             (1) code_display="❗" ;;
             (*) code_display="❗%F{red}(code=${retval})%f" ;;
         esac
-        print -P "${code_display} %F{250}(elapsed=${elapsed_time}s)%f"
+        print -P "${code_display} %F{250}(elapsed=${elapsed_time}s)%f "
 
         __ZSH_TIMESTAMP_BEGIN_PREV_CMD=
     fi
@@ -204,29 +193,7 @@ function precmd {
     print -f '\e]1;%s\a' "$(basename $canonical_dir)"
 
     # prompt banner
-
-    local prompt_parts=()
-
-    if [[ $SHLVL -gt 1 ]]; then
-        prompt_parts+="%F{yellow}{%L}%f"
-    fi
-
-    prompt_parts+="%F{153}%~%f"
-
-    if in_git_repo; then
-        local branch_display="$(git bb --display)"
-        if [[ -z $branch_display ]]; then
-            branch_display='N/A'
-        fi
-        prompt_parts+="%F{green}[${branch_display}]%f"
-
-        local commit=$(git rev-parse --short=12 HEAD 2> /dev/null)
-        prompt_parts+="%F{magenta}(${commit:-<null>})%f"
-    fi
-
-    print ''
-    print -P -f '%s\r' "%F{237}${(r:${COLUMNS}::─:)}%f"
-    print -P $prompt_parts ''
+    _print_prompt_header
 }
 
 function preexec {
@@ -240,9 +207,7 @@ function preexec {
     __ZSH_TIMESTAMP_BEGIN_PREV_CMD="$(__get_time)"
 
     # show starting time
-    __print_time_rjust
-    local half_width="$(( COLUMNS / 2 ))"
-    print -P "%F{237}${(r:$half_width::~:)}%f"
+    _print_time --fill '┈' --fill-color=237
 }
 
 export PROMPT="$ "
