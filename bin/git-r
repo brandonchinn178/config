@@ -7,7 +7,7 @@ function in_rebase {
 }
 
 function has_untracked_files {
-    [[ -n "$(git ls-files -m -o --exclude-standard $(git rev-parse --show-toplevel))" ]]
+    [[ -n "$(git ls-files -m -o --exclude-standard "$(git rev-parse --show-toplevel)")" ]]
 }
 
 function git_r {
