@@ -2,6 +2,7 @@
 
 import abc
 import argparse
+import contextlib
 import dataclasses
 import json
 import re
@@ -174,6 +175,15 @@ def branch_exists(branch: str) -> bool:
     else:
         return True
 
+def resolve_branch(branch: Optional[str]) -> str:
+    if branch is None:
+        branch = get_current_branch()
+
+    if not branch_exists(branch):
+        raise MissingBranchError(branch)
+
+    return branch
+
 def get_default_base_branch() -> str:
     if branch_exists('main'):
         return 'main'
@@ -200,15 +210,7 @@ class CLIBranchCommand(CLICommand):
 
     @property
     def branch(self) -> str:
-        branch = self._branch
-
-        if branch is None:
-            branch = get_current_branch()
-
-        if not branch_exists(branch):
-            raise MissingBranchError(branch)
-
-        return branch
+        return resolve_branch(self._branch)
 
 class CLICommandListAll(CLICommand):
     def run(self, data: BaseBranchData):
@@ -218,21 +220,18 @@ class CLICommandListAll(CLICommand):
 
 class CLICommandGetBase(CLIBranchCommand):
     def run(self, data: BaseBranchData):
-        try:
+        with contextlib.suppress(NotOnBranchError):
             info = get_branch_info(data, self.branch)
             if info:
                 print(info.base)
-        except NotOnBranchError:
-            pass
 
 class CLICommandGetDeps(CLIBranchCommand):
     def run(self, data: BaseBranchData):
-        try:
+        with contextlib.suppress(NotOnBranchError):
             info = get_branch_info(data, self.branch)
-            for dep in info.deps:
-                print(dep)
-        except NotOnBranchError:
-            pass
+            if info:
+                for dep in info.deps:
+                    print(dep)
 
 class CLICommandGetDefaultBaseBranch(CLIBranchCommand):
     def run(self, data: BaseBranchData):
@@ -240,11 +239,9 @@ class CLICommandGetDefaultBaseBranch(CLIBranchCommand):
 
 class CLICommandDisplay(CLIBranchCommand):
     def run(self, data: BaseBranchData):
-        try:
+        with contextlib.suppress(NotOnBranchError):
             branch_display = display_branch_info(data, self.branch)
             print(branch_display)
-        except NotOnBranchError:
-            pass
 
 class CLICommandRenameTo(CLIBranchCommand):
     def __init__(self, *, branch: Optional[str], new_branch: str):
@@ -268,35 +265,36 @@ class CLICommandSetBase(CLIBranchCommand):
         self._base = base
 
     def run(self, data: BaseBranchData):
-        if not branch_exists(self._base):
-            raise MissingBranchError(self._base)
+        base_branch = resolve_branch(self._base)
 
-        set_base_branch(data, self.branch, self._base)
+        set_base_branch(data, self.branch, base_branch)
         save_data(data)
-        print(f'Set `{self._base}` as base branch for `{self.branch}`')
+        print(f'Set `{base_branch}` as base branch for `{self.branch}`')
 
 class CLICommandAddDep(CLIBranchCommand):
-    def __init__(self, *, branch: Optional[str], dep: str):
+    def __init__(self, *, branch: Optional[str], deps: str):
         super().__init__(branch=branch)
-        self._dep = dep
+        self._deps = deps
 
     def run(self, data: BaseBranchData):
-        if not branch_exists(self._dep):
-            raise MissingBranchError(self._dep)
+        for dep in self._deps:
+            dep = resolve_branch(dep)
+            add_dep_branch(data, self.branch, dep)
 
-        add_dep_branch(data, self.branch, self._dep)
         save_data(data)
-        print(f'Added `{self._dep}` as a branch dependency for `{self.branch}`')
+        print(f'Added branch dependencies for `{self.branch}`: ' + ', '.join(self._deps))
 
 class CLICommandRemoveDep(CLIBranchCommand):
-    def __init__(self, *, branch: Optional[str], dep: str):
+    def __init__(self, *, branch: Optional[str], deps: str):
         super().__init__(branch=branch)
-        self._dep = dep
+        self._deps = deps
 
     def run(self, data: BaseBranchData):
-        rm_dep_branch(data, self.branch, self._dep)
+        for dep in self._deps:
+            rm_dep_branch(data, self.branch, dep)
+
         save_data(data)
-        print(f'Removed `{self._dep}` as a branch dependency for `{self.branch}`')
+        print(f'Removed branch dependencies for `{self.branch}`: ' + ', '.join(self._deps))
 
 class CLICommandClear(CLIBranchCommand):
     def run(self, data: BaseBranchData):
@@ -310,7 +308,7 @@ class CLICommandClear(CLIBranchCommand):
         save_data(data)
         print(f'Deleted branch `{branch}` from base-branch database')
 
-class CLICommandShowCurrent(CLIBranchCommand):
+class CLICommandShowBranch(CLIBranchCommand):
     def run(self, data: BaseBranchData):
         print_branch_info(data, self.branch)
 
@@ -342,8 +340,8 @@ def parse_args() -> CLICommand:
     group.add_argument('--display', action='store_true', default=None)
     group.add_argument('--rename-to')
     group.add_argument('--set-base')
-    group.add_argument('--add-dep')
-    group.add_argument('--rm-dep')
+    group.add_argument('--add-dep', metavar='DEP', nargs='+')
+    group.add_argument('--rm-dep', metavar='DEP', nargs='+')
     group.add_argument('--clear', action='store_true', default=None)
 
     args = parser.parse_args()
@@ -373,15 +371,15 @@ def parse_args() -> CLICommand:
         return CLICommandSetBase(branch=args.branch, base=args.set_base)
 
     if args.add_dep:
-        return CLICommandAddDep(branch=args.branch, dep=args.add_dep)
+        return CLICommandAddDep(branch=args.branch, deps=args.add_dep)
 
     if args.rm_dep:
-        return CLICommandRemoveDep(branch=args.branch, dep=args.rm_dep)
+        return CLICommandRemoveDep(branch=args.branch, deps=args.rm_dep)
 
     if args.clear:
         return CLICommandClear(branch=args.branch)
 
-    return CLICommandShowCurrent(branch=args.branch)
+    return CLICommandShowBranch(branch=args.branch)
 
 ##### Entrypoint #####
 
