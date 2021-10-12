@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import abc
 import argparse
 import dataclasses
 import json
@@ -9,98 +10,6 @@ import sys
 from enum import Enum
 from pathlib import Path
 from typing import Dict, List, Optional, TypeVar, Union
-
-##### Main #####
-
-def main() -> None:
-    command = parse_args()
-    data = load_data()
-
-    if command.mode == CLICommandMode.LIST_ALL:
-        for branch in get_all_registered_branches(data):
-            print_branch_info(data, branch)
-            print()
-    elif command.mode == CLICommandMode.SHOW_CURR:
-        print_branch_info(data, command.branch)
-    elif command.mode == CLICommandMode.GET_BASE:
-        try:
-            info = get_branch_info(data, command.branch)
-            if info:
-                print(info.base)
-        except NotOnBranchError:
-            pass
-    elif command.mode == CLICommandMode.GET_DEPS:
-        try:
-            info = get_branch_info(data, command.branch)
-            for dep in info.deps:
-                print(dep)
-        except NotOnBranchError:
-            pass
-    elif command.mode == CLICommandMode.GET_DEFAULT_BASE_BRANCH:
-        print(get_default_base_branch())
-    elif command.mode == CLICommandMode.DISPLAY:
-        try:
-            branch_display = display_branch_info(data, command.branch)
-            print(branch_display)
-        except NotOnBranchError:
-            pass
-    elif command.mode == CLICommandMode.RENAME_TO:
-        # allow renaming branches that don't exist anymore
-        try:
-            branch = command.branch
-        except MissingBranchError as e:
-            branch = e.branch
-
-        rename_branch(data, branch, command.new_branch)
-        save_data(data)
-        print(f'Renamed branch `{branch}` to `{command.new_branch}`')
-    elif command.mode == CLICommandMode.SET_BASE:
-        base_branch = command.base
-        if not branch_exists(base_branch):
-            raise MissingBranchError(base_branch)
-
-        set_base_branch(data, command.branch, base_branch)
-        save_data(data)
-        print(f'Set `{base_branch}` as base branch for `{command.branch}`')
-    elif command.mode == CLICommandMode.ADD_DEP:
-        dep_branch = command.dep
-        if not branch_exists(dep_branch):
-            raise MissingBranchError(dep_branch)
-
-        add_dep_branch(data, command.branch, dep_branch)
-        save_data(data)
-        print(f'Added `{dep_branch}` as a branch dependency for `{command.branch}`')
-    elif command.mode == CLICommandMode.RM_DEP:
-        dep_branch = command.dep
-
-        rm_dep_branch(data, command.branch, dep_branch)
-        save_data(data)
-        print(f'Removed `{dep_branch}` as a branch dependency for `{command.branch}`')
-    elif command.mode == CLICommandMode.CLEAR:
-        # allow clearing branches that don't exist anymore
-        try:
-            branch = command.branch
-        except MissingBranchError as e:
-            branch = e.branch
-
-        delete_branch(data, branch)
-        save_data(data)
-        print(f'Deleted branch `{branch}` from base-branch database')
-    else:
-        raise NotImplementedError
-
-def print_branch_info(data: 'BaseBranchData', branch: str) -> None:
-    info = get_branch_info(data, branch)
-
-    if info is None:
-        raise UserError(f'Branch `{branch}` is not registered.')
-
-    deps = ', '.join(info.deps)
-    print('\n'.join([
-        branch,
-        f' ├─ base = {info.base}',
-        f' └─ deps = [{deps}]',
-    ]))
 
 ##### Data store #####
 
@@ -249,154 +158,6 @@ def delete_branch(data: BaseBranchData, branch: str) -> None:
         if branch in branch_info.deps:
             branch_info.deps.remove(branch)
 
-##### Undefined helpers #####
-
-class Undefined:
-    pass
-
-UNDEFINED = Undefined()
-
-class UseUndefinedError(Exception):
-    pass
-
-##### Argument parsing #####
-
-CLICommandMode = Enum(
-    'CLICommandMode',
-    [
-        (x, x)
-        for x in (
-            'LIST_ALL',
-            'SHOW_CURR',
-            'GET_BASE',
-            'GET_DEPS',
-            'GET_DEFAULT_BASE_BRANCH',
-            'DISPLAY',
-            'RENAME_TO',
-            'SET_BASE',
-            'ADD_DEP',
-            'RM_DEP',
-            'CLEAR',
-        )
-    ]
-)
-
-T = TypeVar('T')
-
-# Semantically indicates that a parameter is guaranteed to be defined
-# if the mode requires it to be.
-ModeDependent = Union[Undefined, T]
-
-class CLICommand:
-    def __init__(
-        self,
-        mode: CLICommandMode,
-        *,
-        branch: ModeDependent[Optional[str]] = UNDEFINED,
-        new_branch: ModeDependent[str] = UNDEFINED,
-        base: ModeDependent[str] = UNDEFINED,
-        dep: ModeDependent[str] = UNDEFINED,
-    ):
-        self._mode = mode
-        self._branch = branch
-        self._new_branch = new_branch
-        self._base = base
-        self._dep = dep
-
-    @property
-    def mode(self):
-        return self._mode
-
-    @property
-    def branch(self) -> str:
-        if self._branch is UNDEFINED:
-            raise UseUndefinedError()
-
-        branch = self._branch
-
-        if branch is None:
-            branch = get_current_branch()
-
-        if not branch_exists(branch):
-            raise MissingBranchError(branch)
-
-        return branch
-
-    @property
-    def new_branch(self) -> str:
-        if self._new_branch is UNDEFINED:
-            raise UseUndefinedError()
-
-        return self._new_branch
-
-    @property
-    def base(self) -> str:
-        if self._base is UNDEFINED:
-            raise UseUndefinedError()
-
-        return self._base
-
-    @property
-    def dep(self) -> str:
-        if self._dep is UNDEFINED:
-            raise UseUndefinedError()
-
-        return self._dep
-
-def parse_args() -> CLICommand:
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument('branch', nargs='?')
-
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('--list', '-l', action='store_true', default=None)
-    group.add_argument('--base', action='store_true', default=None)
-    group.add_argument('--deps', action='store_true', default=None)
-    group.add_argument('--default-base-branch', action='store_true', default=None)
-    group.add_argument('--display', action='store_true', default=None)
-    group.add_argument('--rename-to')
-    group.add_argument('--set-base')
-    group.add_argument('--add-dep')
-    group.add_argument('--rm-dep')
-    group.add_argument('--clear', action='store_true', default=None)
-
-    args = parser.parse_args()
-
-    if args.list:
-        if args.branch is not None:
-            raise parser.error('`--list` or `-l` cannot be specified with any other arguments')
-
-        return CLICommand(mode=CLICommandMode.LIST_ALL)
-
-    if args.base:
-        return CLICommand(mode=CLICommandMode.GET_BASE, branch=args.branch)
-
-    if args.deps:
-        return CLICommand(mode=CLICommandMode.GET_DEPS, branch=args.branch)
-
-    if args.default_base_branch:
-        return CLICommand(mode=CLICommandMode.GET_DEFAULT_BASE_BRANCH, branch=args.branch)
-
-    if args.display:
-        return CLICommand(mode=CLICommandMode.DISPLAY, branch=args.branch)
-
-    if args.rename_to:
-        return CLICommand(mode=CLICommandMode.RENAME_TO, branch=args.branch, new_branch=args.rename_to)
-
-    if args.set_base:
-        return CLICommand(mode=CLICommandMode.SET_BASE, branch=args.branch, base=args.set_base)
-
-    if args.add_dep:
-        return CLICommand(mode=CLICommandMode.ADD_DEP, branch=args.branch, dep=args.add_dep)
-
-    if args.rm_dep:
-        return CLICommand(mode=CLICommandMode.RM_DEP, branch=args.branch, dep=args.rm_dep)
-
-    if args.clear:
-        return CLICommand(mode=CLICommandMode.CLEAR, branch=args.branch)
-
-    return CLICommand(mode=CLICommandMode.SHOW_CURR, branch=args.branch)
-
 ##### Git helpers #####
 
 def get_current_branch() -> str:
@@ -426,7 +187,208 @@ def get_default_base_branch() -> str:
 def git(*args) -> str:
     return subprocess.check_output(['git'] + list(args)).decode().strip()
 
+##### CLI Commands #####
+
+class CLICommand(abc.ABC):
+    @abc.abstractmethod
+    def run(self, data: BaseBranchData):
+        pass
+
+class CLIBranchCommand(CLICommand):
+    def __init__(self, *, branch: Optional[str]):
+        self._branch = branch
+
+    @property
+    def branch(self) -> str:
+        branch = self._branch
+
+        if branch is None:
+            branch = get_current_branch()
+
+        if not branch_exists(branch):
+            raise MissingBranchError(branch)
+
+        return branch
+
+class CLICommandListAll(CLICommand):
+    def run(self, data: BaseBranchData):
+        for branch in get_all_registered_branches(data):
+            print_branch_info(data, branch)
+            print()
+
+class CLICommandGetBase(CLIBranchCommand):
+    def run(self, data: BaseBranchData):
+        try:
+            info = get_branch_info(data, self.branch)
+            if info:
+                print(info.base)
+        except NotOnBranchError:
+            pass
+
+class CLICommandGetDeps(CLIBranchCommand):
+    def run(self, data: BaseBranchData):
+        try:
+            info = get_branch_info(data, self.branch)
+            for dep in info.deps:
+                print(dep)
+        except NotOnBranchError:
+            pass
+
+class CLICommandGetDefaultBaseBranch(CLIBranchCommand):
+    def run(self, data: BaseBranchData):
+        print(get_default_base_branch())
+
+class CLICommandDisplay(CLIBranchCommand):
+    def run(self, data: BaseBranchData):
+        try:
+            branch_display = display_branch_info(data, self.branch)
+            print(branch_display)
+        except NotOnBranchError:
+            pass
+
+class CLICommandRenameTo(CLIBranchCommand):
+    def __init__(self, *, branch: Optional[str], new_branch: str):
+        super().__init__(branch=branch)
+        self._new_branch = new_branch
+
+    def run(self, data: BaseBranchData):
+        # allow renaming branches that don't exist anymore
+        try:
+            branch = self.branch
+        except MissingBranchError as e:
+            branch = e.branch
+
+        rename_branch(data, branch, self._new_branch)
+        save_data(data)
+        print(f'Renamed branch `{branch}` to `{self._new_branch}`')
+
+class CLICommandSetBase(CLIBranchCommand):
+    def __init__(self, *, branch: Optional[str], base: str):
+        super().__init__(branch=branch)
+        self._base = base
+
+    def run(self, data: BaseBranchData):
+        if not branch_exists(self._base):
+            raise MissingBranchError(self._base)
+
+        set_base_branch(data, self.branch, self._base)
+        save_data(data)
+        print(f'Set `{self._base}` as base branch for `{self.branch}`')
+
+class CLICommandAddDep(CLIBranchCommand):
+    def __init__(self, *, branch: Optional[str], dep: str):
+        super().__init__(branch=branch)
+        self._dep = dep
+
+    def run(self, data: BaseBranchData):
+        if not branch_exists(self._dep):
+            raise MissingBranchError(self._dep)
+
+        add_dep_branch(data, self.branch, self._dep)
+        save_data(data)
+        print(f'Added `{self._dep}` as a branch dependency for `{self.branch}`')
+
+class CLICommandRemoveDep(CLIBranchCommand):
+    def __init__(self, *, branch: Optional[str], dep: str):
+        super().__init__(branch=branch)
+        self._dep = dep
+
+    def run(self, data: BaseBranchData):
+        rm_dep_branch(data, self.branch, self._dep)
+        save_data(data)
+        print(f'Removed `{self._dep}` as a branch dependency for `{self.branch}`')
+
+class CLICommandClear(CLIBranchCommand):
+    def run(self, data: BaseBranchData):
+        # allow clearing branches that don't exist anymore
+        try:
+            branch = self.branch
+        except MissingBranchError as e:
+            branch = e.branch
+
+        delete_branch(data, branch)
+        save_data(data)
+        print(f'Deleted branch `{branch}` from base-branch database')
+
+class CLICommandShowCurrent(CLIBranchCommand):
+    def run(self, data: BaseBranchData):
+        print_branch_info(data, self.branch)
+
+def print_branch_info(data: 'BaseBranchData', branch: str) -> None:
+    info = get_branch_info(data, branch)
+
+    if info is None:
+        raise UserError(f'Branch `{branch}` is not registered.')
+
+    deps = ', '.join(info.deps)
+    print('\n'.join([
+        branch,
+        f' ├─ base = {info.base}',
+        f' └─ deps = [{deps}]',
+    ]))
+
+##### Argument parsing #####
+
+def parse_args() -> CLICommand:
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('branch', nargs='?')
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--list', '-l', action='store_true', default=None)
+    group.add_argument('--base', action='store_true', default=None)
+    group.add_argument('--deps', action='store_true', default=None)
+    group.add_argument('--default-base-branch', action='store_true', default=None)
+    group.add_argument('--display', action='store_true', default=None)
+    group.add_argument('--rename-to')
+    group.add_argument('--set-base')
+    group.add_argument('--add-dep')
+    group.add_argument('--rm-dep')
+    group.add_argument('--clear', action='store_true', default=None)
+
+    args = parser.parse_args()
+
+    if args.list:
+        if args.branch is not None:
+            raise parser.error('`--list` or `-l` cannot be specified with any other arguments')
+
+        return CLICommandListAll()
+
+    if args.base:
+        return CLICommandGetBase(branch=args.branch)
+
+    if args.deps:
+        return CLICommandGetDeps(branch=args.branch)
+
+    if args.default_base_branch:
+        return CLICommandGetDefaultBaseBranch(branch=args.branch)
+
+    if args.display:
+        return CLICommandDisplay(branch=args.branch)
+
+    if args.rename_to:
+        return CLICommandRenameTo(branch=args.branch, new_branch=args.rename_to)
+
+    if args.set_base:
+        return CLICommandSetBase(branch=args.branch, base=args.set_base)
+
+    if args.add_dep:
+        return CLICommandAddDep(branch=args.branch, dep=args.add_dep)
+
+    if args.rm_dep:
+        return CLICommandRemoveDep(branch=args.branch, dep=args.rm_dep)
+
+    if args.clear:
+        return CLICommandClear(branch=args.branch)
+
+    return CLICommandShowCurrent(branch=args.branch)
+
 ##### Entrypoint #####
+
+def main() -> None:
+    command = parse_args()
+    data = load_data()
+    command.run(data)
 
 if __name__ == '__main__':
     try:
