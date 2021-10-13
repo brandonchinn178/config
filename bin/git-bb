@@ -131,6 +131,7 @@ def rename_branch(data: BaseBranchData, old_branch: str, new_branch: str) -> Non
             branch = new_branch
         else:
             info = BranchInfo(
+                name=branch,
                 base=info.base if info.base != old_branch else new_branch,
                 deps=[
                     dep if dep != old_branch else new_branch
@@ -145,7 +146,7 @@ def rename_branch(data: BaseBranchData, old_branch: str, new_branch: str) -> Non
 def set_base_branch(data: BaseBranchData, branch: str, base_branch: str) -> None:
     info = get_branch_info(data, branch)
     if info is None:
-        info = BranchInfo(base=base_branch, deps=[])
+        info = BranchInfo(name=branch, base=base_branch, deps=[])
     else:
         info.base = base_branch
 
