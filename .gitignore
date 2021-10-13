@@ -3,3 +3,4 @@
 .netrwhist
 *.swp
 Brewfile.lock.json
+/man/

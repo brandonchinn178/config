@@ -31,6 +31,12 @@ for file in $files; do
     link "${HOME}/.${file}" "${PWD}/${file}"
 done
 
+############### MAN pages ###############
+
+find ./man -type f | while read file; do
+    link "/usr/local/share/${file}" "${PWD}/${file}"
+done
+
 ############### Upstream completion scripts ###############
 
 function download_file {

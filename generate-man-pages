@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+
+set -eux -o pipefail
+
+cd "$(dirname "${0:A}")"
+
+mkdir -p man/man1
+
+bin/git-bb --help > man/man1/git-bb.1
+bin/git-bb-make-branch --help > man/man1/git-bb-make-branch.1

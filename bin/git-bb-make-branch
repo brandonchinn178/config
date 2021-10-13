@@ -12,14 +12,17 @@ base branch, and if '--reset' is NOT provided, will add the current branch as a
 dependency of the new branch.
 
 Parameters:
-BRANCH              The name of the branch to create
-BASE                The branch to base the new branch off of (defaults to ${default_base_branch})
+  BRANCH            The name of the branch to create
+  BASE              The branch to base the new branch off of
+                    (defaults to ${default_base_branch})
 
 Options:
---checkout          Check out the new branch after creating it.
---reset             Reset the branch to the BASE branch. Will abort if any modified
-                    or untracked files are present. Implies --checkout.
--f, --force         If --reset is provided, don't check for modified or untracked files.
+  --checkout        Check out the new branch after creating it.
+  --reset           Reset the branch to the BASE branch. Will abort if any
+                    modified or untracked files are present. Implies
+                    --checkout.
+  -f, --force       If --reset is provided, don't check for modified or
+                    untracked files.
 "
 
 function abort { print "$@" >&2; exit 1 }
@@ -37,6 +40,7 @@ function git_bb_make_branch {
             (--checkout) checkout=1 ;;
             (--reset) reset=1; checkout=1 ;;
             (-f|--force) force=1 ;;
+            (--help) print $usage; exit 0 ;;
             (*) args+=$arg ;;
         esac
     done
