@@ -90,6 +90,9 @@ def delete_branch(data: BaseBranchData, branch: str) -> None:
         if branch in branch_info.deps:
             branch_info.deps.remove(branch)
 
+def get_merge_deps_command(deps: List[str]):
+    return ['git', 'merge', '--no-ff', '--no-edit', '--quiet', *deps]
+
 ### Errors ###
 
 class APIError(Exception):

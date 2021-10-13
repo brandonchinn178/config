@@ -3,7 +3,13 @@
 import argparse
 import os
 import subprocess
+import sys
 from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, (HERE.parent / 'git-bb').as_posix())
+
+from git_bb.api import get_merge_deps_command
 
 ENV = os.environ
 CONFIG = dict(
@@ -45,8 +51,8 @@ def parse_args():
 def update_rebase_commands(lines, args):
     if len(args.merge_branches) > 0:
         exec_cmd = 'x' if CONFIG.get('rebase.abbreviatecommands') == 'true' else 'exec'
-        branches = ' '.join(args.merge_branches)
-        lines.insert(0, f'{exec_cmd} git merge --no-ff --no-edit --quiet {branches}')
+        cmd = ' '.join(get_merge_deps_command(args.merge_branches))
+        lines.insert(0, f'{exec_cmd} {cmd}')
 
     comment_section_start_line = next(
         i
