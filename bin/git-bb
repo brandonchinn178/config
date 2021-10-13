@@ -16,15 +16,18 @@ from typing import Dict, List, Optional, TypeVar, Union
 
 @dataclasses.dataclass
 class BranchInfo:
+    name: str
     base: str
     deps: List[str]
 
     @classmethod
-    def from_json(cls, o):
-        return cls(**o)
+    def from_json(cls, name, o):
+        return cls(name=name, **o)
 
     def to_json(self):
-        return dataclasses.asdict(self)
+        o = dataclasses.asdict(self)
+        del o['name']
+        return o
 
 @dataclasses.dataclass
 class BaseBranchData:
@@ -33,7 +36,7 @@ class BaseBranchData:
     @classmethod
     def from_json(cls, o):
         branches = {
-            branch: BranchInfo.from_json(branch_info)
+            branch: BranchInfo.from_json(branch, branch_info)
             for branch, branch_info in o['branches'].items()
         }
         return cls(branches=branches)
@@ -84,8 +87,18 @@ class MissingBranchError(UserError):
 def get_all_registered_branches(data: BaseBranchData) -> List[str]:
     return list(data.branches.keys())
 
-def get_branch_info(data: BaseBranchData, branch: str) -> Optional[BranchInfo]:
-    return data.branches.get(branch)
+def get_branch_info(
+    data: BaseBranchData,
+    branch: str,
+    *,
+    missing_ok: bool = True,
+) -> Optional[BranchInfo]:
+    info = data.branches.get(branch)
+
+    if info is None and not missing_ok:
+        raise UserError(f'Branch `{branch}` is not registered')
+
+    return info
 
 def display_branch_info(data: BaseBranchData, branch: str) -> str:
     info = get_branch_info(data, branch)
@@ -139,13 +152,11 @@ def set_base_branch(data: BaseBranchData, branch: str, base_branch: str) -> None
     data.branches[branch] = info
 
 def add_dep_branch(data: BaseBranchData, branch: str, dep_branch: str) -> None:
-    info = get_branch_info(data, branch)
-    if info is None:
-        raise UserError(f'Could not add branch dependency: `{branch}` is not a registered branch')
+    info = get_branch_info(data, branch, missing_ok=False)
     if dep_branch in info.deps:
-        raise UserError(f'Could not add branch dependency: `{branch}` is already a dependency')
+        raise UserError(f'Could not add branch dependency: `{dep_branch}` is already a dependency')
     if dep_branch == info.base:
-        raise UserError(f'Could not add branch dependency: `{branch}` is the base branch')
+        raise UserError(f'Could not add branch dependency: `{dep_branch}` is the base branch')
     info.deps.append(dep_branch)
 
 def rm_dep_branch(data: BaseBranchData, branch: str, dep_branch: str) -> None:
@@ -213,10 +224,12 @@ class CLIBranchCommand(CLICommand):
         return resolve_branch(self._branch)
 
 class CLICommandListAll(CLICommand):
+    def __init__(self, *, as_json: bool = False):
+        super().__init__()
+        self._as_json = as_json
+
     def run(self, data: BaseBranchData):
-        for branch in get_all_registered_branches(data):
-            print_branch_info(data, branch)
-            print()
+        print_branch_info(data, get_all_registered_branches(data), as_json=self._as_json)
 
 class CLICommandGetBase(CLIBranchCommand):
     def run(self, data: BaseBranchData):
@@ -309,21 +322,46 @@ class CLICommandClear(CLIBranchCommand):
         print(f'Deleted branch `{branch}` from base-branch database')
 
 class CLICommandShowBranch(CLIBranchCommand):
+    def __init__(self, *, branch: str, as_json: bool = False):
+        super().__init__(branch=branch)
+        self._as_json = as_json
+
     def run(self, data: BaseBranchData):
-        print_branch_info(data, self.branch)
+        print_branch_info(data, [self.branch], as_json=self._as_json)
 
-def print_branch_info(data: 'BaseBranchData', branch: str) -> None:
-    info = get_branch_info(data, branch)
+def print_branch_info(
+    data: BaseBranchData,
+    branches: List[str],
+    *,
+    as_json: bool = False,
+) -> None:
+    infos = [
+        get_branch_info(data, branch, missing_ok=False)
+        for branch in branches
+    ]
 
-    if info is None:
-        raise UserError(f'Branch `{branch}` is not registered.')
-
-    deps = ', '.join(info.deps)
-    print('\n'.join([
-        branch,
-        f' ├─ base = {info.base}',
-        f' └─ deps = [{deps}]',
-    ]))
+    if as_json:
+        o = [
+            {
+                "branch": info.name,
+                "base": info.base,
+                "deps": info.deps,
+            }
+            for info in infos
+        ]
+        print(json.dumps(o))
+    else:
+        branch_outputs = []
+        for info in infos:
+            deps = ', '.join(info.deps)
+            branch_outputs.append(
+                '\n'.join([
+                    info.name,
+                    f' ├─ base = {info.base}',
+                    f' └─ deps = [{deps}]',
+                ])
+            )
+        print('\n\n'.join(branch_outputs))
 
 ##### Argument parsing #####
 
@@ -331,6 +369,7 @@ def parse_args() -> CLICommand:
     parser = argparse.ArgumentParser()
 
     parser.add_argument('branch', nargs='?')
+    parser.add_argument('--json', action='store_true')
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--list', '-l', action='store_true', default=None)
@@ -350,7 +389,7 @@ def parse_args() -> CLICommand:
         if args.branch is not None:
             raise parser.error('`--list` or `-l` cannot be specified with any other arguments')
 
-        return CLICommandListAll()
+        return CLICommandListAll(as_json=args.json)
 
     if args.base:
         return CLICommandGetBase(branch=args.branch)
@@ -379,7 +418,7 @@ def parse_args() -> CLICommand:
     if args.clear:
         return CLICommandClear(branch=args.branch)
 
-    return CLICommandShowBranch(branch=args.branch)
+    return CLICommandShowBranch(branch=args.branch, as_json=args.json)
 
 ##### Entrypoint #####
 
