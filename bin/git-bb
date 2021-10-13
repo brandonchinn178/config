@@ -13,15 +13,15 @@ sys.path.insert(0, (HERE.parent / 'git-bb').as_posix())
 from git_bb.api import *
 from git_bb.git import *
 from git_bb.store import *
+from git_bb.utils import abort
 
 def main() -> None:
     command = parse_args()
+    data = load_data()
     try:
-        data = load_data()
         command.run(data)
-    except Exception as e:
-        print(f'(git-bb) ERROR: {e}', file=sys.stderr)
-        sys.exit(1)
+    except APIError as e:
+        abort(str(e), prefix='git-bb')
 
 def parse_args() -> "CLICommand":
     parser = argparse.ArgumentParser()
@@ -33,7 +33,6 @@ def parse_args() -> "CLICommand":
     group.add_argument('--list', '-l', action='store_true', default=None)
     group.add_argument('--base', action='store_true', default=None)
     group.add_argument('--deps', action='store_true', default=None)
-    group.add_argument('--default-base-branch', action='store_true', default=None)
     group.add_argument('--display', action='store_true', default=None)
     group.add_argument('--rename-to')
     group.add_argument('--set-base')
@@ -54,9 +53,6 @@ def parse_args() -> "CLICommand":
 
     if args.deps:
         return CLICommandGetDeps(branch=args.branch)
-
-    if args.default_base_branch:
-        return CLICommandGetDefaultBaseBranch(branch=args.branch)
 
     if args.display:
         return CLICommandDisplay(branch=args.branch)
@@ -116,10 +112,6 @@ class CLICommandGetDeps(CLIBranchCommand):
                 for dep in info.deps:
                     print(dep)
 
-class CLICommandGetDefaultBaseBranch(CLIBranchCommand):
-    def run(self, data: BaseBranchData):
-        print(get_default_base_branch())
-
 class CLICommandDisplay(CLIBranchCommand):
     def run(self, data: BaseBranchData):
         with contextlib.suppress(NotOnBranchError):
@@ -149,8 +141,7 @@ class CLICommandSetBase(CLIBranchCommand):
 
     def run(self, data: BaseBranchData):
         base_branch = resolve_branch(self._base)
-
-        set_base_branch(data, self.branch, base_branch)
+        set_base_branch(data, self.branch, base_branch=base_branch)
         save_data(data)
         print(f'Set `{base_branch}` as base branch for `{self.branch}`')
 
@@ -160,10 +151,7 @@ class CLICommandAddDep(CLIBranchCommand):
         self._deps = deps
 
     def run(self, data: BaseBranchData):
-        for dep in self._deps:
-            dep = resolve_branch(dep)
-            add_dep_branch(data, self.branch, dep)
-
+        add_dep_branches(data, self.branch, [resolve_branch(dep) for dep in self._deps])
         save_data(data)
         print(f'Added branch dependencies for `{self.branch}`: ' + ', '.join(self._deps))
 
@@ -173,9 +161,7 @@ class CLICommandRemoveDep(CLIBranchCommand):
         self._deps = deps
 
     def run(self, data: BaseBranchData):
-        for dep in self._deps:
-            rm_dep_branch(data, self.branch, dep)
-
+        rm_dep_branches(data, self.branch, self._deps)
         save_data(data)
         print(f'Removed branch dependencies for `{self.branch}`: ' + ', '.join(self._deps))
 

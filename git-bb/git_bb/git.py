@@ -40,6 +40,9 @@ def get_default_base_branch() -> str:
 def git(*args) -> str:
     return subprocess.check_output(['git'] + list(args)).decode().strip()
 
+def git_exec(*args) -> str:
+    return subprocess.check_call(['git'] + list(args))
+
 ### Errors ###
 
 class NotOnBranchError(Exception):

@@ -1,78 +1,101 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env python3
 
-set -eu -o pipefail
+"""Create and checkout a new branch."""
 
-default_base_branch=$(git bb --default-base-branch)
+import argparse
+import functools
+import subprocess
+import sys
+from pathlib import Path
+from typing import List, Optional
 
-usage="
-Usage: git bb-make-branch [--checkout] [--reset] [-f|--force] BRANCH [BASE]
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, (HERE.parent / 'git-bb').as_posix())
 
-Create a new branch. The new branch will have the provided BASE branch set as its
-base branch, and if '--reset' is NOT provided, will add the current branch as a
-dependency of the new branch.
+from git_bb.api import (
+    APIError,
+    add_dep_branches,
+    get_merge_deps_command,
+    set_base_branch,
+)
+from git_bb.git import (
+    get_default_base_branch,
+    get_current_branch,
+    git,
+    git_exec,
+)
+from git_bb.store import load_data, save_data
+from git_bb.utils import abort as abort_
 
-Parameters:
-  BRANCH            The name of the branch to create
-  BASE              The branch to base the new branch off of
-                    (defaults to ${default_base_branch})
+abort = functools.partial(abort_, prefix='git-bb-make-branch')
 
-Options:
-  --checkout        Check out the new branch after creating it.
-  --reset           Reset the branch to the BASE branch. Will abort if any
-                    modified or untracked files are present. Implies
-                    --checkout.
-  -f, --force       If --reset is provided, don't check for modified or
-                    untracked files.
-"
+### Git ###
 
-function abort { print "$@" >&2; exit 1 }
-function abort_help { abort -f '%s\n' "$@" $usage }
+def get_modified_files() -> List[str]:
+    return git('ls-files', '-m').splitlines()
 
-function git_bb_make_branch {
-    local checkout=0
-    local reset=0
-    local force=0
-    local args=()
+### Implementation ###
 
-    local arg
-    for arg in "$@"; do
-        case $arg in
-            (--checkout) checkout=1 ;;
-            (--reset) reset=1; checkout=1 ;;
-            (-f|--force) force=1 ;;
-            (--help) print $usage; exit 0 ;;
-            (*) args+=$arg ;;
-        esac
-    done
+def make_branch(
+    new_branch: str,
+    base_branch: str,
+    deps: Optional[List[str]],
+):
+    if deps is not None:
+        if len(deps) == 0:
+            deps = [get_current_branch()]
+        deps = [dep for dep in deps if dep != base_branch]
 
-    if [[ ${#args} == 0 || ${#args} -gt 2 ]]; then
-        abort_help
-    fi
+    if len(get_modified_files()) > 0:
+        abort('There are modified files')
 
-    local branch=${args[1]}
-    local base=${args[2]:-$default_base_branch}
+    git_exec("checkout", "-b", new_branch, base_branch)
 
-    if [[ $reset == 1 && $force == 0 && -n "$(git ls-files -m -o --exclude-standard)" ]]; then
-        abort "(--reset): There are modified files"
-    fi
+    data = load_data()
+    set_base_branch(data, new_branch, base_branch=base_branch)
+    if deps:
+        add_dep_branches(data, new_branch, deps)
+    save_data(data)
 
-    local curr_branch=$(git branch --show-current)
+    if deps:
+        cmd = get_merge_deps_command(deps)
+        print('Running: ' + ' '.join(cmd))
+        subprocess.check_call(cmd)
 
-    git branch $branch
-    git bb --set-base $base $branch
+### Entrypoint ###
 
-    if [[ $checkout == 1 ]]; then
-        git checkout $branch
-    fi
+def main():
+    args = parse_args()
 
-    if [[ $reset == 1 ]]; then
-        git reset --quiet --hard $base
-        print "Reset to ${base}"
-    fi
+    try:
+        make_branch(new_branch=args.branch, base_branch=args.base, deps=args.add_dep)
+    except APIError as e:
+        abort(str(e))
 
-    if [[ $reset == 0 && $curr_branch != $base ]]; then
-        git bb --add-dep $curr_branch $branch
-    fi
-}
+def parse_args():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        'branch',
+        metavar='BRANCH',
+        help='The name of the branch to create',
+    )
+    parser.add_argument(
+        'base',
+        metavar='BASE',
+        nargs='?',
+        help='The base branch for the new branch (defaults to %(default)s)',
+        default=get_default_base_branch(),
+    )
+    parser.add_argument(
+        '--add-dep',
+        metavar='DEP',
+        nargs='*',
+        help=(
+            'Branches to add as dependencies for the new branch. '
+            'If none are provided, will add the current branch as a dependency.'
+        ),
+    )
+    return parser.parse_args()
 
-git_bb_make_branch "$@"
+if __name__ == '__main__':
+    main()

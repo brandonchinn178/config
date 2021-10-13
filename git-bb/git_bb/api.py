@@ -62,7 +62,7 @@ def rename_branch(data: BaseBranchData, old_branch: str, new_branch: str) -> Non
 
     data.branches = new_branch_data
 
-def set_base_branch(data: BaseBranchData, branch: str, base_branch: str) -> None:
+def set_base_branch(data: BaseBranchData, branch: str, *, base_branch: str) -> None:
     info = get_branch_info(data, branch)
     if info is None:
         info = BranchInfo(name=branch, base=base_branch, deps=[])
@@ -71,18 +71,20 @@ def set_base_branch(data: BaseBranchData, branch: str, base_branch: str) -> None
 
     data.branches[branch] = info
 
-def add_dep_branch(data: BaseBranchData, branch: str, dep_branch: str) -> None:
+def add_dep_branches(data: BaseBranchData, branch: str, dep_branches: List[str]) -> None:
     info = get_branch_info(data, branch, missing_ok=False)
-    if dep_branch in info.deps:
-        raise APIError(f'Could not add branch dependency: `{dep_branch}` is already a dependency')
-    if dep_branch == info.base:
-        raise APIError(f'Could not add branch dependency: `{dep_branch}` is the base branch')
-    info.deps.append(dep_branch)
+    for dep_branch in dep_branches:
+        if dep_branch in info.deps:
+            raise APIError(f'Could not add branch dependency: `{dep_branch}` is already a dependency')
+        if dep_branch == info.base:
+            raise APIError(f'Could not add branch dependency: `{dep_branch}` is the base branch')
+        info.deps.append(dep_branch)
 
-def rm_dep_branch(data: BaseBranchData, branch: str, dep_branch: str) -> None:
+def rm_dep_branches(data: BaseBranchData, branch: str, dep_branches: List[str]) -> None:
     info = get_branch_info(data, branch)
-    if info and dep_branch in info.deps:
-        info.deps.remove(dep_branch)
+    for dep_branch in dep_branches:
+        if info and dep_branch in info.deps:
+            info.deps.remove(dep_branch)
 
 def delete_branch(data: BaseBranchData, branch: str) -> None:
     data.branches.pop(branch, None)

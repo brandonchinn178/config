@@ -6,7 +6,6 @@ function _git_bb {
         --list
         --base
         --deps
-        --default-base-branch
         --display
         --rename-to
         --set-base
