@@ -12,6 +12,17 @@ from enum import Enum
 from pathlib import Path
 from typing import Dict, List, Optional, TypeVar, Union
 
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, (HERE.parent / 'git-bb').as_posix())
+
+from git_bb.git import (
+    MissingBranchError,
+    NotOnBranchError,
+    get_default_base_branch,
+    git,
+    resolve_branch,
+)
+
 ##### Data store #####
 
 @dataclasses.dataclass
@@ -72,17 +83,6 @@ def save_data(data: BaseBranchData) -> None:
 
 class UserError(Exception):
     pass
-
-class NotOnBranchError(UserError):
-    def __str__(self):
-        return 'Not currently on a branch'
-
-class MissingBranchError(UserError):
-    def __init__(self, branch: str):
-        self.branch = branch
-
-    def __str__(self):
-        return f'Branch `{self.branch}` does not exist'
 
 def get_all_registered_branches(data: BaseBranchData) -> List[str]:
     return list(data.branches.keys())
@@ -170,44 +170,6 @@ def delete_branch(data: BaseBranchData, branch: str) -> None:
     for branch_info in data.branches.values():
         if branch in branch_info.deps:
             branch_info.deps.remove(branch)
-
-##### Git helpers #####
-
-def get_current_branch() -> str:
-    branch = git('branch', '--show-current')
-    if len(branch) == 0:
-        raise NotOnBranchError()
-    return branch
-
-def branch_exists(branch: str) -> bool:
-    try:
-        git('show-ref', branch)
-    except subprocess.CalledProcessError:
-        return False
-    else:
-        return True
-
-def resolve_branch(branch: Optional[str]) -> str:
-    if branch is None:
-        branch = get_current_branch()
-
-    if not branch_exists(branch):
-        raise MissingBranchError(branch)
-
-    return branch
-
-def get_default_base_branch() -> str:
-    if branch_exists('main'):
-        return 'main'
-
-    if branch_exists('master'):
-        return 'master'
-
-    remote_info = git('remote', 'show', 'origin')
-    return re.search('HEAD branch: (.*)$', remote_info, flags=re.M).group(1)
-
-def git(*args) -> str:
-    return subprocess.check_output(['git'] + list(args)).decode().strip()
 
 ##### CLI Commands #####
 
@@ -431,6 +393,6 @@ def main() -> None:
 if __name__ == '__main__':
     try:
         main()
-    except UserError as e:
+    except Exception as e:
         print(f'(git-bb) ERROR: {e}', file=sys.stderr)
         sys.exit(1)

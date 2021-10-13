@@ -4,3 +4,4 @@
 *.swp
 Brewfile.lock.json
 /man/
+__pycache__
