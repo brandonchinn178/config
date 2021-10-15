@@ -25,6 +25,7 @@ class OpenAllModifiedCommand(WindowCommand):
         )
         (stdout, _) = proc.communicate()
 
-        modified_files = stdout.decode('utf-8').split()
+        modified_files = stdout.decode('utf-8').split('\n')
         for file in modified_files:
-            self.window.open_file(os.path.join(folder, file))
+            if file:
+                self.window.open_file(os.path.join(folder, file))
