@@ -1,0 +1,67 @@
+#!/usr/bin/env python3
+
+import subprocess
+from collections import defaultdict
+from typing import NamedTuple
+
+class ImageInfo(NamedTuple):
+    image_id: str
+    repo: str
+    tag: str
+    created_at: str
+    size: str
+
+def main():
+    output_format = "\t".join(
+        "{{." + col + "}}"
+        for col in ["ID", "Repository", "Tag", "CreatedAt", "Size"]
+    )
+    out = subprocess.check_output(["docker", "images", "--format", output_format]).decode().strip()
+
+    def _mk_image_info(line):
+        image_id, repo, tag, created_at, size = line.split("\t")
+        return ImageInfo(
+            image_id=image_id,
+            repo=repo,
+            tag=tag,
+            created_at=created_at,
+            size=size,
+        )
+
+    all_images = [
+        _mk_image_info(line)
+        for line in out.split("\n")
+    ]
+
+    images_by_repo = defaultdict(list)
+    for image in all_images:
+        images_by_repo[image.repo].append(image)
+
+    render_row = mk_table_renderer(all_images, ["tag", "image_id", "created_at", "size"])
+
+    render_row(("TAG", "ID", "CREATED_AT", "SIZE"))
+
+    for repo, images in images_by_repo.items():
+        print()
+        print(repo)
+        for image in images:
+            render_row(image, prefix="-")
+
+def mk_table_renderer(elems: list, keys: list[str]):
+    widths = {
+        k: max(len(getattr(elem, k)) for elem in elems)
+        for k in keys
+    }
+    padding = " " * 3
+
+    def render_row(elem, *, prefix: str = " "):
+        cols = [
+            getattr(elem, k, elem[i]).ljust(widths[k])
+            for i, k in enumerate(keys)
+        ]
+        print(prefix + " " + padding.join(cols))
+
+    return render_row
+
+if __name__ == "__main__":
+    main()

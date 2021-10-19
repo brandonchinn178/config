@@ -143,10 +143,21 @@ function root {
     cd "$(git rev-parse --show-cdup)"
 }
 
+############### Docker helpers ###############
+
+alias dc='docker compose'
+
+function docker {
+    if [[ $# == 1 && $1 == "images" ]]; then
+        docker-images
+    else
+        command docker "$@"
+    fi
+}
+
 ############### Miscellaneous ###############
 
 alias grep="grep --color"
-alias dc='docker compose'
 
 export EDITOR=vim
 eval "$(export_aws)"
