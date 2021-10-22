@@ -40,13 +40,16 @@ def make_branch(
     new_branch: str,
     base_branch: str,
     deps: Optional[List[str]],
+    persist_modified: bool,
 ):
     if deps is not None:
         if len(deps) == 0:
             deps = [get_current_branch()]
         deps = [dep for dep in deps if dep != base_branch]
 
-    if len(get_modified_files()) > 0:
+    if persist_modified:
+        git_exec("stash", "push")
+    elif len(get_modified_files()) > 0:
         abort('There are modified files')
 
     git_exec("checkout", "-b", new_branch, base_branch)
@@ -62,13 +65,21 @@ def make_branch(
         print('Running: ' + ' '.join(cmd))
         subprocess.check_call(cmd)
 
+    if persist_modified:
+        git_exec("stash", "pop")
+
 ### Entrypoint ###
 
 def main():
     args = parse_args()
 
     try:
-        make_branch(new_branch=args.branch, base_branch=args.base, deps=args.add_dep)
+        make_branch(
+            new_branch=args.branch,
+            base_branch=args.base,
+            deps=args.add_dep,
+            persist_modified=args.stash,
+        )
     except APIError as e:
         abort(str(e))
 
@@ -93,6 +104,14 @@ def parse_args():
         help=(
             'Branches to add as dependencies for the new branch. '
             'If none are provided, will add the current branch as a dependency.'
+        ),
+    )
+    parser.add_argument(
+        '--stash',
+        action='store_true',
+        help=(
+            'If there are modified files, stash and unstash '
+            'the changes while setting up the new branch'
         ),
     )
     return parser.parse_args()
