@@ -19,7 +19,6 @@
   "auto_complete_include_snippets": false,
 
   // package settings
-  "enable_typescript_language_service": false,
   "ignored_packages": ["Vintage"],
 
   // toolbar + sidebar
@@ -29,9 +28,6 @@
   "hide_new_tab_button": true,
   "show_navigation_bar": false,
   "fold_buttons": false,
-
-  // performance
-  "gpu_window_buffer": false,
 
   // exclusion patterns
   "binary_file_patterns": [
