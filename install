@@ -140,3 +140,25 @@ defaults write com.knollsoft.Rectangle bottomRight -dict \
 
 # Sublime Text
 link "${HOME}/Library/Application Support/Sublime Text 3/Packages/User" "${PWD}/sublime"
+
+############### Application settings ###############
+
+# Keyboard shortcuts
+sudo defaults write com.apple.universalaccess com.apple.custommenu.apps -array-add \
+    NSGlobalDomain \
+    'com.apple.Terminal' \
+    'com.google.Chrome' \
+    'com.sublimetext.4'
+defaults write NSGlobalDomain NSUserKeyEquivalents -dict-add \
+    'Hide Others' '@~$h' \
+    'Minimize' '@$m'
+defaults write 'com.apple.Terminal' NSUserKeyEquivalents -dict-add \
+    'Print...' '@~p' \
+    'Export Text As...' '@~s' \
+    'Quit Terminal' '@~q'
+defaults write 'com.google.Chrome' NSUserKeyEquivalents -dict-add \
+    'Hide Google Chrome' '@^$h'
+defaults write 'com.sublimetext.4' NSUserKeyEquivalents -dict-add \
+    'Hide Sublime Text' '@~h' \
+    'Larger' '@~$=' \
+    'Smaller' '@~$-'
