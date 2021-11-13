@@ -28,6 +28,8 @@ wip = !git add -A && git commit -m '[ci skip] wip' --no-verify
 rc = rebase --continue
 cp = cherry-pick
 wdiff = diff --color-words=.
+is-in-repo = !git rev-parse --is-inside-work-tree &> /dev/null
+copy-sha = !git rev-parse HEAD | pbcopy1
 
 [merge]
 conflictstyle = diff3

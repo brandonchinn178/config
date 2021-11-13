@@ -133,14 +133,11 @@ function ecr() {
 
 ############### Git helpers ###############
 
-# Exit code 0 if currently in a git repo.
-function in_git_repo {
-    git rev-parse --is-inside-work-tree &> /dev/null
-}
-
-# Change directory to root of the git repo
-function root {
-    cd "$(git rev-parse --show-cdup)"
+function git {
+    case "$1" in
+        (root) cd "$(git rev-parse --show-cdup)" ;;
+        (*) command git "$@" ;;
+    esac
 }
 
 ############### Docker helpers ###############
@@ -158,6 +155,7 @@ function docker {
 ############### Miscellaneous ###############
 
 alias grep="grep --color"
+alias pbcopy1="tr -d '\n' | pbcopy"
 
 export EDITOR=vim
 eval "$(export_aws)"
@@ -198,7 +196,7 @@ function precmd {
     # set title to the name of the current directory, or
     # the name of the directory of the top-level git repo
     local canonical_dir="$(print -P '%1~')"
-    if in_git_repo; then
+    if git is-in-repo; then
         canonical_dir="$(basename "$(git rev-parse --show-toplevel)")"
     fi
     print -f '\e]1;%s\a' "$(basename $canonical_dir)"
