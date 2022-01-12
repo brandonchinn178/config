@@ -52,7 +52,10 @@ def make_branch(
     elif len(get_modified_files()) > 0:
         abort('There are modified files')
 
-    git_exec("checkout", "-b", new_branch, base_branch)
+    try:
+        git_exec("checkout", "-b", new_branch, base_branch)
+    except subprocess.CalledProcessError as e:
+        abort(str(e))
 
     data = load_data()
     set_base_branch(data, new_branch, base_branch=base_branch)
