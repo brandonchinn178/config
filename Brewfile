@@ -1,4 +1,5 @@
 cask "maccy"
+cask "notunes"
 cask "rectangle"
 
 brew "colordiff"

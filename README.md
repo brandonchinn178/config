@@ -2,7 +2,8 @@
 
 ## Installation
 
-`./install`
+* `./install`
+* Add Maccy and noTunes to Login Items
 
 ## Install via App Store
 
