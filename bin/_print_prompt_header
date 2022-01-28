@@ -11,6 +11,7 @@ HOME = Path.home()
 
 BLUE = 153
 YELLOW = 'yellow'
+ORANGE = 180
 MAGENTA = 'magenta'
 GREEN = 'green'
 GRAY = 237
@@ -55,15 +56,27 @@ def get_prompt_lines():
 
     # add git info
     if is_in_git_repo():
-        branch_display = get_stdout(['git', 'bb', '--display'])
-        branch_display = branch_display or 'N/A'
-        prompter.add_prompt_part(f'[{branch_display}]', color=GREEN)
+        add_branch_info(prompter)
 
         commit = get_stdout(['git', 'rev-parse', '--short=12', 'HEAD'])
         commit = commit or '<null>'
         prompter.add_prompt_part(f'({commit})', color=MAGENTA)
 
     return prompter.get_lines()
+
+def add_branch_info(prompter):
+    branch_display = get_stdout(['git', 'bb', '--display'])
+    if branch_display:
+        prompter.add_prompt_part(f'[{branch_display}]', color=GREEN)
+        return
+
+    # check if we're in a rebase
+    rebase_branch_name = get_rebase_branch_name()
+    if rebase_branch_name:
+        prompter.add_prompt_part(f'[rebasing: {rebase_branch_name}]', color=ORANGE)
+        return
+
+    prompter.add_prompt_part('[N/A]', color=YELLOW)
 
 class Prompter:
     def __init__(self, *, sep=' ', margin_right=5):
@@ -115,6 +128,14 @@ def is_in_git_repo():
         stderr=subprocess.DEVNULL,
     )
     return proc.returncode == 0
+
+def get_rebase_branch_name():
+    rebase_dir = get_stdout(['git', 'rev-parse', '--git-path', 'rebase-merge'])
+    rebase_branch_name_file = Path(rebase_dir) / 'head-name'
+    try:
+        return rebase_branch_name_file.read_text().strip().removeprefix('refs/heads/')
+    except FileNotFoundError:
+        return None
 
 def get_stdout(*args, **kwargs):
     """
