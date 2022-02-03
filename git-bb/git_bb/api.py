@@ -32,7 +32,14 @@ def display_branch_info(data: BaseBranchData, branch: str) -> str:
             branch_display += f' + {num_deps} '
             branch_display += 'other' if num_deps == 1 else 'others'
 
-        commits_after_base = int(git('rev-list', '--count', '--first-parent', f'{info.base}..HEAD'))
+        base = info.base
+        if len(info.deps) > 0:
+            # if a branch has dependencies, the first commit will be a merge commit
+            last_merge = git('log', '--merges', '-n1', '--pretty=format:%H')
+            if last_merge:
+                base = last_merge
+
+        commits_after_base = int(git('rev-list', '--count', '--first-parent', f'{base}..HEAD'))
         if commits_after_base > 0:
             branch_display += f' > [+{commits_after_base}]'
 
