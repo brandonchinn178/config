@@ -155,7 +155,6 @@ function docker {
 ############### Miscellaneous ###############
 
 alias grep="grep --color"
-alias pbcopy1="tr -d '\n' | pbcopy"
 
 export EDITOR=vim
 eval "$(export_aws)"
