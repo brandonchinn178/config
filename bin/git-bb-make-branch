@@ -47,10 +47,14 @@ def make_branch(
             deps = [get_current_branch()]
         deps = [dep for dep in deps if dep != base_branch]
 
-    if persist_modified:
-        git_exec("stash", "push")
-    elif len(get_modified_files()) > 0:
-        abort('There are modified files')
+    has_stash = False
+
+    if len(get_modified_files()) > 0:
+        if persist_modified:
+            git_exec("stash", "push")
+            has_stash = True
+        else:
+            abort('There are modified files')
 
     try:
         git_exec("checkout", "-b", new_branch, base_branch)
@@ -68,7 +72,7 @@ def make_branch(
         print('Running: ' + ' '.join(cmd))
         subprocess.check_call(cmd)
 
-    if persist_modified:
+    if has_stash:
         git_exec("stash", "pop")
 
 ### Entrypoint ###
