@@ -17,6 +17,8 @@ def main():
         for col in ["ID", "Repository", "Tag", "CreatedAt", "Size"]
     )
     out = subprocess.check_output(["docker", "images", "--format", output_format]).decode().strip()
+    if not out:
+        return
 
     def _mk_image_info(line):
         image_id, repo, tag, created_at, size = line.split("\t")
