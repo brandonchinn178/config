@@ -47,18 +47,19 @@ def make_branch(
             deps = [get_current_branch()]
         deps = [dep for dep in deps if dep != base_branch]
 
-    has_stash = False
+    unstash = lambda: True
 
     if len(get_modified_files()) > 0:
         if persist_modified:
             git_exec("stash", "push")
-            has_stash = True
+            unstash = lambda: git_exec("stash", "pop")
         else:
             abort('There are modified files')
 
     try:
         git_exec("checkout", "-b", new_branch, base_branch)
     except subprocess.CalledProcessError as e:
+        unstash()
         abort(str(e))
 
     data = load_data()
@@ -72,8 +73,7 @@ def make_branch(
         print('Running: ' + ' '.join(cmd))
         subprocess.check_call(cmd)
 
-    if has_stash:
-        git_exec("stash", "pop")
+    unstash()
 
 ### Entrypoint ###
 
