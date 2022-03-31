@@ -87,5 +87,6 @@
     ".tox",
     "python/build",
     "bazel-*",
+    ".gradle",
   ],
 }
