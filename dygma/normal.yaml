@@ -78,29 +78,12 @@ layer0:
     RSPACE1:
       key: SHIFT_TO_1
       color: green
+    RSPACE2:
+      key: SHIFT_TO_2
+      color: pink
     LCTRL:
       key: SHIFT_TO_9
       color: red
-
-    # mission control
-    FN:
-      key: LEFT
-      ctrl: true
-      alt: true
-      shift: true
-      color: orange
-    RCTRL:
-      key: RIGHT
-      ctrl: true
-      alt: true
-      shift: true
-      color: orange
-    RGUI:
-      key: UP
-      ctrl: true
-      alt: true
-      shift: true
-      color: yellow
 
 # Special keys
 layer1:
@@ -231,6 +214,31 @@ layer1:
     LSPACE2: LALT
     LSPACE3: LGUI
     RSHIFT: RSHIFT
+
+layer2:
+  base_color: pink
+  keymap:
+    # move left/right a space
+    S:
+      key: LEFT
+      ctrl: true
+      alt: true
+      shift: true
+      color: orange
+    F:
+      key: RIGHT
+      ctrl: true
+      alt: true
+      shift: true
+      color: orange
+
+    # mission control
+    E:
+      key: UP
+      ctrl: true
+      alt: true
+      shift: true
+      color: yellow
 
 # Rectangle
 layer9:
