@@ -78,9 +78,6 @@ layer0:
     RSPACE1:
       key: SHIFT_TO_1
       color: green
-    # LALT:
-    #   key: LOCK_TO_2
-    #   color: pink
     LCTRL:
       key: SHIFT_TO_9
       color: red
@@ -235,91 +232,17 @@ layer1:
     LSPACE3: LGUI
     RSHIFT: RSHIFT
 
-# Numpad
-layer2:
-  base_color: pink
-  keymap:
-    RSPACE: ZERO
-    M: ONE
-    COMMA: TWO
-    PERIOD: THREE
-    J: FOUR
-    K: FIVE
-    L: SIX
-    U: SEVEN
-    I: EIGHT
-    O: NINE
-
-    ENTER:
-      key: ENTER
-      color: green
-    BACKSPACE:
-      key: BACKSPACE
-      color: green
-    # LSPACE2:
-    #   key: LALT
-    #   color: green
-    # CAPS_LOCK:
-    #   key: ESC
-    #   color: green
-
-    # LSPACE:
-    #   key: PERIOD
-    #   color: green
-    # D: # =
-    #   key: EQUAL
-    #   color: green
-    # F: # +
-    #   key: EQUAL
-    #   shift: true
-    #   color: green
-    # E: # (
-    #   key: NINE
-    #   shift: true
-    #   color: green
-    # R: # )
-    #   key: ZERO
-    #   shift: true
-    #   color: green
-
-    LSPACE1:
-      key: SHIFT_TO_3
-      color: yellow
-    RSPACE1:
-      key: SHIFT_TO_3
-      color: yellow
-
-    LALT: TRANSPARENT
-
-# Numpad special
-layer3:
-  base_color: yellow
-  keymap:
-    # arrow keys
-    H:
-      key: LEFT
-      color: green
-    J:
-      key: DOWN
-      color: green
-    K:
-      key: UP
-      color: green
-    L:
-      key: RIGHT
-      color: green
-
-# Spectacle
+# Rectangle
 layer9:
   base_color: red
   keymap:
-    # spectacle fullscreen
+    # fullscreen
     ENTER:
       key: UP
       gui: true
       alt: true
 
-    # spectacle half screens
+    # half screens
     H:
       key: LEFT
       gui: true
@@ -329,7 +252,7 @@ layer9:
       gui: true
       alt: true
 
-    # spectacle quarter screens
+    # quarter screens
     U:
       key: LEFT
       color: orange
