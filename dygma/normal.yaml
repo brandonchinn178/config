@@ -39,7 +39,7 @@ layer0:
     LBRACK: LBRACK
     RBRACK: RBRACK
     BACKSLASH: BACKSLASH
-    CAPS_LOCK: CAPS_LOCK
+    CAPS_LOCK: ESC
     A: A
     S: S
     D: D
