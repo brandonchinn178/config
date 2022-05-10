@@ -122,6 +122,8 @@ contexts:
         - include: strings
         - include: keywords
         - include: misc
+        - match: \$\d+
+          scope: variable.parameter.pgsql
   statement_create_function_view:
     - match: '(?i)^\s*(create)\s+(or\s+replace\s+)?(function|view)\s+(?:([\w]+|".+")\.)?([\w]+|".+")(?:[\(|\s)])'
       captures:
@@ -166,7 +168,7 @@ contexts:
       scope: string.quoted.single.pgsql
       captures:
         1: punctuation.definition.string.begin.pgsql
-        3: punctuation.definition.string.end.pgsql
+        2: punctuation.definition.string.end.pgsql
     - match: "'"
       comment: Need to implement escape rule with two single quotes in a row. Lots of other escaping issues with single quotes.
       captures:
