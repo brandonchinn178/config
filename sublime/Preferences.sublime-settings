@@ -88,5 +88,6 @@
     "python/build",
     "bazel-*",
     ".gradle",
+    ".hypothesis",
   ],
 }
