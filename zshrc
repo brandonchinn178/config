@@ -18,6 +18,8 @@ autoload -Uz bashcompinit && bashcompinit
 
 zstyle ':completion:*' menu select
 zmodload zsh/complist
+
+# SHIFT-TAB
 bindkey -M menuselect '^[[Z' reverse-menu-complete
 
 # git tab completions
@@ -40,6 +42,7 @@ bindkey '^X' edit-command-line
 
 export WORDCHARS="*?_-.[]~=/&;!#$%^(){}<>|@'\":"
 
+# ALT-LEFT
 function backward-word-segment {
     local WORDCHARS="$(tr -d '/-' <<< $WORDCHARS)"
     zle emacs-backward-word
@@ -47,6 +50,7 @@ function backward-word-segment {
 zle -N backward-word-segment
 bindkey '^[b' backward-word-segment
 
+# ALT-RIGHT
 function forward-word-segment {
     local WORDCHARS="$(tr -d '/-' <<< $WORDCHARS)"
     zle emacs-forward-word
@@ -54,6 +58,7 @@ function forward-word-segment {
 zle -N forward-word-segment
 bindkey '^[f' forward-word-segment
 
+# ALT-BACKSPACE
 function backward-kill-word-segment {
     local WORDCHARS="$(tr -d '/-' <<< $WORDCHARS)"
     zle vi-backward-kill-word
@@ -236,3 +241,55 @@ source /usr/local/opt/fzf/shell/key-bindings.zsh
 
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
+
+__fzf-ctrl-r-opts() {
+    local opts=(
+        --preview 'sed -E "s/[[:digit:]]+//;s/[[:space:]]+//;" <<< {}'
+        --preview-window 'down,2,wrap'
+        --height 70%
+    )
+    echo ${(q)opts[*]}
+}
+export FZF_CTRL_R_OPTS="$(__fzf-ctrl-r-opts)"
+
+# CTRL-G - Paste the selected commit(s) into the command line
+__git-log-fzf() {
+    __commits() {
+        local log_max_num_logs=500
+        local log_opts=(
+            --oneline
+            --color=always
+        )
+        # put commits on this branch first
+        git l ${log_opts[@]}
+        # then all commits
+        git log ${log_opts[@]} --branches "-${log_max_num_logs}"
+    }
+
+    local fzf_opts=(
+        --header=${LBUFFER}
+        --ansi
+        --no-sort
+        --reverse
+        --bind=ctrl-z:ignore
+        --multi
+        --preview 'awk "{ print \$1 }" <<< {} | xargs git show --color=always'
+    )
+
+    setopt localoptions pipefail no_aliases 2> /dev/null
+    local item
+    __commits | fzf ${fzf_opts[@]} | while read item; do
+        awk '{ print $1 }' <<< "${item}"
+    done
+    local ret=$?
+    echo
+    return $ret
+}
+fzf-git-commit-widget() {
+    LBUFFER="${LBUFFER}$(__git-log-fzf)"
+    local ret=$?
+    zle reset-prompt
+    return $ret
+}
+zle -N fzf-git-commit-widget
+bindkey '^G' fzf-git-commit-widget

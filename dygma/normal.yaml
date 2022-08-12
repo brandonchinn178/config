@@ -161,6 +161,10 @@ layer1:
       key: D
       color: yellow
       ctrl: true
+    G:
+      key: G
+      color: yellow
+      ctrl: true
     Z:
       key: Z
       color: yellow
