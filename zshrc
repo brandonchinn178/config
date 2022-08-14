@@ -126,7 +126,7 @@ function chext {
         ext=".${ext}"
     fi
 
-    mv $old "${old%\.*}${ext}"
+    mv $old "$(dirname $old)/$(basename $old | awk -F '.' '{ print $1 }')${ext}"
 }
 
 ############### AWS helpers ###############
