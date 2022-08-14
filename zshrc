@@ -274,6 +274,7 @@ __git-log-fzf() {
         --bind=ctrl-z:ignore
         --multi
         --preview 'awk "{ print \$1 }" <<< {} | xargs git show --color=always'
+        --preview-window 'down,70%'
     )
 
     setopt localoptions pipefail no_aliases 2> /dev/null
