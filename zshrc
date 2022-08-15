@@ -280,7 +280,7 @@ __git-log-fzf() {
     setopt localoptions pipefail no_aliases 2> /dev/null
     local item
     __commits | fzf ${fzf_opts[@]} | while read item; do
-        awk '{ print $1 }' <<< "${item}"
+        awk '{ printf $1 " " }' <<< "${item}"
     done
     local ret=$?
     echo
