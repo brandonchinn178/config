@@ -2,6 +2,12 @@
 name = Brandon Chinn
 email = brandonchinn178@gmail.com
 
+[core]
+pager = delta
+
+[interactive]
+diffFilter = delta --color-only
+
 [rebase]
 autoSquash = true
 missingCommitsCheck = error
@@ -28,7 +34,6 @@ pd = !git pull && git delete-merged
 wip = !git add -A && git commit -m '[ci skip] wip' --no-verify
 rc = rebase --continue
 cp = cherry-pick
-wdiff = diff --color-words=.
 is-in-repo = !git rev-parse --is-inside-work-tree &> /dev/null
 copy-sha = !git rev-parse HEAD | tr -d '\n' | pbcopy
 
@@ -43,3 +48,8 @@ defaultBranch = main
 
 [rerere]
 enabled = true
+
+[delta]
+navigate = true
+light = false
+line-numbers = true
