@@ -48,8 +48,3 @@ defaultBranch = main
 
 [rerere]
 enabled = true
-
-[delta]
-navigate = true
-light = false
-line-numbers = true
