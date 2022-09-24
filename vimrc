@@ -64,3 +64,5 @@ colorscheme default
 
 " ctrl+v is configured for Maccy, so we'll need to remap visual-block
 nnoremap <C-B> <C-V>
+
+au BufReadCmd *.whl call zip#Browse(expand("<amatch>"))
