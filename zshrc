@@ -11,6 +11,8 @@ fpath=(
 path+=~/.bin
 path+=~/.local/bin
 
+brew_prefix=$(brew --prefix)
+
 ############### Tab completions ###############
 
 autoload -Uz compinit && compinit
@@ -227,7 +229,7 @@ export PROMPT="$ "
 
 ############### zsh-syntax-highlighting ###############
 
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source "${brew_prefix}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
 typeset -A ZSH_HIGHLIGHT_STYLES
 
@@ -236,8 +238,8 @@ ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=cyan'
 
 ############### fzf ###############
 
-source /usr/local/opt/fzf/shell/completion.zsh
-source /usr/local/opt/fzf/shell/key-bindings.zsh
+source "${brew_prefix}/opt/fzf/shell/completion.zsh"
+source "${brew_prefix}/opt/fzf/shell/key-bindings.zsh"
 
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"

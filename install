@@ -65,10 +65,6 @@ download_file "$(gh_url 'docker/compose' '1.27.4' 'contrib/completion/zsh/_docke
 
 ############### Brew dependencies ###############
 
-if ! type brew &> /dev/null; then
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-fi
-
 brew bundle
 
 ############### Application settings ###############
@@ -139,7 +135,7 @@ defaults write com.knollsoft.Rectangle bottomRight -dict \
 
 
 # Sublime Text
-link "${HOME}/Library/Application Support/Sublime Text 3/Packages/User" "${PWD}/sublime"
+link "${HOME}/Library/Application Support/Sublime Text/Packages/User" "${PWD}/sublime"
 
 ############### Application settings ###############
 
