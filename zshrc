@@ -131,6 +131,22 @@ function chext {
     mv $old "$(dirname $old)/$(basename $old | awk -F '.' '{ print $1 }')${ext}"
 }
 
+############### Haskell ###############
+
+# GHCup
+path+=~/.ghcup/bin
+path+=~/.cabal/bin
+
+if [[ $(uname -m) == 'arm64' ]]; then
+    # llvm@12, for arm64 stack
+    path+="${brew_prefix}/opt/llvm@12/bin"
+    # export LDFLAGS="-L/opt/homebrew/opt/llvm@12/lib -Wl,-rpath,/opt/homebrew/opt/llvm@12/lib"
+    # export CPPFLAGS="-I/opt/homebrew/opt/llvm@12/include"
+
+    # https://gitlab.haskell.org/ghc/ghc/-/issues/20592
+    export C_INCLUDE_PATH="$(xcrun --show-sdk-path)/usr/include/ffi"
+fi
+
 ############### AWS helpers ###############
 
 function ecr() {
