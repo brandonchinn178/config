@@ -1,6 +1,9 @@
 {
   "variables": {
-    "yellow": "hsl(54, 100%, 50%)",
+    // override builtin Monokai variables
+    "red2": "#De7563",
+    "red_dark": "#701e1e",
+    // new variables for new rules
     "brown": "#DBBC6F",
     "ts-decorator-outside-function": "#FFB9FF",
     "ts-decorator-inside-function": "#D7B9FF",
@@ -9,6 +12,16 @@
     "background": "hsl(70, 0%, 15%)",
   },
   "rules": [
+    {
+      "name": "punctuation",
+      "scope": "punctuation - comment",
+      "foreground": "#888",
+    },
+    {
+      "name": "Invalid",
+      "scope": "invalid",
+      "background": "var(red_dark)",
+    },
     {
       "name": "TS decorators: @-symbol",
       "scope": "source.ts meta.class.ts meta.decorator.ts punctuation.decorator.ts",
@@ -51,3 +64,4 @@
     },
   ],
 }
+

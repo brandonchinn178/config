@@ -5,7 +5,7 @@
   "git_diff_target": "head",
 
   // UI style
-  "color_scheme": "Packages/Color Scheme - Default/Monokai.tmTheme",
+  "color_scheme": "Monokai.sublime-color-scheme",
   "caret_style": "smooth",
   "caret_extra_top": 1,
   "caret_extra_bottom": 1,
