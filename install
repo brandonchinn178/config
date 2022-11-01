@@ -20,6 +20,7 @@ function link {
 files=(
     bin
     gitconfig
+    gitignore
     inputrc
     vim
     vimrc
