@@ -128,7 +128,7 @@ contexts:
       scope: comment.block.documentation.haskell
 
     # Regular double-dash comment
-    - match: '(---*(?!([!#\$%&\*\+\./<=>\?@\\\^\|\-~:]|[^[^\p{S}\p{P}]_"''\(\),;\[\]`\{}]))).*$'
+    - match: '(\s*---*(?!([!#\$%&\*\+\./<=>\?@\\\^\|\-~:]|[^[^\p{S}\p{P}]_"''\(\),;\[\]`\{}]))).*$'
       scope: comment.line.double-dash.haskell comment.line.haskell
       captures:
         1: punctuation.comment.haskell
