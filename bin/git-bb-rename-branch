@@ -24,7 +24,7 @@ function git_bb_rename_branch {
     fi
 
     git branch -m $old $new
-    git bb --rename-to $new $old
+    git bb rename $new $old
 }
 
 git_bb_rename_branch "$@"

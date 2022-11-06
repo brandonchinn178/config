@@ -27,7 +27,7 @@ function git_bb_log {
 
     local start=HEAD~10
 
-    local base="$(git bb --base ${args[1]:-})"
+    local base="$(git bb get-base ${args[1]:-})"
     if [[ -n $base ]]; then
         start="$(git merge-base $base $target)"
     fi

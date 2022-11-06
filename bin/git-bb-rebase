@@ -55,7 +55,7 @@ function git_bb_rebase {
 
                 local target="$(get_last_merge)"
 
-                local base="$(git bb --base)"
+                local base="$(git bb get-base)"
                 if [[ -n $base ]]; then
                     local base_in_curr_history="$(git merge-base $base HEAD)"
                     local merges_in_curr_history="$(git log --merges "${base_in_curr_history}^".."HEAD")"
@@ -86,7 +86,7 @@ function git_bb_rebase {
     local editor_args=()
 
     if [[ $onto_base_branch == 1 ]]; then
-        local base="$(git bb --base)"
+        local base="$(git bb get-base)"
         if [[ -z $base ]]; then
             abort 'Branch is not registered'
         fi
@@ -96,7 +96,7 @@ function git_bb_rebase {
 
     if [[ $merge_deps == 1 ]]; then
         local dep
-        for dep in $(git bb --deps); do
+        for dep in $(git bb get-deps); do
             editor_args+=(--merge-branch $dep)
         done
     fi

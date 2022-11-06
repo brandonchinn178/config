@@ -3,15 +3,15 @@
 function _git_bb {
     emulate -L zsh
     local flags=(
-        --list
-        --base
-        --deps
-        --display
-        --rename-to
-        --set-base
-        --add-dep
-        --rm-dep
-        --clear
+        list
+        base
+        deps
+        display
+        rename
+        set-base
+        add-deps
+        rm-deps
+        clear
     )
     __gitcomp "${flags}"
 

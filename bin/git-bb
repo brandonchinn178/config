@@ -3,9 +3,9 @@
 import abc
 import argparse
 import contextlib
+import dataclasses
 import sys
 from pathlib import Path
-from typing import Optional
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, (HERE.parent / 'git-bb').as_posix())
@@ -25,54 +25,68 @@ def main() -> None:
 
 def parse_args() -> "CLICommand":
     parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers()
 
-    parser.add_argument('branch', nargs='?')
-    parser.add_argument('--json', action='store_true')
+    def _mk_one_branch_command(subparser, f):
+        subparser.add_argument('branch', nargs='?')
+        subparser.set_defaults(mk_command=lambda args: f(args.branch))
 
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('--list', '-l', action='store_true', default=None)
-    group.add_argument('--base', action='store_true', default=None)
-    group.add_argument('--deps', action='store_true', default=None)
-    group.add_argument('--display', action='store_true', default=None)
-    group.add_argument('--rename-to')
-    group.add_argument('--set-base')
-    group.add_argument('--add-dep', metavar='DEP', nargs='+')
-    group.add_argument('--rm-dep', metavar='DEP', nargs='+')
-    group.add_argument('--clear', action='store_true', default=None)
+    def _mk_two_branch_command(subparser, f):
+        subparser.add_argument('branches', metavar='BRANCH', nargs='+')
+        def _mk_command(args):
+            branches = args.branches
+            if len(branches) == 1:
+                target_branch = None
+                arg_branch, = branches
+            elif len(branches) == 2:
+                target_branch, arg_branch = branches
+            else:
+                raise subparser.error(f'Must specify exactly 1 or 2 branches')
+            return f(target_branch, arg_branch)
+        subparser.set_defaults(mk_command=_mk_command)
+
+    def _mk_multi_branch_command(subparser, f):
+        subparser.add_argument('branches', metavar='BRANCH', nargs='+')
+        subparser.add_argument('--target')
+        subparser.set_defaults(mk_command=lambda args: f(args.target, args.branches))
+
+    parser_list = subparsers.add_parser('list')
+    parser_list.add_argument('--json', action='store_true')
+    parser_list.set_defaults(mk_command=lambda args: CLICommandListAll(as_json=args.json))
+
+    parser_show = subparsers.add_parser('show')
+    parser_show.add_argument('branch', nargs='?')
+    parser_show.add_argument('--json', action='store_true')
+    parser_show.set_defaults(mk_command=lambda args: CLICommandShowBranch(branch=args.branch, as_json=args.json))
+
+    parser_get_base = subparsers.add_parser('get-base')
+    _mk_one_branch_command(parser_get_base, lambda branch: CLICommandGetBase(branch=branch))
+
+    parser_get_deps = subparsers.add_parser('get-deps')
+    _mk_one_branch_command(parser_get_deps, lambda branch: CLICommandGetDeps(branch=branch))
+
+    parser_display = subparsers.add_parser('display')
+    _mk_one_branch_command(parser_display, lambda branch: CLICommandDisplay(branch=branch))
+
+    parser_rename = subparsers.add_parser('rename')
+    _mk_two_branch_command(parser_rename, lambda old, new: CLICommandRenameTo(branch=old, new_branch=new))
+
+    parser_set_base = subparsers.add_parser('set-base')
+    _mk_two_branch_command(parser_set_base, lambda target, base: CLICommandSetBase(branch=target, base=base))
+
+    parser_add_deps = subparsers.add_parser('add-deps', aliases=['add-dep'])
+    _mk_multi_branch_command(parser_add_deps, lambda branch, deps: CLICommandAddDeps(branch=branch, deps=deps))
+
+    parser_rm_deps = subparsers.add_parser('rm-deps', aliases=['rm-dep'])
+    _mk_multi_branch_command(parser_rm_deps, lambda branch, deps: CLICommandRemoveDeps(branch=branch, deps=deps))
+
+    parser_clear = subparsers.add_parser('clear')
+    _mk_one_branch_command(parser_clear, lambda branch: CLICommandClear(branch=branch))
+
+    parser.set_defaults(mk_command=lambda args: CLICommandShowBranch())
 
     args = parser.parse_args()
-
-    if args.list:
-        if args.branch is not None:
-            raise parser.error('`--list` or `-l` cannot be specified with any other arguments')
-
-        return CLICommandListAll(as_json=args.json)
-
-    if args.base:
-        return CLICommandGetBase(branch=args.branch)
-
-    if args.deps:
-        return CLICommandGetDeps(branch=args.branch)
-
-    if args.display:
-        return CLICommandDisplay(branch=args.branch)
-
-    if args.rename_to:
-        return CLICommandRenameTo(branch=args.branch, new_branch=args.rename_to)
-
-    if args.set_base:
-        return CLICommandSetBase(branch=args.branch, base=args.set_base)
-
-    if args.add_dep:
-        return CLICommandAddDep(branch=args.branch, deps=args.add_dep)
-
-    if args.rm_dep:
-        return CLICommandRemoveDep(branch=args.branch, deps=args.rm_dep)
-
-    if args.clear:
-        return CLICommandClear(branch=args.branch)
-
-    return CLICommandShowBranch(branch=args.branch, as_json=args.json)
+    return args.mk_command(args)
 
 ##### CLI Commands #####
 
@@ -81,33 +95,32 @@ class CLICommand(abc.ABC):
     def run(self, data: BaseBranchData):
         pass
 
+@dataclasses.dataclass(kw_only=True)
 class CLIBranchCommand(CLICommand):
-    def __init__(self, *, branch: Optional[str]):
-        self._branch = branch
+    branch: str | None = None
 
     @property
-    def branch(self) -> str:
-        return resolve_branch(self._branch)
+    def resolved_branch(self) -> str:
+        return resolve_branch(self.branch)
 
+@dataclasses.dataclass(kw_only=True)
 class CLICommandListAll(CLICommand):
-    def __init__(self, *, as_json: bool = False):
-        super().__init__()
-        self._as_json = as_json
+    as_json: bool = False
 
     def run(self, data: BaseBranchData):
-        print_branch_info(data, get_all_registered_branches(data), as_json=self._as_json)
+        print_branch_info(data, get_all_registered_branches(data), as_json=self.as_json)
 
 class CLICommandGetBase(CLIBranchCommand):
     def run(self, data: BaseBranchData):
         with contextlib.suppress(NotOnBranchError):
-            info = get_branch_info(data, self.branch)
+            info = get_branch_info(data, self.resolved_branch)
             if info:
                 print(info.base)
 
 class CLICommandGetDeps(CLIBranchCommand):
     def run(self, data: BaseBranchData):
         with contextlib.suppress(NotOnBranchError):
-            info = get_branch_info(data, self.branch)
+            info = get_branch_info(data, self.resolved_branch)
             if info:
                 for dep in info.deps:
                     print(dep)
@@ -115,18 +128,17 @@ class CLICommandGetDeps(CLIBranchCommand):
 class CLICommandDisplay(CLIBranchCommand):
     def run(self, data: BaseBranchData):
         with contextlib.suppress(NotOnBranchError):
-            branch_display = display_branch_info(data, self.branch)
+            branch_display = display_branch_info(data, self.resolved_branch)
             print(branch_display)
 
+@dataclasses.dataclass(kw_only=True)
 class CLICommandRenameTo(CLIBranchCommand):
-    def __init__(self, *, branch: Optional[str], new_branch: str):
-        super().__init__(branch=branch)
-        self._new_branch = new_branch
+    new_branch: str
 
     def run(self, data: BaseBranchData):
         # allow renaming branches that don't exist anymore
         try:
-            branch = self.branch
+            branch = self.resolved_branch
         except MissingBranchError as e:
             branch = e.branch
 
@@ -134,42 +146,39 @@ class CLICommandRenameTo(CLIBranchCommand):
         save_data(data)
         print(f'Renamed branch `{branch}` to `{self._new_branch}`')
 
+@dataclasses.dataclass(kw_only=True)
 class CLICommandSetBase(CLIBranchCommand):
-    def __init__(self, *, branch: Optional[str], base: str):
-        super().__init__(branch=branch)
-        self._base = base
+    base: str
 
     def run(self, data: BaseBranchData):
         base_branch = resolve_branch(self._base)
-        set_base_branch(data, self.branch, base_branch=base_branch)
+        set_base_branch(data, self.resolved_branch, base_branch=base_branch)
         save_data(data)
-        print(f'Set `{base_branch}` as base branch for `{self.branch}`')
+        print(f'Set `{base_branch}` as base branch for `{self.resolved_branch}`')
 
-class CLICommandAddDep(CLIBranchCommand):
-    def __init__(self, *, branch: Optional[str], deps: str):
-        super().__init__(branch=branch)
-        self._deps = deps
+@dataclasses.dataclass(kw_only=True)
+class CLICommandAddDeps(CLIBranchCommand):
+    deps: list[str]
 
     def run(self, data: BaseBranchData):
-        add_dep_branches(data, self.branch, [resolve_branch(dep) for dep in self._deps])
+        add_dep_branches(data, self.resolved_branch, [resolve_branch(dep) for dep in self._deps])
         save_data(data)
-        print(f'Added branch dependencies for `{self.branch}`: ' + ', '.join(self._deps))
+        print(f'Added branch dependencies for `{self.resolved_branch}`: ' + ', '.join(self._deps))
 
-class CLICommandRemoveDep(CLIBranchCommand):
-    def __init__(self, *, branch: Optional[str], deps: str):
-        super().__init__(branch=branch)
-        self._deps = deps
+@dataclasses.dataclass(kw_only=True)
+class CLICommandRemoveDeps(CLIBranchCommand):
+    deps: list[str]
 
     def run(self, data: BaseBranchData):
-        rm_dep_branches(data, self.branch, self._deps)
+        rm_dep_branches(data, self.resolved_branch, self._deps)
         save_data(data)
-        print(f'Removed branch dependencies for `{self.branch}`: ' + ', '.join(self._deps))
+        print(f'Removed branch dependencies for `{self.resolved_branch}`: ' + ', '.join(self._deps))
 
 class CLICommandClear(CLIBranchCommand):
     def run(self, data: BaseBranchData):
         # allow clearing branches that don't exist anymore
         try:
-            branch = self.branch
+            branch = self.resolved_branch
         except MissingBranchError as e:
             branch = e.branch
 
@@ -177,13 +186,12 @@ class CLICommandClear(CLIBranchCommand):
         save_data(data)
         print(f'Deleted branch `{branch}` from base-branch database')
 
+@dataclasses.dataclass(kw_only=True)
 class CLICommandShowBranch(CLIBranchCommand):
-    def __init__(self, *, branch: str, as_json: bool = False):
-        super().__init__(branch=branch)
-        self._as_json = as_json
+    as_json: bool = False
 
     def run(self, data: BaseBranchData):
-        print_branch_info(data, [self.branch], as_json=self._as_json)
+        print_branch_info(data, [self.resolved_branch], as_json=self.as_json)
 
 def print_branch_info(
     data: BaseBranchData,
