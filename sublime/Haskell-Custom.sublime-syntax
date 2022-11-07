@@ -337,7 +337,7 @@ contexts:
         - include: expression_stuff
 
   infix_op:
-    - match: '(\([^\w \)]+\)|\(,+\))'
+    - match: '(\([^\w \(\)]+\)|\(,+\))'
       scope: keyword.operator.haskell
 
   instance_declaration:
