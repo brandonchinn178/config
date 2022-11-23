@@ -492,6 +492,17 @@ Find more themes at : https://github.com/daylerees/colour-schemes
                 <string>#8DBC2F</string>
             </dict>
         </dict>
+        <dict>
+            <key>name</key>
+            <string>Export list: qualified exports</string>
+            <key>scope</key>
+            <string>meta.declaration.exports.haskell entity.name.module</string>
+            <key>settings</key>
+            <dict>
+                <key>foreground</key>
+                <string>#5F9FBF</string>
+            </dict>
+        </dict>
         <!-- Haskell end -->
         <dict>
             <key>name</key>
