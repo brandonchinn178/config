@@ -49,11 +49,5 @@
       "scope": "source.pgsql variable.other",
       "foreground": "var(brown)",
     },
-    {
-      // https://github.com/Monokai/monokai-pro-sublime-text/issues/159
-      "name": "YAML strings",
-      "scope": "source.yaml meta.mapping.key string",
-      "foreground": "#ff6188",
-    },
   ],
 }
