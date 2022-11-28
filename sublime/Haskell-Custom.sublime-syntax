@@ -536,6 +536,10 @@ contexts:
             1: keyword.operator.haskell
           pop: true
         - include: type
+    - match: '"[^"]*"'
+      scope: string.quoted.double.haskell
+    - match: '[@|!%$?~+:.\-*=</>\\∘→⇒⇔←⤙⇐≤≥≡⋮\[\]]+'
+      scope: keyword.operator.haskell
 
   type_declaration:
     - match: '^(\s*)(type)\s+([A-Z][\w'']*)?'
