@@ -510,9 +510,9 @@ contexts:
       scope: storage.type.haskell support.type.haskell
     - match: \b(Applicative|Bounded|Enum|Eq|Ord|Foldable|Fractional|Functor|Monoid|Num|Read|Real|RealFrac|Show)\b
       scope: storage.type.haskell support.class.haskell
-    - match: '\b{{var_id}}\b'
+    - match: '\b{{var_id}}'
       scope: variable.generic.haskell
-    - match: '\b{{type_id}}\b'
+    - match: '\b{{type_id}}'
       scope: storage.type.haskell support.type.haskell
     - match: \(\)
       scope: storage.type.haskell
