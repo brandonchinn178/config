@@ -512,8 +512,10 @@ contexts:
       scope: storage.type.haskell support.class.haskell
     - match: '\b{{var_id}}'
       scope: variable.generic.haskell
-    - match: '\b{{type_id}}'
-      scope: storage.type.haskell support.type.haskell
+    - match: '\b({{type_id}}\.)*({{type_id}})'
+      captures:
+        1: storage.type.module.haskell
+        2: storage.type.haskell support.type.haskell
     - match: \(\)
       scope: storage.type.haskell
     - match: (\()
