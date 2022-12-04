@@ -49,5 +49,11 @@
       "scope": "source.pgsql variable.other",
       "foreground": "var(brown)",
     },
+    {
+      // https://github.com/Monokai/monokai-pro-sublime-text/issues/160
+      "name": "Markdown: links",
+      "scope": "markup.underline.link punctuation",
+      "foreground": "#a9dc76",
+    },
   ],
 }
