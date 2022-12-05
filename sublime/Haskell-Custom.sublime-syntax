@@ -420,7 +420,7 @@ contexts:
             - meta_scope: constant.character.escape.multilinestring.haskell
             - match: \\
               pop: true
-        - match: '\b({{type_id}}\.)*({{var_id}})\b'
+        - match: '\b({{type_id}}\.)*({{var_id}})'
           captures:
             1: storage.module.haskell entity.name.module.haskell
             2: entity.name.function.haskell
@@ -433,10 +433,10 @@ contexts:
             - match: \)
               scope: keyword.operator.haskell
               pop: true
-            - match: '\b{{var_id}}\b'
+            - match: '\b{{var_id}}'
               scope: entity.name.function.haskell
             - include: expression_stuff
-        - match: '\b{{type_id}}\b'
+        - match: '\b{{type_id}}'
           scope: storage.type.haskell storage.data.haskell
         - match: ','
           scope: punctuation.separator.comma.haskell
