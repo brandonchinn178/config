@@ -448,6 +448,37 @@ Find more themes at : https://github.com/daylerees/colour-schemes
         </dict>
         <dict>
             <key>name</key>
+            <string>Type-level quasi-quote</string>
+            <key>scope</key>
+            <string>
+                meta.type_signature.quasi-quote.haskell punctuation.quasi-quoter.haskell,
+                meta.type_signature.quasi-quote.haskell entity.name.function.quasi-quoter.haskell
+            </string>
+            <key>settings</key>
+            <dict>
+                <key>foreground</key>
+                <string>#BFA72F</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>name</key>
+            <string>Type-level quasi-quote contents</string>
+            <key>scope</key>
+            <string>
+                meta.type_signature.quasi-quote.contents.haskell variable.generic,
+                meta.type_signature.quasi-quote.contents.haskell keyword.operator,
+                meta.type_signature.quasi-quote.contents.haskell support.type
+            </string>
+            <key>settings</key>
+            <dict>
+                <key>fontStyle</key>
+                <string></string>
+                <key>foreground</key>
+                <string>#BF5FBF</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>name</key>
             <string>Variable generic</string>
             <key>scope</key>
             <string>variable.generic</string>

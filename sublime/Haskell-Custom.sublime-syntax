@@ -528,6 +528,20 @@ contexts:
             1: keyword.operator.haskell
           pop: true
         - include: type
+    - match: '(\[)(({{type_id}}\.)*({{var_id}}))?(\|)'
+      captures:
+        1: keyword.operator.haskell punctuation.quasi-quoter.haskell
+        3: storage.module.quasi-quoter.haskell
+        4: entity.name.function.quasi-quoter.haskell
+        5: keyword.operator.haskell punctuation.quasi-quoter.haskell
+      push:
+        - meta_scope: meta.type_signature.quasi-quote.haskell
+        - meta_content_scope: meta.type_signature.quasi-quote.contents.haskell
+        - match: '(\|\])'
+          captures:
+            1: keyword.operator.haskell punctuation.quasi-quoter.haskell
+          pop: true
+        - include: type
     - match: '(\[)'
       captures:
         1: keyword.operator.haskell
