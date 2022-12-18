@@ -272,6 +272,10 @@ export FZF_CTRL_R_OPTS="$(__fzf-ctrl-r-opts)"
 
 # CTRL-G - Paste the selected commit(s) into the command line
 __git-log-fzf() {
+    if ! git is-in-repo; then
+        return
+    fi
+
     __commits() {
         local log_max_num_logs=500
         local log_opts=(
@@ -287,6 +291,7 @@ __git-log-fzf() {
     local fzf_opts=(
         --header=${LBUFFER}
         --ansi
+        --nth=2..
         --no-sort
         --reverse
         --bind=ctrl-z:ignore
