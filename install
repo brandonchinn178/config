@@ -32,11 +32,13 @@ for file in $files; do
     link "${HOME}/.${file}" "${PWD}/${file}"
 done
 
-############### MAN pages ###############
+############### Other symlinks ###############
 
 find ./man -type f | while read file; do
     link "/usr/local/share/${file}" "${PWD}/${file}"
 done
+
+link "${HOME}/.config/kitty" "${PWD}/kitty"
 
 ############### Upstream completion scripts ###############
 
@@ -143,16 +145,15 @@ link "${HOME}/Library/Application Support/Sublime Text/Packages/User" "${PWD}/su
 # Keyboard shortcuts
 sudo defaults write com.apple.universalaccess com.apple.custommenu.apps -array-add \
     NSGlobalDomain \
-    'com.apple.Terminal' \
+    'net.kovidgoyal.kitty' \
     'com.google.Chrome' \
     'com.sublimetext.4'
 defaults write NSGlobalDomain NSUserKeyEquivalents -dict-add \
     'Hide Others' '@~$h' \
     'Minimize' '@$m'
-defaults write 'com.apple.Terminal' NSUserKeyEquivalents -dict-add \
-    'Print...' '@~p' \
-    'Export Text As...' '@~s' \
-    'Quit Terminal' '@~q'
+defaults write 'net.kovidgoyal.kitty' NSUserKeyEquivalents -dict-add \
+    'Hide kitty' '@~h' \
+    'Quit kitty' '@~q'
 defaults write 'com.google.Chrome' NSUserKeyEquivalents -dict-add \
     'Hide Google Chrome' '@^$h'
 defaults write 'com.sublimetext.4' NSUserKeyEquivalents -dict-add \
