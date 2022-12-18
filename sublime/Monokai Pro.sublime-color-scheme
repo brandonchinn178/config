@@ -55,5 +55,25 @@
       "scope": "markup.underline.link punctuation",
       "foreground": "#a9dc76",
     },
+    {
+      "name": "kitty.conf: config labels",
+      "scope": "entity.name.label.kitty-conf",
+      "foreground": "var(green)",
+    },
+    {
+      "name": "kitty.conf: key binding modifiers",
+      "scope": "meta.map-key-binding.kitty-conf keyword.other.modifier-keys",
+      "foreground": "var(purple)",
+    },
+    {
+      "name": "kitty.conf: key binding modifiers",
+      "scope": "meta.map-key-binding.kitty-conf keyword.operator.key-binding-modifier",
+      "foreground": "var(purple)",
+    },
+    {
+      "name": "kitty.conf: key binding keys",
+      "scope": "meta.map-key-binding.kitty-conf constant.language",
+      "foreground": "var(purple)",
+    },
   ],
 }

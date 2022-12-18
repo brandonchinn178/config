@@ -1,3 +1,4 @@
+cask "kitty"
 cask "maccy"
 cask "notunes"
 cask "rectangle"

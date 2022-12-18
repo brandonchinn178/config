@@ -1,0 +1,78 @@
+%YAML 1.2
+---
+name: kitty.conf
+first_line_match: '#: kitty.conf'
+
+scope: source.kitty-conf
+contexts:
+  main:
+    - match: '^#'
+      scope: punctuation.definition.comment.kitty-conf
+      push: line_comment
+
+    - match: '^(map) '
+      captures:
+        1: entity.name.label.kitty-conf
+      push: map_key_binding
+
+    - match: '^\w+'
+      scope: entity.name.label.kitty-conf
+
+    - include: literals
+
+  line_comment:
+    - meta_scope: comment.line.kitty-conf
+
+    - match: $
+      pop: true
+
+  map_key_binding:
+    - meta_scope: meta.map-key-binding.kitty-conf
+
+    - match: '\b(cmd|shift|alt|ctrl)\b'
+      scope: keyword.other.modifier-keys.kitty-conf
+
+    - match: '\+'
+      scope: keyword.operator.key-binding-modifier.kitty-conf
+
+    - match: '\>'
+      scope: keyword.operator.key-binding-add.kitty-conf
+
+    - match: '(\b([a-zA-Z]|up|down|left|right|tab)\b|,)'
+      scope: constant.language.kitty-conf
+
+    - match: ' '
+      set: map_action
+
+  map_action:
+    - meta_scope: meta.map-action.kitty-conf
+
+    - match: $
+      pop: true
+
+    - match: '(--)([\w-]+)((=)(\w+))?'
+      captures:
+        1: punctuation.definition.kitty-conf
+        2: variable.parameter.kitty-conf
+        4: punctuation.definition.kitty-conf
+        5: string.unquoted.kitty-conf
+
+    - match: '('').*('')'
+      scope: string.quoted.single.kitty-conf
+      captures:
+        1: punctuation.definition.string.begin.kitty-conf
+        2: punctuation.definition.string.end.kitty-conf
+
+    - include: literals
+
+  literals:
+    - match: '(#)[0-9a-fA-F]+'
+      scope: constant.other.color.kitty-conf
+      captures:
+        1: punctuation.definition.kitty-conf
+
+    - match: '([-+]?)\d+((\.)\d+)?\b'
+      scope: constant.numeric.kitty-conf
+      captures:
+        1: keyword.operator.arithmetic.kitty-conf
+        3: punctuation.separator.decimal.kitty-conf

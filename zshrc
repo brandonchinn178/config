@@ -33,7 +33,7 @@ fi
 
 ############### Key bindings ###############
 
-bindkey '^R' history-incremental-search-backward
+# bindkey '^R' history-incremental-search-backward
 
 bindkey '^A' beginning-of-line
 bindkey '^E' end-of-line
@@ -50,7 +50,15 @@ function backward-word-segment {
     zle emacs-backward-word
 }
 zle -N backward-word-segment
-bindkey '^[b' backward-word-segment
+bindkey '^[[1;3D' backward-word-segment
+
+# CTRL-LEFT
+function backward-word-alphanum {
+    local WORDCHARS=
+    zle emacs-backward-word
+}
+zle -N backward-word-alphanum
+bindkey '^[[1;5D' backward-word-alphanum
 
 # ALT-RIGHT
 function forward-word-segment {
@@ -58,7 +66,15 @@ function forward-word-segment {
     zle emacs-forward-word
 }
 zle -N forward-word-segment
-bindkey '^[f' forward-word-segment
+bindkey '^[[1;3C' forward-word-segment
+
+# CTRL-RIGHT
+function forward-word-alphanum {
+    local WORDCHARS=
+    zle emacs-forward-word
+}
+zle -N forward-word-alphanum
+bindkey '^[[1;5C' forward-word-alphanum
 
 # ALT-BACKSPACE
 function backward-kill-word-segment {
@@ -221,7 +237,8 @@ function precmd {
     if git is-in-repo; then
         canonical_dir="$(basename "$(git rev-parse --show-toplevel)")"
     fi
-    print -f '\e]1;%s\a' "$(basename $canonical_dir)"
+    if [[ $TERM = 'xterm-kitty' ]]; then code=0; else code=1; fi
+    print -f '\e]%d;%s\a' $code "$(basename $canonical_dir)"
 
     # prompt banner
     _print_prompt_header
