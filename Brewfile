@@ -16,4 +16,3 @@ brew "zsh-syntax-highlighting"
 
 brew "mas"
 mas "Amphetamine", id: 937984704
-mas "Seashore", id: 1448648921
