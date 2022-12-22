@@ -195,7 +195,7 @@ function docker {
 
 alias grep="grep --color"
 
-export EDITOR=vim
+export EDITOR=hx
 eval "$(export_aws)"
 
 ############### Prompt ###############

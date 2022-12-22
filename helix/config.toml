@@ -1,0 +1,15 @@
+theme = "pop-dark"
+
+[editor.whitespace]
+render = "all"
+
+[keys.normal]
+A-k = { A-l = "switch_to_lowercase", A-u = "switch_to_uppercase" }
+# "C-," = "goto_prev_change"
+# "C-." = "goto_next_change"
+
+[keys.insert]
+# move line up
+"A-up" = ["extend_line","yank","move_line_up","open_above","replace_with_yanked","move_line_down", "move_line_down", "extend_line", "delete_selection", "move_line_up", "move_line_up"]
+# move line down
+"A-down" = ["extend_line","delete_selection", "paste_after", "move_line_down"]
