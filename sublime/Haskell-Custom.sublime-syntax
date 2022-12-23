@@ -558,6 +558,16 @@ contexts:
       scope: keyword.operator.haskell
 
   type_declaration:
+    - match: '^(\s*)(type family)'
+      captures:
+        2: keyword.declaration.data.haskell
+      push:
+        - meta_scope: meta.declaration.type.haskell
+        - match: ^(?!\1\s)
+          pop: true
+        - match: '\bwhere\b'
+          scope: keyword.declaration.data.haskell
+        - include: type
     - match: '^(\s*)(type)\s+([A-Z][\w'']*)?'
       captures:
         2: keyword.declaration.data.haskell
