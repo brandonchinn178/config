@@ -50,7 +50,7 @@ function backward-word-segment {
     zle emacs-backward-word
 }
 zle -N backward-word-segment
-bindkey '^[[1;3D' backward-word-segment
+bindkey '^[b' backward-word-segment
 
 # CTRL-LEFT
 function backward-word-alphanum {
@@ -66,7 +66,7 @@ function forward-word-segment {
     zle emacs-forward-word
 }
 zle -N forward-word-segment
-bindkey '^[[1;3C' forward-word-segment
+bindkey '^[f' forward-word-segment
 
 # CTRL-RIGHT
 function forward-word-alphanum {
