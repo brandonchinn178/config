@@ -1,0 +1,88 @@
+%YAML 1.2
+---
+name: Persistent model files
+file_extensions:
+  - persistentmodels
+
+scope: source.persistentmodels
+
+variables:
+  upper_ident: '\b[A-Z]\w*\b'
+  lower_ident: '\b[a-z]\w*\b'
+
+contexts:
+  prototype:
+    - include: line_comment
+
+  main:
+    - include: model
+
+  line_comment:
+    - match: '(--).*$'
+      captures:
+        0: comment.line.persistentmodels
+        1: punctuation.definition.comment.persistentmodels
+
+  model:
+    - match: '^({{upper_ident}})'
+      captures:
+        1: entity.name.type.model.persistentmodels
+      push:
+        - meta_scope: meta.type.model.persistentmodels
+        - match: '$'
+          set: model_body
+        - match: '\bjson\b'
+          scope: variable.other.attribute.persistentmodels
+        - match: '\b(sql)(=)([^\s]+)\b'
+          captures:
+            1: variable.other.attribute.persistentmodels
+            2: punctuation.separator.key-value.persistentmodels
+            3: string.unquoted.persistentmodels
+
+  model_body:
+    - match: '^(?!\s)'
+      pop: true
+
+    - match: '^\s+(deriving)'
+      captures:
+        1: keyword.declaration.deriving.persistentmodels
+      push:
+        - match: '$'
+          pop: true
+        - match: '{{upper_ident}}'
+          scope: storage.type.persistentmodels
+
+    - match: '^\s+({{lower_ident}}) ({{upper_ident}})'
+      captures:
+        1: variable.other.model-field.persistentmodels
+        2: storage.type.persistentmodels
+      push:
+        - match: '$'
+          pop: true
+        - meta_scope: meta.model-field.persistentmodels
+        - match: '\bMaybe\b'
+          scope: keyword.other.field-modifier.persistentmodels
+        - match: '\b(OnUpdate|OnDelete)(Restrict|Cascade|SetNull|SetDefault)\b'
+          scope: keyword.other.field-modifier.persistentmodels
+        - match: '\b(default)(=)([^\s]+)\b'
+          captures:
+            1: variable.other.attribute.persistentmodels
+            2: punctuation.separator.key-value.persistentmodels
+            3: string.unquoted.persistentmodels
+        - match: '\b(sql)(=)([^\s]+)\b'
+          captures:
+            1: variable.other.attribute.persistentmodels
+            2: punctuation.separator.key-value.persistentmodels
+            3: string.unquoted.persistentmodels
+
+    - match: '^\s+({{upper_ident}})'
+      captures:
+        1: entity.name.type.unique-constructor.persistentmodels
+      push:
+        - match: '$'
+          pop: true
+        - meta_scope: meta.unique-constructor.persistentmodels
+        - match: '{{lower_ident}}'
+          scope: variable.other.field.unique-constructor.persistentmodels
+        - match: '!force\b'
+          scope: keyword.other.persistentmodels

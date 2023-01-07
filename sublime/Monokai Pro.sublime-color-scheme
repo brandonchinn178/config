@@ -2,6 +2,7 @@
   "variables": {
     // new variables for new rules
     "brown": "#DBBC6F",
+    "dark_blue": "#5F9FBF",
     "ts-decorator-outside-function": "#FFB9FF",
     "ts-decorator-inside-function": "#D7B9FF",
   },
@@ -74,6 +75,49 @@
       "name": "kitty.conf: key binding keys",
       "scope": "meta.map-key-binding.kitty-conf constant.language",
       "foreground": "var(purple)",
+    },
+    {
+      "name": "persistentmodels: model",
+      "scope": "entity.name.type.model.persistentmodels",
+      "foreground": "var(green)",
+    },
+    {
+      "name": "persistentmodels: attributes",
+      "scope": "variable.other.attribute.persistentmodels",
+      "foreground": "var(orange)",
+      "font_style": "italic",
+    },
+    {
+      "name": "persistentmodels: types",
+      "scope": "storage.type.persistentmodels",
+      "foreground": "var(dark_blue)",
+    },
+    {
+      "name": "persistentmodels: model field",
+      "scope": "variable.other.model-field.persistentmodels",
+      "foreground": "var(brown)",
+      "font_style": "italic",
+    },
+    {
+      "name": "persistentmodels: model field modifiers",
+      "scope": "keyword.other.field-modifier.persistentmodels",
+      "foreground": "var(blue)",
+    },
+    {
+      "name": "persistentmodels: model unique constructors",
+      "scope": "entity.name.type.unique-constructor.persistentmodels",
+      "foreground": "var(purple)",
+    },
+    {
+      "name": "persistentmodels: model unique constructor fields",
+      "scope": "variable.other.field.unique-constructor.persistentmodels",
+      "foreground": "var(brown)",
+    },
+    {
+      "name": "persistentmodels: deriving",
+      "scope": "keyword.declaration.deriving.persistentmodels",
+      "foreground": "var(red)",
+      "font_style": "none",
     },
   ],
 }
