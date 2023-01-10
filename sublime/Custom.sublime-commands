@@ -1,4 +1,5 @@
 [
   { "caption": "Custom: Open all modified files", "command": "open_all_modified" },
   { "caption": "Custom: Open all staged files", "command": "open_all_modified", "args": { "staged": true } },
+  { "caption": "Custom: Open file in GitHub", "command": "open_in_github" },
 ]
