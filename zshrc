@@ -21,6 +21,10 @@ autoload -Uz bashcompinit && bashcompinit
 zstyle ':completion:*' menu select
 zmodload zsh/complist
 
+# UP/DOWN
+bindkey '\e[A' history-search-backward
+bindkey '\e[B' history-search-forward
+
 # SHIFT-TAB
 bindkey -M menuselect '^[[Z' reverse-menu-complete
 
@@ -32,8 +36,6 @@ if type stack &> /dev/null; then
 fi
 
 ############### Key bindings ###############
-
-# bindkey '^R' history-incremental-search-backward
 
 bindkey '^A' beginning-of-line
 bindkey '^E' end-of-line
@@ -268,6 +270,10 @@ typeset -A ZSH_HIGHLIGHT_STYLES
 
 ZSH_HIGHLIGHT_STYLES[globbing]='fg=cyan'
 ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=cyan'
+
+############### zsh-autosuggestions ###############
+
+source "${brew_prefix}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
 ############### fzf ###############
 

@@ -13,6 +13,7 @@ brew "jq"
 brew "less"
 brew "pre-commit"
 brew "tree"
+brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
 
 brew "mas"
