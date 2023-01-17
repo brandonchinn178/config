@@ -89,5 +89,6 @@
     "bazel-*",
     ".gradle",
     ".hypothesis",
+    ".ruff_cache",
   ],
 }
