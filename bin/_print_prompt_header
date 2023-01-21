@@ -51,7 +51,11 @@ def get_prompt_lines():
     cwd_display = cwd.as_posix()
     while len(cwd_display) > COLUMNS:
         cwd_parent = cwd_parent.parent
-        cwd_display = (cwd_parent / '...' / cwd.name).as_posix()
+        next_cwd_display = (cwd_parent / '...' / cwd.name).as_posix()
+        # handle when terminal is narrower than shortest display
+        if cwd_display == next_cwd_display:
+            break
+        cwd_display = next_cwd_display
     prompter.add_prompt_part(cwd_display, color=BLUE)
 
     # add git info
