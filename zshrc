@@ -52,7 +52,7 @@ function backward-word-segment {
     zle emacs-backward-word
 }
 zle -N backward-word-segment
-bindkey '^[b' backward-word-segment
+bindkey '^[[1;3D' backward-word-segment
 
 # CTRL-LEFT
 function backward-word-alphanum {
@@ -68,7 +68,7 @@ function forward-word-segment {
     zle emacs-forward-word
 }
 zle -N forward-word-segment
-bindkey '^[f' forward-word-segment
+bindkey '^[[1;3C' forward-word-segment
 
 # CTRL-RIGHT
 function forward-word-alphanum {
@@ -239,8 +239,12 @@ function precmd {
     if git is-in-repo; then
         canonical_dir="$(basename "$(git rev-parse --show-toplevel)")"
     fi
-    if [[ $TERM = 'xterm-kitty' ]]; then code=0; else code=1; fi
-    print -f '\e]%d;%s\a' $code "$(basename $canonical_dir)"
+    local title="$(basename $canonical_dir)"
+    if [[ $title = 'wezterm' ]]; then
+        # https://github.com/wez/wezterm/issues/3021
+        title='wezterm*'
+    fi
+    print -f '\e]1;%s\a' $title
 
     # prompt banner
     _print_prompt_header
@@ -261,6 +265,11 @@ function preexec {
 }
 
 export PROMPT="$ "
+
+############### wezterm ###############
+
+WEZTERM_APP=$(find "${brew_prefix}/Caskroom" -name 'WezTerm.app')
+source $WEZTERM_APP/Contents/Resources/wezterm.sh
 
 ############### zsh-syntax-highlighting ###############
 
