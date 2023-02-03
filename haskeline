@@ -1,0 +1,4 @@
+keyseq: "\ESC[1;3D" meta-left
+bind: meta-left meta-b
+keyseq: "\ESC[1;3C" meta-right
+bind: meta-right meta-f
