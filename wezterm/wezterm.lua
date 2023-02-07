@@ -85,13 +85,15 @@ wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_wid
   local title_suffix = ''
   local title_padding_start = ifthen(is_first_tab, ' ', '')
   local title_padding_end = ''
+  wezterm.log_info(tab.active_pane.is_zoomed)
 
   if tab.is_active then
     background = TEAL
     foreground = BLACK
     intensity = 'Bold'
-    -- https://github.com/wez/wezterm/issues/3013
-    title_suffix = ':' .. #panes
+    if tab.active_pane.is_zoomed then
+      title_suffix = '[Z]'
+    end
     title_padding_start = ' '
     title_padding_end = ' '
   end
