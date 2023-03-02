@@ -11,3 +11,11 @@
 1. `./install`
 1. Open Rectangle and Maccy
 1. Add Maccy and noTunes to Login Items
+
+## Miscellaneous Mac setup
+
+* Keyboard shortcuts
+    * Change "Mission Control" shortcut to ctrl+alt+shift+up
+    * Disable "Application windows" shortcut
+    * Change "Missiong Control > Move left a space" to ctrl+alt+shift+left
+    * Change "Missiong Control > Move right a space" to ctrl+alt+shift+right
