@@ -19,8 +19,6 @@ function link {
 
 files=(
     bin
-    gitconfig
-    gitignore
     haskeline
     inputrc
     vim
@@ -39,6 +37,7 @@ find ./man -type f | while read file; do
     link "/usr/local/share/${file}" "${PWD}/${file}"
 done
 
+link "${HOME}/.config/git" "${PWD}/git"
 link "${HOME}/.config/wezterm" "${PWD}/wezterm"
 
 ############### Upstream completion scripts ###############
