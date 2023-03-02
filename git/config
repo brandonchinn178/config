@@ -4,7 +4,6 @@ email = brandonchinn178@gmail.com
 
 [core]
 pager = delta
-excludesFile = "~/.gitignore"
 
 [interactive]
 diffFilter = delta --color-only
