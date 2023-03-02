@@ -15,6 +15,3 @@ brew "pre-commit"
 brew "tree"
 brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
-
-brew "mas"
-mas "Amphetamine", id: 937984704
