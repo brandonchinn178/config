@@ -1,5 +1,18 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env python3
 
-if [[ -f ~/.aws/credentials ]]; then
-    awk '/=/ { print "export", toupper($1) "=" $3 }' ~/.aws/credentials
-fi
+from configparser import ConfigParser
+from pathlib import Path
+
+def main():
+    config = ConfigParser()
+    config.read(Path.home() / ".aws/credentials")
+    try:
+        creds = config["default"]
+    except KeyError:
+        return
+
+    print(f"export AWS_ACCESS_KEY_ID={creds['aws_access_key_id']}")
+    print(f"export AWS_SECRET_ACCESS_KEY={creds['aws_secret_access_key']}")
+
+if __name__ == "__main__":
+    main()
