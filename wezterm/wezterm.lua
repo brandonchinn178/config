@@ -156,6 +156,13 @@ return {
       action = wezterm.action.ReloadConfiguration,
     },
 
+    -- Commands
+    {
+      mods = 'CMD|SHIFT',
+      key = 'p',
+      action = wezterm.action.ActivateCommandPalette,
+    },
+
     -- Windows
     {
       mods = 'CMD|SHIFT',
