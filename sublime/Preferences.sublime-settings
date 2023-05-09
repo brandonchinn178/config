@@ -53,6 +53,9 @@
     "*.dll",
     "*.class",
     "*.crc",
+    "*.jar",
+    "*.parq",
+    "*.parquet",
   ],
   "file_exclude_patterns": [
     "*.map",
@@ -90,5 +93,7 @@
     ".gradle",
     ".hypothesis",
     ".ruff_cache",
+    "*.parq",
+    "*.parquet",
   ],
 }
