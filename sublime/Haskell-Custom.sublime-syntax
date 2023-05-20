@@ -424,10 +424,11 @@ contexts:
           captures:
             1: storage.module.haskell entity.name.module.haskell
             2: entity.name.function.haskell
-        - match: '({{type_id}})\s*(\()'
+        - match: '({{type_id}}\.)*({{type_id}})\s*(\()'
           captures:
-            1: storage.type.haskell storage.data.haskell
-            2: keyword.operator.haskell
+            1: storage.module.haskell entity.name.module.haskell
+            2: storage.type.haskell storage.data.haskell
+            3: keyword.operator.haskell
           push:
             - meta_scope: meta.declaration.export.data.haskell
             - match: \)
@@ -436,8 +437,10 @@ contexts:
             - match: '\b{{var_id}}'
               scope: entity.name.function.haskell
             - include: expression_stuff
-        - match: '\b{{type_id}}'
-          scope: storage.type.haskell storage.data.haskell
+        - match: '\b({{type_id}}\.)*({{type_id}})'
+          captures:
+            1: storage.module.haskell entity.name.module.haskell
+            2: storage.type.haskell storage.data.haskell
         - match: ','
           scope: punctuation.separator.comma.haskell
         - include: infix_op
