@@ -181,6 +181,54 @@ function git {
     esac
 }
 
+# CTRL-G - Paste the selected commit(s) into the command line
+__git-log-fzf() {
+    if ! git is-in-repo; then
+        return
+    fi
+
+    __commits() {
+        local log_max_num_logs=500
+        local log_opts=(
+            --oneline
+            --color=always
+        )
+        # put commits on this branch first
+        git l ${log_opts[@]}
+        # then all commits
+        git log ${log_opts[@]} --branches "-${log_max_num_logs}"
+    }
+
+    local fzf_opts=(
+        --header=${LBUFFER}
+        --ansi
+        --nth=2..
+        --no-sort
+        --reverse
+        --bind=ctrl-z:ignore
+        --multi
+        --preview 'awk "{ print \$1 }" <<< {} | xargs git show --color=always'
+        --preview-window 'down,70%'
+    )
+
+    setopt localoptions pipefail no_aliases 2> /dev/null
+    local item
+    __commits | fzf ${fzf_opts[@]} | while read item; do
+        awk '{ printf $1 " " }' <<< "${item}"
+    done
+    local ret=$?
+    echo
+    return $ret
+}
+fzf-git-commit-widget() {
+    LBUFFER="${LBUFFER}$(__git-log-fzf)"
+    local ret=$?
+    zle reset-prompt
+    return $ret
+}
+zle -N fzf-git-commit-widget
+bindkey '^G' fzf-git-commit-widget
+
 ############### Docker helpers ###############
 
 alias dc='docker compose'
@@ -292,6 +340,7 @@ source "${brew_prefix}/opt/fzf/shell/key-bindings.zsh"
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
 
+# CTRL-R - search shell history
 __fzf-ctrl-r-opts() {
     local opts=(
         --preview 'sed -E "s/[[:digit:]]+//;s/[[:space:]]+//;" <<< {}'
@@ -301,51 +350,3 @@ __fzf-ctrl-r-opts() {
     echo ${(q)opts[*]}
 }
 export FZF_CTRL_R_OPTS="$(__fzf-ctrl-r-opts)"
-
-# CTRL-G - Paste the selected commit(s) into the command line
-__git-log-fzf() {
-    if ! git is-in-repo; then
-        return
-    fi
-
-    __commits() {
-        local log_max_num_logs=500
-        local log_opts=(
-            --oneline
-            --color=always
-        )
-        # put commits on this branch first
-        git l ${log_opts[@]}
-        # then all commits
-        git log ${log_opts[@]} --branches "-${log_max_num_logs}"
-    }
-
-    local fzf_opts=(
-        --header=${LBUFFER}
-        --ansi
-        --nth=2..
-        --no-sort
-        --reverse
-        --bind=ctrl-z:ignore
-        --multi
-        --preview 'awk "{ print \$1 }" <<< {} | xargs git show --color=always'
-        --preview-window 'down,70%'
-    )
-
-    setopt localoptions pipefail no_aliases 2> /dev/null
-    local item
-    __commits | fzf ${fzf_opts[@]} | while read item; do
-        awk '{ printf $1 " " }' <<< "${item}"
-    done
-    local ret=$?
-    echo
-    return $ret
-}
-fzf-git-commit-widget() {
-    LBUFFER="${LBUFFER}$(__git-log-fzf)"
-    local ret=$?
-    zle reset-prompt
-    return $ret
-}
-zle -N fzf-git-commit-widget
-bindkey '^G' fzf-git-commit-widget
