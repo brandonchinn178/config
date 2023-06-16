@@ -229,6 +229,28 @@ fzf-git-commit-widget() {
 zle -N fzf-git-commit-widget
 bindkey '^G' fzf-git-commit-widget
 
+# CTRL-B - Print the given git branch to the command line, or check it out
+__git-branch-fzf() {
+    if ! git is-in-repo; then
+        return
+    fi
+
+    setopt localoptions pipefail no_aliases 2> /dev/null
+    git branch --format '%(refname:short)' | fzf
+}
+fzf-git-branch-widget() {
+    local branch="$(__git-branch-fzf)"
+
+    if [[ -n "${LBUFFER}" ]]; then
+        LBUFFER="${LBUFFER}${branch}"
+    else
+        LBUFFER="git checkout ${branch}"
+        zle accept-line
+    fi
+}
+zle -N fzf-git-branch-widget
+bindkey '^B' fzf-git-branch-widget
+
 ############### Docker helpers ###############
 
 alias dc='docker compose'
