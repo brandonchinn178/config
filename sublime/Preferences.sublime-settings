@@ -95,5 +95,13 @@
     ".ruff_cache",
     "*.parq",
     "*.parquet",
+    ".dart_tool",
+    "build",
+    ".next",
+    "vendor",
+    "_site",
+    ".jekyll-cache",
+    "dist-newstyle",
+    "_cache",
   ],
 }
