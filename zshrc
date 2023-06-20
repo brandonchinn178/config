@@ -241,11 +241,13 @@ __git-branch-fzf() {
 fzf-git-branch-widget() {
     local branch="$(__git-branch-fzf)"
 
-    if [[ -n "${LBUFFER}" ]]; then
-        LBUFFER="${LBUFFER}${branch}"
-    else
-        LBUFFER="git checkout ${branch}"
-        zle accept-line
+    if [[ -n "${branch}" ]]; then
+        if [[ -n "${LBUFFER}" ]]; then
+            LBUFFER="${LBUFFER}${branch}"
+        else
+            LBUFFER="git checkout ${branch}"
+            zle accept-line
+        fi
     fi
 }
 zle -N fzf-git-branch-widget
