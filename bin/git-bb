@@ -207,16 +207,14 @@ def print_branch_info(
         ]
         print(json.dumps(o))
     else:
-        branch_outputs = []
-        for info in infos:
-            deps = ', '.join(info.deps)
-            branch_outputs.append(
-                '\n'.join([
-                    info.name,
-                    f' ├─ base = {info.base}',
-                    f' └─ deps = [{deps}]',
-                ])
-            )
+        branch_outputs = [
+            '\n'.join([
+                info.name,
+                f' └─ {info.base}',
+                *(f'    + {dep}' for dep in info.deps),
+            ])
+            for info in infos
+        ]
         print('\n\n'.join(branch_outputs))
 
 ##### Entrypoint #####
