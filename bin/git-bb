@@ -196,6 +196,9 @@ def print_branch_info(
         for branch in branches
     ]
 
+    # order by dependencies
+    infos = sorted(infos, key=lambda info: len(info.deps))
+
     if as_json:
         o = [
             {
