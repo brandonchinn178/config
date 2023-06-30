@@ -236,15 +236,14 @@ __git-branch-fzf() {
     fi
 
     setopt localoptions pipefail no_aliases 2> /dev/null
-    git branch --format '%(refname:short)' | fzf
+    git branch --format '%(refname:short)' | fzf "$@"
 }
 fzf-git-branch-widget() {
-    local branch="$(__git-branch-fzf)"
-
-    if [[ -n "${branch}" ]]; then
-        if [[ -n "${LBUFFER}" ]]; then
-            LBUFFER="${LBUFFER}${branch}"
-        else
+    if [[ -n "${LBUFFER}" ]]; then
+        LBUFFER="${LBUFFER}$(__git-branch-fzf --multi | tr '\n' ' ')"
+    else
+        local branch="$(__git-branch-fzf)"
+        if [[ -n "${branch}" ]]; then
             LBUFFER="git checkout ${branch}"
             zle accept-line
         fi
