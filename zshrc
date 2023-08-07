@@ -360,7 +360,7 @@ source "${brew_prefix}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 source "${brew_prefix}/opt/fzf/shell/completion.zsh"
 source "${brew_prefix}/opt/fzf/shell/key-bindings.zsh"
 
-export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export FZF_DEFAULT_COMMAND='fd --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
 
 # CTRL-R - search shell history
