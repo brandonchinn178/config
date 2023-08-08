@@ -339,4 +339,11 @@ return {
       { key = 'Backspace', mods = 'CMD', action = wezterm.action.CopyMode 'ClearPattern' },
     },
   },
+
+  unix_domains = {
+    {
+      name = 'unix',
+    },
+  },
+  default_gui_startup_args = { 'connect', 'unix' },
 }
