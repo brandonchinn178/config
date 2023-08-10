@@ -40,6 +40,9 @@ done
 link "${HOME}/.config/git" "${PWD}/git"
 link "${HOME}/.config/wezterm" "${PWD}/wezterm"
 
+link "${HOME}/.ssh/config" "${PWD}/ssh/config"
+mkdir -p ~/.ssh/config.d/
+
 ############### Upstream completion scripts ###############
 
 function download_file {
