@@ -15,16 +15,16 @@ sys.path.insert(0, (HERE.parent / 'git-bb').as_posix())
 from git_bb.api import (
     APIError,
     add_dep_branches,
+    get_default_base_branch,
     get_merge_deps_command,
     set_base_branch,
 )
 from git_bb.git import (
-    get_default_base_branch,
     get_current_branch,
     git,
     git_exec,
 )
-from git_bb.store import load_data, save_data
+from git_bb.store import BaseBranchData, load_data, save_data
 from git_bb.utils import abort as abort_
 
 abort = functools.partial(abort_, prefix='git-bb-make-branch')
@@ -37,6 +37,8 @@ def get_modified_files() -> List[str]:
 ### Implementation ###
 
 def make_branch(
+    *,
+    data: BaseBranchData,
     new_branch: str,
     base_branch: str,
     deps: Optional[List[str]],
@@ -62,7 +64,6 @@ def make_branch(
         unstash()
         abort(str(e))
 
-    data = load_data()
     set_base_branch(data, new_branch, base_branch=base_branch)
     if deps:
         add_dep_branches(data, new_branch, deps)
@@ -78,10 +79,12 @@ def make_branch(
 ### Entrypoint ###
 
 def main():
-    args = parse_args()
+    data = load_data()
+    args = parse_args(data)
 
     try:
         make_branch(
+            data=data,
             new_branch=args.branch,
             base_branch=args.base,
             deps=args.add_dep,
@@ -90,7 +93,7 @@ def main():
     except APIError as e:
         abort(str(e))
 
-def parse_args():
+def parse_args(data: BaseBranchData):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         'branch',
@@ -102,7 +105,7 @@ def parse_args():
         metavar='BASE',
         nargs='?',
         help='The base branch for the new branch (defaults to %(default)s)',
-        default=get_default_base_branch(),
+        default=get_default_base_branch(data),
     )
     parser.add_argument(
         '--add-dep',

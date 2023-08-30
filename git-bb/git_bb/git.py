@@ -1,4 +1,3 @@
-import re
 import subprocess
 from typing import Optional
 
@@ -24,16 +23,6 @@ def resolve_branch(branch: Optional[str]) -> str:
         raise MissingBranchError(branch)
 
     return branch
-
-def get_default_base_branch() -> str:
-    if branch_exists('main'):
-        return 'main'
-
-    if branch_exists('master'):
-        return 'master'
-
-    remote_info = git('remote', 'show', 'origin')
-    return re.search('HEAD branch: (.*)$', remote_info, flags=re.M).group(1)
 
 ### Helpers ###
 

@@ -1,6 +1,7 @@
+import re
 from typing import List, Optional
 
-from .git import git
+from .git import branch_exists, git
 from .store import BaseBranchData, BranchInfo
 
 def get_all_registered_branches(data: BaseBranchData) -> List[str]:
@@ -92,6 +93,22 @@ def rm_dep_branches(data: BaseBranchData, branch: str, dep_branches: List[str]) 
     for dep_branch in dep_branches:
         if info and dep_branch in info.deps:
             info.deps.remove(dep_branch)
+
+def set_default_base_branch(data: BaseBranchData, base_branch: str | None) -> None:
+    data.default_base = base_branch
+
+def get_default_base_branch(data: BaseBranchData) -> str:
+    if data.default_base:
+        return data.default_base
+
+    if branch_exists('main'):
+        return 'main'
+
+    if branch_exists('master'):
+        return 'master'
+
+    remote_info = git('remote', 'show', 'origin')
+    return re.search('HEAD branch: (.*)$', remote_info, flags=re.M).group(1)
 
 def delete_branch(data: BaseBranchData, branch: str) -> None:
     data.branches.pop(branch, None)
