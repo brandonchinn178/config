@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+REBASE_DIR="$(git rev-parse --git-path rebase-merge)"
+if [[ -n "${REBASE_DIR}" ]]; then
+    REBASE_BRANCH_NAME_FILE="${REBASE_DIR}/head-name"
+    if [[ -f "${REBASE_BRANCH_NAME_FILE}" ]]; then
+        cat "${REBASE_BRANCH_NAME_FILE}" | sed 's;^refs/heads/;;'
+    fi
+fi

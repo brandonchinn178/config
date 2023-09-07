@@ -75,7 +75,7 @@ def add_branch_info(prompter):
         return
 
     # check if we're in a rebase
-    rebase_branch_name = get_rebase_branch_name()
+    rebase_branch_name = get_stdout(['git', 'rebase-branch-name'])
     if rebase_branch_name:
         prompter.add_prompt_part(f'[rebasing: {rebase_branch_name}]', color=ORANGE)
         return
@@ -132,14 +132,6 @@ def is_in_git_repo():
         stderr=subprocess.DEVNULL,
     )
     return proc.returncode == 0
-
-def get_rebase_branch_name():
-    rebase_dir = get_stdout(['git', 'rev-parse', '--git-path', 'rebase-merge'])
-    rebase_branch_name_file = Path(rebase_dir) / 'head-name'
-    try:
-        return rebase_branch_name_file.read_text().strip().removeprefix('refs/heads/')
-    except FileNotFoundError:
-        return None
 
 def get_stdout(*args, **kwargs):
     """
