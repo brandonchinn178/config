@@ -1,0 +1,9 @@
+{
+    "scope": "source.haskell",
+    "completions": [
+        {
+            "trigger": "lang",
+            "contents": "{-# LANGUAGE $1 #-}",
+        },
+    ],
+}

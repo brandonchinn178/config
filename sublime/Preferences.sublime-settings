@@ -16,7 +16,7 @@
   // indexes + tooltips
   "show_definitions": false,
   "auto_complete_use_index": false,
-  "auto_complete_include_snippets": false,
+  "ignored_snippets": ["Haskell/*"],
 
   // package settings
   "ignored_packages": ["Vintage"],
