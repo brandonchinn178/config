@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+try() {
+    OUTPUT=$("$@")
+    if [[ -n "${OUTPUT}" ]]; then
+        echo "${OUTPUT}"
+        return 0
+    else
+        return 1
+    fi
+}
+
+main() {
+    try git branch --show-current && return || true
+    try git rebase-branch-name && return || true
+}
+
+main
