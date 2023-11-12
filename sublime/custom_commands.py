@@ -63,6 +63,6 @@ class OpenInGithubCommand(WindowCommand):
             capture_output=True,
             encoding='utf-8',
         )
-        repo = re.search(r'git@github\.com:(\w+/\w+)', proc.stdout)[1]
+        repo = re.search(r'git@github\.com:(\w+/[^\s]+)', proc.stdout)[1]
         url = f'https://github.com/{repo}/blob/main/{file.as_posix()}'
         webbrowser.open_new_tab(url)
