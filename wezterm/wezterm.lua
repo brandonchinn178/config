@@ -339,4 +339,19 @@ return {
       { key = 'Backspace', mods = 'CMD', action = wezterm.action.CopyMode 'ClearPattern' },
     },
   },
+
+  mouse_bindings = {
+    -- Override default left-click, which copies to clipbard + opens links
+    {
+      event = { Up = { streak = 1, button = 'Left' } },
+      mods = 'NONE',
+      action = wezterm.action.Nop,
+    },
+    -- Open links with alt+click
+    {
+      event = { Up = { streak = 1, button = 'Left' } },
+      mods = 'ALT',
+      action = wezterm.action.OpenLinkAtMouseCursor,
+    },
+  },
 }
