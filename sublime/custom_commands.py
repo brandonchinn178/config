@@ -21,7 +21,7 @@ class OpenAllModifiedCommand(WindowCommand):
         diff_args = ['--staged'] if staged else []
 
         proc = subprocess.run(
-            ['git', 'diff', '--diff-filter=dxb', '--name-only'] + diff_args,
+            ['git', 'diff', '--diff-filter=dxb', '--name-only', '--relative'] + diff_args,
             cwd=folder,
             capture_output=True,
             encoding='utf-8',
