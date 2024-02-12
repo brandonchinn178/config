@@ -1,7 +1,7 @@
 import re
 from typing import List, Optional
 
-from .git import branch_exists, git
+from .git import branch_exists, git, is_ancestor
 from .store import BaseBranchData, BranchInfo
 
 def get_all_registered_branches(data: BaseBranchData) -> List[str]:
@@ -33,13 +33,7 @@ def display_branch_info(data: BaseBranchData, branch: str) -> str:
             branch_display += f' + {num_deps} '
             branch_display += 'other' if num_deps == 1 else 'others'
 
-        base = info.base
-        if len(info.deps) > 0:
-            # if a branch has dependencies, the first commit will be a merge commit
-            last_merge = git('log', '--merges', '-n1', '--pretty=format:%H')
-            if last_merge:
-                base = last_merge
-
+        base = get_base_ref(info)
         commits_after_base = int(git('rev-list', '--count', '--first-parent', f'{base}..HEAD'))
         if commits_after_base > 0:
             branch_display += f' > [+{commits_after_base}]'
@@ -49,6 +43,28 @@ def display_branch_info(data: BaseBranchData, branch: str) -> str:
     branch_display += branch
 
     return branch_display
+
+def get_base_ref(info: BranchInfo) -> str:
+    """Return the ref that marks the last commit before this branch starts."""
+    if len(info.deps) == 0:
+        return info.base
+
+    # if we've done a merge of the branch deps, find that merge commit
+    dep_merge = git('log', '--merges', '-n1', '--pretty=format:%H', f'{info.base}..HEAD')
+    if dep_merge:
+        return dep_merge
+
+    # if we've manually rebased on any deps, return the latest one
+    ancestor_deps = [dep for dep in info.deps if is_ancestor(dep, 'HEAD')]
+    if ancestor_deps:
+        latest = ancestor_deps[0]
+        for dep in ancestor_deps[1:]:
+            if is_ancestor(latest, dep):
+                latest = dep
+        return latest
+
+    # if all else fails, just return the base branch
+    return info.base
 
 def rename_branch(data: BaseBranchData, old_branch: str, new_branch: str) -> None:
     new_branch_data = {}

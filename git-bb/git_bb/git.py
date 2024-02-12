@@ -15,6 +15,14 @@ def branch_exists(branch: str) -> bool:
     else:
         return True
 
+def is_ancestor(old: str, new: str) -> bool:
+    try:
+        git('merge-base', '--is-ancestor', old, new)
+    except subprocess.CalledProcessError:
+        return False
+    else:
+        return True
+
 def resolve_branch(branch: Optional[str]) -> str:
     if branch is None:
         branch = get_current_branch()
