@@ -41,7 +41,7 @@ is-in-repo = !git rev-parse --is-inside-work-tree &> /dev/null
 copy-sha = !git rev-parse HEAD | tr -d '\n' | pbcopy
 
 [merge]
-conflictstyle = diff3
+conflictstyle = zdiff3
 
 [advice]
 detachedHead = false
@@ -49,5 +49,11 @@ detachedHead = false
 [init]
 defaultBranch = main
 
+[diff]
+algorithm = histogram
+
 [rerere]
 enabled = true
+
+[url "git@github.com:"]
+insteadOf = https://github.com/
