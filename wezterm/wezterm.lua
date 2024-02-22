@@ -163,6 +163,28 @@ return {
       action = wezterm.action.ActivateCommandPalette,
     },
 
+    -- Font
+    {
+      mods = 'CTRL',
+      key = '=',
+      action = wezterm.action.DisableDefaultAssignment,
+    },
+    {
+      mods = 'CTRL',
+      key = '+',
+      action = wezterm.action.DisableDefaultAssignment,
+    },
+    {
+      mods = 'CTRL',
+      key = '-',
+      action = wezterm.action.DisableDefaultAssignment,
+    },
+    {
+      mods = 'CTRL',
+      key = '_',
+      action = wezterm.action.DisableDefaultAssignment,
+    },
+
     -- Windows
     {
       mods = 'CMD|SHIFT',
