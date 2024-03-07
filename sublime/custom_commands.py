@@ -53,16 +53,27 @@ class OpenInGithubCommand(WindowCommand):
             cwd=file.parent,
             capture_output=True,
             encoding='utf-8',
+            check=True,
         )
         gitdir = Path(proc.stdout.strip())
         file = file.relative_to(gitdir)
+
+        proc = subprocess.run(
+            ['git', 'rev-parse', '--abbrev-ref', 'origin/HEAD'],
+            cwd=gitdir,
+            capture_output=True,
+            encoding='utf-8',
+            check=True,
+        )
+        default_branch = proc.stdout.strip().split('/')[1]
 
         proc = subprocess.run(
             ['git', 'remote', '-v'],
             cwd=gitdir,
             capture_output=True,
             encoding='utf-8',
+            check=True,
         )
-        repo = re.search(r'git@github\.com:(\w+/[^\s]+)', proc.stdout)[1]
-        url = f'https://github.com/{repo}/blob/main/{file.as_posix()}'
+        repo = re.search(r'git@github\.com:(\w+/[\w-]+)(\.git)?', proc.stdout)[1]
+        url = f'https://github.com/{repo}/blob/{default_branch}/{file.as_posix()}'
         webbrowser.open_new_tab(url)
