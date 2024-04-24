@@ -20,7 +20,7 @@ function link {
 files=(
     bin
     haskeline
-    inputrc
+    editrc
     vim
     vimrc
     zsh

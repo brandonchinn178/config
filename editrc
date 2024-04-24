@@ -1,0 +1,6 @@
+bind ^R em-inc-search-prev
+
+bind '^[[1;3C' vi-next-word
+bind '^[[1;3D' vi-prev-word
+bind '^[[1;5C' vi-next-word
+bind '^[[1;5D' vi-prev-word
