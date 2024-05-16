@@ -8,6 +8,7 @@ local TEAL = '#4ac9e2'
 local LIGHT_BLUE = '#a3bfd1'
 local YELLOW = '#eef0b6'
 local BLACK = '#000'
+local RED = '#ff0000'
 
 -- https://wezfurlong.org/wezterm/config/lua/config/custom_block_glyphs.html
 local POWERLINE_FSLASH_UPPER = utf8.char(0xe0bc)
@@ -139,6 +140,11 @@ return {
     selection_bg = LIGHT_BLUE,
     selection_fg = BLACK,
     scrollbar_thumb = WHITE,
+    split = RED,
+  },
+  inactive_pane_hsb = {
+    saturation = 0.5,
+    brightness = 0.5,
   },
 
   tab_max_width = 24,
