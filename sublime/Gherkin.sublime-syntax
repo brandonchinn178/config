@@ -1,0 +1,24 @@
+%YAML 1.2
+---
+# http://www.sublimetext.com/docs/syntax.html
+name: Gherkin
+file_extensions:
+  - feature
+scope: source.gherkin
+contexts:
+  main:
+    - include: comments
+    - include: keywords
+  comments:
+    - match: (#).*$\n?
+      scope: comment.line.hash.gherkin
+      captures:
+        1: punctuation.definition.comment.gherkin
+  keywords:
+    - match: \b(Given|When|Then|And)\b
+      captures:
+        1: keyword.control.gherkin
+    - match: \b(Scenario|Feature)(:)
+      captures:
+        1: keyword.control.gherkin
+        2: punctuation.separator.gherkin
