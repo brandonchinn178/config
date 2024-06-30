@@ -8,4 +8,5 @@ After installing Package Control, I use the following packages:
 - Clickable URLs
 - Maybs Quit
 - Monokai Pro
+- PackageDev
 - TrailingSpaces

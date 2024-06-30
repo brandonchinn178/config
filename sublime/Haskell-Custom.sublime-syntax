@@ -184,10 +184,11 @@ contexts:
       scope: constant.other.haskell entity.name.constructor.haskell
 
   data_declaration:
-    - match: '^(\s*)(data|newtype)\s+({{type_id}})?'
+    - match: '^(\s*)(type\s+)?(data|newtype)\s+({{type_id}})?'
       captures:
         2: keyword.declaration.data.haskell
-        3: constant.other.haskell entity.name.class.haskell
+        3: keyword.declaration.data.haskell
+        4: constant.other.haskell entity.name.class.haskell
       push:
         - meta_scope: meta.declaration.data.haskell
         - match: ^(?!\1\s)
