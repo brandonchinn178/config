@@ -19,7 +19,8 @@
   "ignored_snippets": ["Haskell/*"],
 
   // package settings
-  "ignored_packages": ["Vintage"],
+  "ignored_packages": ["Vintage",
+  ],
 
   // toolbar + sidebar
   "show_rel_path": true,
@@ -104,4 +105,5 @@
     "dist-newstyle",
     "_cache",
   ],
+  "index_files": true,
 }
