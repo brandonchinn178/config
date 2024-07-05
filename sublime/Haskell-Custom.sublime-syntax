@@ -165,6 +165,9 @@ contexts:
   common_keywords:
     - match: \b(where|case|of|let|in|default|do|mdo|if|then|else|rec|proc)\b
       scope: keyword.other.haskell
+    - match: (?<=\\)(cases)\b
+      captures:
+        1: keyword.other.haskell
 
   constructor_signature:
     - match: '^(\s+)({{type_id}}|\(\W+\))\s*((::)|∷)'
