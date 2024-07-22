@@ -252,6 +252,20 @@ fzf-git-branch-widget() {
 zle -N fzf-git-branch-widget
 bindkey '^B' fzf-git-branch-widget
 
+__checkout_branch() {
+    local name=$1
+    local branch="$(git branch --format '%(refname:short)' | grep "${name}" | head -n1)"
+    if [[ -z "${branch}" ]]; then
+        echo "No branch matching ${name}" >&2
+        return 1
+    fi
+
+    echo ">>> git checkout ${branch}" >&2
+    git checkout "${branch}"
+}
+
+alias gb=__checkout_branch
+
 ############### Docker helpers ###############
 
 alias dc='docker compose'
