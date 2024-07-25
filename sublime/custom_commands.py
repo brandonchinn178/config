@@ -44,33 +44,38 @@ class OpenInGithubCommand(WindowCommand):
             fail('ERROR: no file open.')
         file = Path(file)
 
-        gitdir = self._get_output(
+        repodir = self._get_output(
             ['git', 'rev-parse', '--show-toplevel'],
             cwd=file.parent,
             error='Could not get repo directory',
         )
-        gitdir = Path(gitdir.strip())
-        file = file.relative_to(gitdir)
+        repodir = Path(repodir.strip())
+        file = file.relative_to(repodir)
 
-        remotes = self._get_output(
-            ['git', 'remote', '-v'],
-            cwd=gitdir,
+        remote_name = "origin"
+        remote_url = self._get_output(
+            ['git', 'remote', 'get-url', remote_name],
+            cwd=repodir,
             error='Could not get remotes',
-        )
-        remote_name, remote_url, _ = remotes.splitlines()[0].split()
+        ).strip()
 
         repo = remote_url.split(":")[1]
-        default_branch = self._get_default_branch(gitdir, remote_name)
+        default_branch = self._get_default_branch(repodir, "origin")
         url = f'https://github.com/{repo}/blob/{default_branch}/{file.as_posix()}'
         webbrowser.open_new_tab(url)
 
-    def _get_default_branch(self, gitdir, remote_name):
+    def _get_default_branch(self, repodir, remote_name):
         # this file only exists if we git cloned this repo originally
-        head_ref_file = gitdir / ".git/refs/remotes" / remote_name / "HEAD"
+        head_ref_file = self._get_output(
+            ["git", "rev-parse", "--git-path", f"refs/remotes/{remote_name}/HEAD"],
+            cwd=repodir,
+            error='Could not get git directory',
+        ).strip()
+        head_ref_file = Path(head_ref_file)
         if not head_ref_file.exists():
             out = self._get_output(
                 ['git', 'ls-remote', '--symref', remote_name],
-                cwd=gitdir,
+                cwd=repodir,
                 error=f"Could not fetch refs for {remote_name}",
             )
             head_ref = next(
@@ -78,11 +83,12 @@ class OpenInGithubCommand(WindowCommand):
                 for line in out.splitlines()
                 if line.endswith("HEAD") and line.startswith('ref:')
             )
+            head_ref_file.parent.mkdir(exist_ok=True, parents=True)
             head_ref_file.write_text(head_ref)
 
         return self._get_output(
             ['git', 'rev-parse', '--abbrev-ref', 'origin/HEAD'],
-            cwd=gitdir,
+            cwd=repodir,
             error='Could not get default branch',
         ).split("/")[1].strip()
 
