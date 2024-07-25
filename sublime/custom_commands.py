@@ -84,7 +84,7 @@ class OpenInGithubCommand(WindowCommand):
             ['git', 'rev-parse', '--abbrev-ref', 'origin/HEAD'],
             cwd=gitdir,
             error='Could not get default branch',
-        ).strip()
+        ).split("/")[1].strip()
 
     def _get_output(self, args, *, error, **kwargs):
         kwargs = {
