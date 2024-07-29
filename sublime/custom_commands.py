@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 import subprocess
 import webbrowser
 
@@ -59,7 +60,7 @@ class OpenInGithubCommand(WindowCommand):
             error='Could not get remotes',
         ).strip()
 
-        repo = remote_url.split(":")[1]
+        repo = re.match(r"git@github.com:([\w_/-]+)(\.git)?", remote_url).group(1)
         default_branch = self._get_default_branch(repodir, "origin")
         url = f'https://github.com/{repo}/blob/{default_branch}/{file.as_posix()}'
         webbrowser.open_new_tab(url)
