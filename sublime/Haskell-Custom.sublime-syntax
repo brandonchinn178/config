@@ -513,6 +513,8 @@ contexts:
         - include: type
 
   type:
+    - match: \b(forall)\b
+      scope: keyword.declaration.type.haskell
     - match: \s*(->|\u2192)\s*
       scope: keyword.operator.arrow.haskell
     - match: \s*(=>|\u21D2)\s*
