@@ -72,7 +72,7 @@ class OpenInGithubCommand(WindowCommand):
             cwd=repodir,
             error='Could not get git directory',
         ).strip()
-        head_ref_file = Path(head_ref_file)
+        head_ref_file = repodir / head_ref_file
         if not head_ref_file.exists():
             out = self._get_output(
                 ['git', 'ls-remote', '--symref', remote_name],
@@ -87,11 +87,12 @@ class OpenInGithubCommand(WindowCommand):
             head_ref_file.parent.mkdir(exist_ok=True, parents=True)
             head_ref_file.write_text(head_ref)
 
-        return self._get_output(
+        ref = self._get_output(
             ['git', 'rev-parse', '--abbrev-ref', 'origin/HEAD'],
             cwd=repodir,
             error='Could not get default branch',
-        ).split("/")[1].strip()
+        ).strip()
+        return ref.split("/")[1] if "/" in ref else ref
 
     def _get_output(self, args, *, error, **kwargs):
         kwargs = {
