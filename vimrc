@@ -34,7 +34,8 @@ nnoremap <expr> <leader>c IsQuickFixOpen() ? ':cclose<cr>' : ':close<cr>'
 nnoremap <leader><tab> :cnext<cr>
 nnoremap <leader><S-tab> :cprev<cr>
 
-" Syntax highlighting
+" Colors
+color slate
 syntax on
 
 " Mouse
@@ -58,9 +59,6 @@ noremap <leader>y "*y
 " Highlights
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
-
-" colors
-colorscheme default
 
 " ctrl+v is configured for Maccy, so we'll need to remap visual-block
 nnoremap <C-B> <C-V>
