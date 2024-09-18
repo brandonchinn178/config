@@ -64,3 +64,4 @@ match ExtraWhitespace /\s\+$/
 nnoremap <C-B> <C-V>
 
 au BufReadCmd *.whl call zip#Browse(expand("<amatch>"))
+autocmd BufNewFile,BufRead *.star set syntax=python
