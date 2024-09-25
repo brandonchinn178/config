@@ -5,6 +5,7 @@ cask "rectangle"
 
 brew "colordiff"
 brew "corepack"
+brew "dlvhdr/formulae/diffnav"
 brew "fd"
 brew "fzf"
 brew "git-delta"

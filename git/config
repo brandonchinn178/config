@@ -3,7 +3,7 @@ name = Brandon Chinn
 email = brandonchinn178@gmail.com
 
 [core]
-pager = delta
+pager = delta # TODO: switch to diffnav
 
 [interactive]
 diffFilter = delta --color-only
@@ -51,6 +51,7 @@ defaultBranch = main
 
 [diff]
 algorithm = histogram
+colorMoved = default
 
 [rerere]
 enabled = true
