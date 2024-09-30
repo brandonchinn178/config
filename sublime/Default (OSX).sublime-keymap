@@ -1,6 +1,8 @@
 [
   { "keys": ["ctrl+tab"], "command": "next_view" },
   { "keys": ["ctrl+shift+tab"], "command": "prev_view" },
+  { "keys": ["super+ctrl+alt+tab"], "command": "next_view_in_stack" },
+  { "keys": ["super+ctrl+alt+shift+tab"], "command": "prev_view_in_stack" },
   { "keys": ["super+equals"], "command": "unbound" },
   { "keys": ["super+plus"], "command": "unbound" },
   { "keys": ["super+minus"], "command": "unbound" },
