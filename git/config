@@ -53,6 +53,9 @@ defaultBranch = main
 algorithm = histogram
 colorMoved = default
 
+[grep]
+petternType = perl
+
 [rerere]
 enabled = true
 
