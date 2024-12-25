@@ -368,29 +368,28 @@ contexts:
         )
         \b
       scope: constant.numeric.haskell
-    - match: '"'
+    - match: '("""|")'
       push:
         - meta_include_prototype: false
         - meta_scope: string.quoted.double.haskell
-        - match: '"'
+        - match: '\1'
           pop: true
-        - match: '(\\)\s*$'
-          captures:
-            1: constant.character.escape.multi-line.haskell
+        - include: string_content
+    - match: 's("""|")'
+      push:
+        - meta_include_prototype: false
+        - meta_scope: string.quoted.double.haskell
+        - match: '\1'
+          pop: true
+        - match: '\${'
+          scope: punctuation.interpolated-expr.haskell
           push:
-            - meta_include_prototype: false
-            - match: '\s+'
-            - match: '\\'
-              scope: constant.character.escape.multi-line.haskell
+            - clear_scopes: true
+            - include: expression_stuff
+            - match: '}'
+              scope: punctuation.interpolated-expr.haskell
               pop: true
-            - match: '(?=.)'
-              pop: true
-        - match: '\\(NUL|SOH|STX|ETX|EOT|ENQ|ACK|BEL|BS|HT|LF|VT|FF|CR|SO|SI|DLE|DC1|DC2|DC3|DC4|NAK|SYN|ETB|CAN|EM|SUB|ESC|FS|GS|RS|US|SP|DEL|[abfnrtv\\\"''\&])'
-          scope: constant.character.escape.haskell
-        - match: '\\o{{octal}}|\\x{{hexadecimal}}|\\{{decimal}}'
-          scope: constant.character.escape.octal.haskell
-        - match: '\^[A-Z@\[\]\\\^_]'
-          scope: constant.character.escape.control.haskell
+        - include: string_content
     - match: |-
         (?x)
         (')
@@ -410,6 +409,25 @@ contexts:
         3: constant.character.escape.octal.haskell
         4: constant.character.escape.hexadecimal.haskell
         5: constant.character.escape.control.haskell
+
+  string_content:
+    - match: '(\\)\s*$'
+      captures:
+        1: constant.character.escape.multi-line.haskell
+      push:
+        - meta_include_prototype: false
+        - match: '\s+'
+        - match: '\\'
+          scope: constant.character.escape.multi-line.haskell
+          pop: true
+        - match: '(?=.)'
+          pop: true
+    - match: '\\(NUL|SOH|STX|ETX|EOT|ENQ|ACK|BEL|BS|HT|LF|VT|FF|CR|SO|SI|DLE|DC1|DC2|DC3|DC4|NAK|SYN|ETB|CAN|EM|SUB|ESC|FS|GS|RS|US|SP|DEL|[abfnrtv\\\"''\&])'
+      scope: constant.character.escape.haskell
+    - match: '\\o{{octal}}|\\x{{hexadecimal}}|\\{{decimal}}'
+      scope: constant.character.escape.octal.haskell
+    - match: '\^[A-Z@\[\]\\\^_]'
+      scope: constant.character.escape.control.haskell
 
   module_exports:
     - match: \(

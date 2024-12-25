@@ -316,6 +316,17 @@ Find more themes at : https://github.com/daylerees/colour-schemes
         </dict>
         <dict>
             <key>name</key>
+            <string>Interpolated string expression</string>
+            <key>scope</key>
+            <string>punctuation.interpolated-expr.haskell</string>
+            <key>settings</key>
+            <dict>
+                <key>foreground</key>
+                <string>#7f7f7f</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>name</key>
             <string>Keyword declaration data</string>
             <key>scope</key>
             <string>keyword.declaration.data</string>
