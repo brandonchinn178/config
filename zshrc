@@ -21,10 +21,6 @@ autoload -Uz bashcompinit && bashcompinit
 zstyle ':completion:*' menu select
 zmodload zsh/complist
 
-# UP/DOWN
-bindkey '\e[A' history-search-backward
-bindkey '\e[B' history-search-forward
-
 # SHIFT-TAB
 bindkey -M menuselect '^[[Z' reverse-menu-complete
 
@@ -34,6 +30,26 @@ zstyle ':completion:*:*:git:*' script ~/.local/bin/git-completion.bash
 if type stack &> /dev/null; then
     eval "$(stack --bash-completion-script stack)"
 fi
+
+############### History ###############
+
+HISTFILESIZE=10000
+HISTSIZE=$HISTFILESIZE
+
+# UP/DOWN
+bindkey '\e[A' history-search-backward
+bindkey '\e[B' history-search-forward
+
+# CTRL-R - search shell history
+__fzf-ctrl-r-opts() {
+    local opts=(
+        --preview 'sed -E "s/[[:digit:]]+//;s/[[:space:]]+//;" <<< {}'
+        --preview-window 'down,2,wrap'
+        --height 70%
+    )
+    echo ${(q)opts[*]}
+}
+export FZF_CTRL_R_OPTS="$(__fzf-ctrl-r-opts)"
 
 ############### Key bindings ###############
 
@@ -376,14 +392,3 @@ source "${brew_prefix}/opt/fzf/shell/key-bindings.zsh"
 
 export FZF_DEFAULT_COMMAND='fd --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
-
-# CTRL-R - search shell history
-__fzf-ctrl-r-opts() {
-    local opts=(
-        --preview 'sed -E "s/[[:digit:]]+//;s/[[:space:]]+//;" <<< {}'
-        --preview-window 'down,2,wrap'
-        --height 70%
-    )
-    echo ${(q)opts[*]}
-}
-export FZF_CTRL_R_OPTS="$(__fzf-ctrl-r-opts)"
