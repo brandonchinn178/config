@@ -104,6 +104,7 @@
     ".jekyll-cache",
     "dist-newstyle",
     "_cache",
+    ".svelte-kit",
   ],
   "index_files": true,
   "update_check": false,

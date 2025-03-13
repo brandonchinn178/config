@@ -1,0 +1,9 @@
+{
+    "scope": "source.python",
+    "completions": [
+        {
+            "trigger": "annotations",
+            "contents": "from __future__ import annotations",
+        },
+    ],
+}
