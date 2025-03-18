@@ -90,14 +90,19 @@ def rename_branch(data: BranchData, old_branch: str, new_branch: str) -> None:
 def set_base_branch(data: BranchData, branch: str, *, base_branch: str) -> None:
     info = get_branch_info(data, branch)
     if info is None:
-        info = BranchInfo(name=branch, base=base_branch, deps=[], tags=set())
-    else:
-        info.base = base_branch
+        info = BranchInfo.new(branch)
+        data.branches[branch] = info
 
-    data.branches[branch] = info
+    info.base = base_branch
+
+def unset_base_branch(data: BranchData, branch: str) -> None:
+    info = get_branch_info(data, branch, missing_ok=False)
+    info.base = None
 
 def add_dep_branches(data: BranchData, branch: str, dep_branches: List[str]) -> None:
     info = get_branch_info(data, branch, missing_ok=False)
+    if info.base is None:
+        raise APIError(f'Could not add branch dependency: `{branch}` does not have a base branch')
     for dep_branch in dep_branches:
         if dep_branch in info.deps:
             raise APIError(f'Could not add branch dependency: `{dep_branch}` is already a dependency')
@@ -128,7 +133,11 @@ def get_default_base_branch(data: BranchData) -> str:
     return re.search('HEAD branch: (.*)$', remote_info, flags=re.M).group(1)
 
 def add_tag(data: BranchData, branch: str, tag: str) -> None:
-    info = get_branch_info(data, branch, missing_ok=False)
+    info = get_branch_info(data, branch)
+    if info is None:
+        info = BranchInfo.new(branch)
+        data.branches[branch] = info
+
     info.tags.add(tag)
 
 def rm_tag(data: BranchData, branch: str, tag: str) -> None:

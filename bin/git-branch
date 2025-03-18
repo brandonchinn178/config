@@ -108,7 +108,14 @@ def get_branches() -> list[Branch]:
             name=name,
             is_head=head_str == "*",
             is_worktree=len(worktree_path) > 0,
-            deps=[info.base, *info.deps] if info else [],
+            deps=(
+                [
+                    *([info.base] if info.base is not None else []),
+                    *info.deps,
+                ]
+                if info
+                else []
+            ),
             tags=info.tags if info else set(),
         )
         branches.append(branch)

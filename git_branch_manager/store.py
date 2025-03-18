@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import dataclasses
 import json
 from pathlib import Path
@@ -7,9 +9,18 @@ from .git import git
 @dataclasses.dataclass
 class BranchInfo:
     name: str
-    base: str
+    base: str | None
     deps: list[str]
     tags: set[str]
+
+    @classmethod
+    def new(cls, name: str) -> BranchInfo:
+        return cls(
+            name=name,
+            base=None,
+            deps=[],
+            tags=set(),
+        )
 
     @classmethod
     def from_json(cls, name: str, data: dict):
