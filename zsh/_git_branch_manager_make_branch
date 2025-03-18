@@ -1,6 +1,6 @@
-#compdef git-bb-make-branch
+#compdef git-branch-manager-make-branch
 
-function _git_bb_make_branch {
+function _git_branch_manager_make_branch {
     emulate -L zsh
 
     local flags=(

@@ -2,7 +2,7 @@
 
 set -eu -o pipefail
 
-function git_bb_delete_branch {
+function git_branch_manager_delete_branch {
     local args=()
     local branches=()
 
@@ -17,8 +17,8 @@ function git_bb_delete_branch {
     local branch
     for branch in $branches; do
         git branch -d $args $branch || continue
-        git bb --clear $branch
+        git branch-manager --clear $branch
     done
 }
 
-git_bb_delete_branch "$@"
+git_branch_manager_delete_branch "$@"

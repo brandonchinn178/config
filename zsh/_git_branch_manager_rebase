@@ -1,6 +1,6 @@
-#compdef git-bb-rebase
+#compdef git-branch-manager-rebase
 
-function _git_bb_rebase {
+function _git_branch_manager_rebase {
     _git_rebase
 
     emulate -L zsh

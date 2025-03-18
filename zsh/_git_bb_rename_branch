@@ -1,5 +1,0 @@
-#compdef git-bb-rename-branch
-
-function _git_bb_rename_branch {
-    __gitcomp_direct "$(__git_heads)"
-}

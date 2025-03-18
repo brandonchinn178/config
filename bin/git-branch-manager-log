@@ -2,7 +2,7 @@
 
 set -eu -o pipefail
 
-function git_bb_log {
+function git_branch_manager_log {
     local args=()
     local flags=()
     local extra_flags=()
@@ -19,7 +19,7 @@ function git_bb_log {
     done
 
     if [[ ${#args} -gt 1 ]]; then
-        echo 'Cannot pass multiple arguments to git-bb-log' >&2
+        echo 'Cannot pass multiple arguments to git-branch-manager-log' >&2
         return 1
     fi
 
@@ -27,7 +27,7 @@ function git_bb_log {
 
     local start=HEAD~10
 
-    local base="$(git bb --base ${args[1]:-})"
+    local base="$(git branch-manager --base ${args[1]:-})"
     if [[ -n $base ]]; then
         start="$(git merge-base $base $target)"
     fi
@@ -40,4 +40,4 @@ function git_bb_log {
     exec git log --first-parent $flags $range $extra_flags
 }
 
-git_bb_log "$@"
+git_branch_manager_log "$@"

@@ -6,5 +6,5 @@ cd "$(dirname "${0:A}")"
 
 mkdir -p man/man1
 
-bin/git-bb --help > man/man1/git-bb.1
-bin/git-bb-make-branch --help > man/man1/git-bb-make-branch.1
+bin/git-branch-manager --help > man/man1/git-branch-manager.1
+bin/git-branch-manager-make-branch --help > man/man1/git-branch-manager-make-branch.1

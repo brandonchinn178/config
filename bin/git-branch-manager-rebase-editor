@@ -7,9 +7,9 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, (HERE.parent / 'git-bb').as_posix())
+sys.path.insert(0, HERE.parent.as_posix())
 
-from git_bb.api import get_merge_deps_command
+from git_branch_manager.api import get_merge_deps_command
 
 def get_config():
     config_lines = []

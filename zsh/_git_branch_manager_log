@@ -1,0 +1,5 @@
+#compdef git-branch-manager-log
+
+function _git_branch_manager_log {
+    _git_log
+}

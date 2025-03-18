@@ -10,24 +10,24 @@ from pathlib import Path
 from typing import List, Optional
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, (HERE.parent / 'git-bb').as_posix())
+sys.path.insert(0, HERE.parent.as_posix())
 
-from git_bb.api import (
+from git_branch_manager.api import (
     APIError,
     add_dep_branches,
     get_default_base_branch,
     get_merge_deps_command,
     set_base_branch,
 )
-from git_bb.git import (
+from git_branch_manager.git import (
     get_current_branch,
     git,
     git_exec,
 )
-from git_bb.store import BaseBranchData, load_data, save_data
-from git_bb.utils import abort as abort_
+from git_branch_manager.store import BranchData, load_data, save_data
+from git_branch_manager.utils import abort as abort_
 
-abort = functools.partial(abort_, prefix='git-bb-make-branch')
+abort = functools.partial(abort_, prefix='git-branch-manager-make-branch')
 
 ### Git ###
 
@@ -38,7 +38,7 @@ def get_modified_files() -> List[str]:
 
 def make_branch(
     *,
-    data: BaseBranchData,
+    data: BranchData,
     new_branch: str,
     base_branch: str,
     deps: Optional[List[str]],
@@ -93,7 +93,7 @@ def main():
     except APIError as e:
         abort(str(e))
 
-def parse_args(data: BaseBranchData):
+def parse_args(data: BranchData):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         'branch',

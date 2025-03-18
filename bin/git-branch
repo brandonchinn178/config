@@ -11,10 +11,10 @@ from pathlib import Path
 from typing import NamedTuple, TypeVar
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, (HERE.parent / "git-bb").as_posix())
+sys.path.insert(0, HERE.parent.as_posix())
 
-from git_bb.api import get_branch_info
-from git_bb.store import BaseBranchData, load_data as load_base_branch_data
+from git_branch_manager.api import get_branch_info
+from git_branch_manager.store import load_data as load_branch_data
 
 T = TypeVar("T")
 ANSI_RESET = "\x1b[0m"
@@ -113,7 +113,7 @@ def get_branch_deps(branches: dict[str, Branch]) -> Tree[str]:
 
         {"main": [], "a": ["main"], "b": ["a"], "c": ["main"]}
     """
-    branch_data = load_base_branch_data()
+    branch_data = load_branch_data()
 
     # Build deps
     branch_to_deps = {

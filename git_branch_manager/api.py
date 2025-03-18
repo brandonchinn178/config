@@ -2,13 +2,13 @@ import re
 from typing import List, Optional
 
 from .git import branch_exists, git, is_ancestor
-from .store import BaseBranchData, BranchInfo
+from .store import BranchData, BranchInfo
 
-def get_all_registered_branches(data: BaseBranchData) -> List[str]:
+def get_all_registered_branches(data: BranchData) -> List[str]:
     return list(data.branches.keys())
 
 def get_branch_info(
-    data: BaseBranchData,
+    data: BranchData,
     branch: str,
     *,
     missing_ok: bool = True,
@@ -20,7 +20,7 @@ def get_branch_info(
 
     return info
 
-def display_branch_info(data: BaseBranchData, branch: str) -> str:
+def display_branch_info(data: BranchData, branch: str) -> str:
     info = get_branch_info(data, branch)
 
     branch_display = ''
@@ -66,7 +66,7 @@ def get_base_ref(info: BranchInfo) -> str:
     # if all else fails, just return the base branch
     return info.base
 
-def rename_branch(data: BaseBranchData, old_branch: str, new_branch: str) -> None:
+def rename_branch(data: BranchData, old_branch: str, new_branch: str) -> None:
     new_branch_data = {}
 
     for branch, info in data.branches.items():
@@ -86,7 +86,7 @@ def rename_branch(data: BaseBranchData, old_branch: str, new_branch: str) -> Non
 
     data.branches = new_branch_data
 
-def set_base_branch(data: BaseBranchData, branch: str, *, base_branch: str) -> None:
+def set_base_branch(data: BranchData, branch: str, *, base_branch: str) -> None:
     info = get_branch_info(data, branch)
     if info is None:
         info = BranchInfo(name=branch, base=base_branch, deps=[])
@@ -95,7 +95,7 @@ def set_base_branch(data: BaseBranchData, branch: str, *, base_branch: str) -> N
 
     data.branches[branch] = info
 
-def add_dep_branches(data: BaseBranchData, branch: str, dep_branches: List[str]) -> None:
+def add_dep_branches(data: BranchData, branch: str, dep_branches: List[str]) -> None:
     info = get_branch_info(data, branch, missing_ok=False)
     for dep_branch in dep_branches:
         if dep_branch in info.deps:
@@ -104,16 +104,16 @@ def add_dep_branches(data: BaseBranchData, branch: str, dep_branches: List[str])
             raise APIError(f'Could not add branch dependency: `{dep_branch}` is the base branch')
         info.deps.append(dep_branch)
 
-def rm_dep_branches(data: BaseBranchData, branch: str, dep_branches: List[str]) -> None:
+def rm_dep_branches(data: BranchData, branch: str, dep_branches: List[str]) -> None:
     info = get_branch_info(data, branch)
     for dep_branch in dep_branches:
         if info and dep_branch in info.deps:
             info.deps.remove(dep_branch)
 
-def set_default_base_branch(data: BaseBranchData, base_branch: str | None) -> None:
+def set_default_base_branch(data: BranchData, base_branch: str | None) -> None:
     data.default_base = base_branch
 
-def get_default_base_branch(data: BaseBranchData) -> str:
+def get_default_base_branch(data: BranchData) -> str:
     if data.default_base:
         return data.default_base
 
@@ -126,7 +126,7 @@ def get_default_base_branch(data: BaseBranchData) -> str:
     remote_info = git('remote', 'show', 'origin')
     return re.search('HEAD branch: (.*)$', remote_info, flags=re.M).group(1)
 
-def delete_branch(data: BaseBranchData, branch: str) -> None:
+def delete_branch(data: BranchData, branch: str) -> None:
     data.branches.pop(branch, None)
     for branch_info in data.branches.values():
         if branch in branch_info.deps:

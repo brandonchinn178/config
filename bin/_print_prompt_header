@@ -69,7 +69,7 @@ def get_prompt_lines():
     return prompter.get_lines()
 
 def add_branch_info(prompter):
-    branch_display = get_stdout(['git', 'bb', '--display'])
+    branch_display = get_stdout(['git', 'branch-manager', '--display'])
     if branch_display:
         prompter.add_prompt_part(f'[{branch_display}]', color=GREEN)
         return

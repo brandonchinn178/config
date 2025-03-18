@@ -21,7 +21,7 @@ class BranchInfo:
         return o
 
 @dataclasses.dataclass
-class BaseBranchData:
+class BranchData:
     default_base: str | None
     branches: Dict[str, BranchInfo]
 
@@ -45,18 +45,18 @@ class BaseBranchData:
 
 def get_data_path() -> Path:
     git_dir = git('rev-parse', '--git-common-dir')
-    return Path(git_dir) / 'base-branch-info'
+    return Path(git_dir) / 'branch-manager.json'
 
-def load_data() -> BaseBranchData:
+def load_data() -> BranchData:
     data_path = get_data_path()
 
     if not data_path.exists():
-        return BaseBranchData(default_base=None, branches={})
+        return BranchData(default_base=None, branches={})
 
     data_text = data_path.read_text()
-    return BaseBranchData.from_json(json.loads(data_text))
+    return BranchData.from_json(json.loads(data_text))
 
-def save_data(data: BaseBranchData) -> None:
+def save_data(data: BranchData) -> None:
     data_path = get_data_path()
 
     data_text = json.dumps(data.to_json(), indent=2)

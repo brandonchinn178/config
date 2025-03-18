@@ -1,6 +1,6 @@
-#compdef git-bb
+#compdef git-branch-manager
 
-function _git_bb {
+function _git_branch_manager {
     emulate -L zsh
     local flags=(
         --list

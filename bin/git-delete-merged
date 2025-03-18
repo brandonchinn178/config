@@ -41,7 +41,7 @@ function git_delete_merged {
 
     if [[ ${#branches} -gt 0 ]]; then
         print "Deleting branches: ${branches}"
-        git bb-delete-branch -D $branches
+        git branch-manager-delete-branch -D $branches
     else
         print 'No merged branches to delete'
     fi

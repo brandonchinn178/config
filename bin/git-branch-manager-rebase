@@ -8,7 +8,7 @@ function get_last_merge {
     git log --merges -n1 --pretty='format:%H'
 }
 
-function git_bb_rebase {
+function git_branch_manager_rebase {
     # proxy to underlying git-rebase if currently in a rebase
     if [[ -d "$(git rev-parse --git-path rebase-merge)" ]]; then
         exec git rebase "$@"
@@ -38,10 +38,10 @@ function git_bb_rebase {
                 rebase_args+=$last_merge
             ;;
             (detect-base)
-                # If the current branch IS NOT using the 'git-bb' system, resolve to the last
+                # If the current branch IS NOT using the 'git-branch-manager' system, resolve to the last
                 # merge commit.
                 #
-                # If the current branch IS using the 'git-bb' system, we have four scenarios:
+                # If the current branch IS using the 'git-branch-manager' system, we have four scenarios:
                 #   1. The commit we branched off from the base branch IS a merge commit
                 #   2. The commit we branched off from the base branch IS a merge commit AND
                 #      the current branch has dependencies.
@@ -55,7 +55,7 @@ function git_bb_rebase {
 
                 local target="$(get_last_merge)"
 
-                local base="$(git bb --base)"
+                local base="$(git branch-manager --base)"
                 if [[ -n $base ]]; then
                     local base_in_curr_history="$(git merge-base $base HEAD)"
                     local merges_in_curr_history="$(git log --merges "${base_in_curr_history}^".."HEAD")"
@@ -86,7 +86,7 @@ function git_bb_rebase {
     local editor_args=()
 
     if [[ $onto_base_branch == 1 ]]; then
-        local base="$(git bb --base)"
+        local base="$(git branch-manager --base)"
         if [[ -z $base ]]; then
             abort 'Branch is not registered'
         fi
@@ -96,7 +96,7 @@ function git_bb_rebase {
 
     if [[ $merge_deps == 1 ]]; then
         local dep
-        for dep in $(git bb --deps); do
+        for dep in $(git branch-manager --deps); do
             editor_args+=(--merge-branch $dep)
         done
     fi
@@ -107,9 +107,9 @@ function git_bb_rebase {
     )
 
     export OLD_GIT_SEQUENCE_EDITOR="${GIT_SEQUENCE_EDITOR:-}"
-    export GIT_SEQUENCE_EDITOR="git-bb-rebase-editor ${(@q)editor_args}"
+    export GIT_SEQUENCE_EDITOR="git-branch-manager-rebase-editor ${(@q)editor_args}"
 
     exec git rebase -i $rebase_args
 }
 
-git_bb_rebase "$@"
+git_branch_manager_rebase "$@"

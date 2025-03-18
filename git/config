@@ -23,18 +23,19 @@ squash = commit --amend --no-edit
 touch = commit --amend -C HEAD --date now --no-verify --allow-empty
 diff-plain = -c 'pager.diff=less -FX' diff
 show-plain = -c 'pager.show=less -FX' show
-l = !git --no-pager bb-log --oneline
+l = !git --no-pager branch-manager-log --oneline
 ll = log --oneline
 s = status -sb
 c = checkout
-cb = bb-make-branch
-mvb = bb-rename-branch
-bd = bb-delete-branch
-bD = bb-delete-branch -D
+bm = branch-manager
+cb = branch-manager-make-branch
+mvb = branch-manager-rename-branch
+bd = branch-manager-delete-branch
+bD = branch-manager-delete-branch -D
 p = push --force-with-lease
 pd = !git pull --prune && git delete-merged
 wip = !git add -A && git commit -m '[ci skip] wip' --no-verify
-r = bb-rebase
+r = branch-manager-rebase
 rc = rebase --continue
 cp = cherry-pick
 is-in-repo = !git rev-parse --is-inside-work-tree &> /dev/null
