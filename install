@@ -33,8 +33,12 @@ done
 
 ############### Other symlinks ###############
 
+MAN_DIR=/usr/local/share
+if [[ ! -d $MAN_DIR ]]; then
+    sudo mkdir -p $MAN_DIR && sudo chown $USER $MAN_DIR
+fi
 find ./man -type f | while read file; do
-    link "/usr/local/share/${file}" "${PWD}/${file}"
+    link "${MAN_DIR}/${file}" "${PWD}/${file}"
 done
 
 link "${HOME}/.config/git" "${PWD}/git"
