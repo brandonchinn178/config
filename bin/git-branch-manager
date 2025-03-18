@@ -41,6 +41,8 @@ def parse_args() -> "CLICommand":
     group.add_argument('--get-default-base', action='store_true', default=None)
     group.add_argument('--set-default-base')
     group.add_argument('--unset-default-base', action='store_true', default=None)
+    group.add_argument('--add-tag')
+    group.add_argument('--rm-tag')
     group.add_argument('--clear', action='store_true', default=None)
 
     args = parser.parse_args()
@@ -80,6 +82,12 @@ def parse_args() -> "CLICommand":
 
     if args.unset_default_base:
         return CLICommandUnsetDefaultBase()
+
+    if args.add_tag:
+        return CLICommandAddTag(branch=args.branch, tag=args.add_tag)
+
+    if args.rm_tag:
+        return CLICommandRemoveTag(branch=args.branch, tag=args.rm_tag)
 
     if args.clear:
         return CLICommandClear(branch=args.branch)
@@ -196,6 +204,26 @@ class CLICommandUnsetDefaultBase(CLICommand):
         save_data(data)
         print('Unset default base branch in branch-manager database')
 
+class CLICommandAddTag(CLIBranchCommand):
+    def __init__(self, *, branch: str | None, tag: str):
+        super().__init__(branch=branch)
+        self._tag = tag
+
+    def run(self, data: BranchData):
+        add_tag(data, self.branch, self._tag)
+        save_data(data)
+        print(f'Added tag `{self._tag}` for branch `{self.branch}`')
+
+class CLICommandRemoveTag(CLIBranchCommand):
+    def __init__(self, *, branch: str | None, tag: str):
+        super().__init__(branch=branch)
+        self._tag = tag
+
+    def run(self, data: BranchData):
+        rm_tag(data, self.branch, self._tag)
+        save_data(data)
+        print(f'Removed tag `{self._tag}` for branch `{self.branch}`')
+
 class CLICommandClear(CLIBranchCommand):
     def run(self, data: BranchData):
         # allow clearing branches that don't exist anymore
@@ -236,6 +264,7 @@ def print_branch_info(
                 "branch": info.name,
                 "base": info.base,
                 "deps": info.deps,
+                "tags": info.tags,
             }
             for info in infos
         ]
@@ -243,7 +272,7 @@ def print_branch_info(
     else:
         branch_outputs = [
             '\n'.join([
-                info.name,
+                info.name + "".join([f" [{tag}]" for tag in info.tags]),
                 f' └─ {info.base}',
                 *(f'    + {dep}' for dep in info.deps),
             ])

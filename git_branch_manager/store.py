@@ -1,7 +1,6 @@
 import dataclasses
 import json
 from pathlib import Path
-from typing import Dict, List
 
 from .git import git
 
@@ -9,21 +8,31 @@ from .git import git
 class BranchInfo:
     name: str
     base: str
-    deps: List[str]
+    deps: list[str]
+    tags: set[str]
 
     @classmethod
-    def from_json(cls, name, o):
-        return cls(name=name, **o)
+    def from_json(cls, name: str, data: dict):
+        data["tags"] = data.get("tags", [])  # migration
+        return cls(
+            name=name,
+            base=data["base"],
+            deps=data["deps"],
+            tags=set(data["tags"]),
+        )
 
     def to_json(self):
-        o = dataclasses.asdict(self)
-        del o['name']
-        return o
+        return {
+            "name": self.name,
+            "base": self.base,
+            "deps": self.deps,
+            "tags": list(self.tags),
+        }
 
 @dataclasses.dataclass
 class BranchData:
     default_base: str | None
-    branches: Dict[str, BranchInfo]
+    branches: dict[str, BranchInfo]
 
     @classmethod
     def from_json(cls, o):
@@ -35,12 +44,15 @@ class BranchData:
         return cls(default_base=default_base, branches=branches)
 
     def to_json(self):
+        branches = {}
+        for branch, branch_info in self.branches.items():
+            branch_data = branch_info.to_json()
+            del branch_data["name"]
+            branches[branch] = branch_data
+
         return {
             'default_base': self.default_base,
-            'branches': {
-                branch: branch_info.to_json()
-                for branch, branch_info in self.branches.items()
-            },
+            'branches': branches,
         }
 
 def get_data_path() -> Path:

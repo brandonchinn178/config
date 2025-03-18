@@ -253,7 +253,7 @@ __git-branch-fzf() {
     fi
 
     setopt localoptions pipefail no_aliases 2> /dev/null
-    git branch | fzf --tac --ansi "$@" | sed 's/^.[[:space:]]*//'
+    git branch | fzf --tac --ansi "$@" | sed 's/^.[[:space:]]*\([^[:space:]]*\).*$/\1/'
 }
 fzf-git-branch-widget() {
     if [[ -n "${LBUFFER}" ]]; then

@@ -1,3 +1,4 @@
+import dataclasses
 import re
 from typing import List, Optional
 
@@ -73,11 +74,11 @@ def rename_branch(data: BranchData, old_branch: str, new_branch: str) -> None:
         if branch == old_branch:
             branch = new_branch
         else:
-            info = BranchInfo(
-                name=branch,
-                base=info.base if info.base != old_branch else new_branch,
-                deps=[
-                    dep if dep != old_branch else new_branch
+            info = dataclasses.replace(
+                info,
+                base=new_branch if info.base == old_branch else info.base,
+                deps = [
+                    new_branch if dep == old_branch else dep
                     for dep in info.deps
                 ],
             )
@@ -89,7 +90,7 @@ def rename_branch(data: BranchData, old_branch: str, new_branch: str) -> None:
 def set_base_branch(data: BranchData, branch: str, *, base_branch: str) -> None:
     info = get_branch_info(data, branch)
     if info is None:
-        info = BranchInfo(name=branch, base=base_branch, deps=[])
+        info = BranchInfo(name=branch, base=base_branch, deps=[], tags=set())
     else:
         info.base = base_branch
 
@@ -125,6 +126,14 @@ def get_default_base_branch(data: BranchData) -> str:
 
     remote_info = git('remote', 'show', 'origin')
     return re.search('HEAD branch: (.*)$', remote_info, flags=re.M).group(1)
+
+def add_tag(data: BranchData, branch: str, tag: str) -> None:
+    info = get_branch_info(data, branch, missing_ok=False)
+    info.tags.add(tag)
+
+def rm_tag(data: BranchData, branch: str, tag: str) -> None:
+    info = get_branch_info(data, branch, missing_ok=False)
+    info.tags.remove(tag)
 
 def delete_branch(data: BranchData, branch: str) -> None:
     data.branches.pop(branch, None)

@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
+import dataclasses
 import itertools
 import os
 import subprocess
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import NamedTuple, TypeVar
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, HERE.parent.as_posix())
@@ -16,11 +16,11 @@ sys.path.insert(0, HERE.parent.as_posix())
 from git_branch_manager.api import get_branch_info
 from git_branch_manager.store import load_data as load_branch_data
 
-T = TypeVar("T")
 ANSI_RESET = "\x1b[0m"
 ANSI_DEFAULT = "\x1b[39m"
 ANSI_GREEN = "\x1b[32m"
 ANSI_CYAN = "\x1b[36m"
+ANSI_BLUE = "\x1b[94m"
 
 def main():
     if len(sys.argv) == 1:
@@ -30,37 +30,61 @@ def main():
 
 def show_branches() -> None:
     branches = get_branches()
-    branch_to_deps = get_branch_deps(branches)
-    branch_tree = to_branch_tree(branch_to_deps, branches=branches)
+    branches = prune_branch_deps(branches)
+    branch_tree = to_branch_tree(branches)
 
     # find roots, i.e. branches that aren't deps of anything
-    roots = [
-        branches[branch]
-        for branch, deps in branch_to_deps.items()
-        if len(deps) == 0
-    ]
+    roots = [branch for branch in branches if len(branch.deps) == 0]
     # add any deps that aren't branches (e.g. when a tag is a base)
-    for deps in branch_to_deps.values():
-        for dep in deps:
+    for branch in branches:
+        for dep in branch.deps:
             if (
-                dep not in branch_to_deps
+                dep not in {branch.name for branch in branches}
                 and dep not in {root.name for root in roots}
             ):
-                roots.append(Branch(name=dep, is_head=False, is_worktree=False))
+                branch = Branch(
+                    name=dep,
+                    is_head=False,
+                    is_worktree=False,
+                    deps=[],
+                    tags=set(),
+                )
+                roots.append(branch)
 
-    # group roots by namespace
-    grouped_roots = defaultdict(list)
-    for root in roots:
-        group = root.name.split("/", 1)[0] if "/" in root.name else ""
-        grouped_roots[group].append(root)
+    for root in Branch.sorted(roots):
+        print_tree(branch_tree, root)
 
-    for group in sorted(grouped_roots.keys()):
-        if group != "":
-            print(f"\n[{group}]")
-        for root in Branch.sorted(grouped_roots[group]):
-            print_tree(branch_tree, root)
+@dataclasses.dataclass(frozen=True)
+class Branch:
+    name: str
+    is_head: bool
+    is_worktree: bool
+    deps: list[str]
+    tags: set[str]
 
-def get_branches() -> dict[str, Branch]:
+    def render(self, *, indent: int = 0) -> str:
+        indent_str = " " * (2 * indent)
+
+        if self.is_head:
+            icon, color = "*", ANSI_GREEN
+        elif self.is_worktree:
+            icon, color = "+", ANSI_CYAN
+        else:
+            icon, color = " ", ANSI_DEFAULT
+
+        tags = ""
+        if len(self.tags) > 0:
+            tags = "".join(f" {ANSI_BLUE}[{tag}]{ANSI_DEFAULT}" for tag in self.tags)
+
+        return f"{icon} {indent_str}{color}{self.name}{ANSI_RESET}{tags}"
+
+    @staticmethod
+    def sorted(branches: list[Branch]) -> list[Branch]:
+        return sorted(branches, key=lambda branch: branch.name)
+
+BranchTree = dict[str, list[Branch]]
+
+def get_branches() -> list[Branch]:
     sep = "\t"
     branch_format = sep.join([
         "%(HEAD)",
@@ -74,84 +98,62 @@ def get_branches() -> dict[str, Branch]:
         encoding="utf-8",
     ).stdout
 
-    branches = {}
+    branch_data = load_branch_data()
+
+    branches = []
     for line in out.splitlines():
         head_str, worktree_path, name = line.split(sep)
-        branches[name] = Branch(
+        info = get_branch_info(branch_data, name)
+        branch = Branch(
             name=name,
             is_head=head_str == "*",
             is_worktree=len(worktree_path) > 0,
+            deps=[info.base, *info.deps] if info else [],
+            tags=info.tags if info else set(),
         )
+        branches.append(branch)
     return branches
 
-class Branch(NamedTuple):
-    name: str
-    is_head: bool
-    is_worktree: bool
-
-    def render(self, *, indent: int = 0) -> str:
-        if self.is_head:
-            icon, color = "*", ANSI_GREEN
-        elif self.is_worktree:
-            icon, color = "+", ANSI_CYAN
-        else:
-            icon, color = " ", ANSI_DEFAULT
-
-        indent_str = " " * (2 * indent)
-
-        return f"{icon} {indent_str}{color}{self.name}{ANSI_RESET}"
-
-    @staticmethod
-    def sorted(branches: list[Branch]) -> list[Branch]:
-        return sorted(branches, key=lambda branch: branch.name)
-
-Tree = dict[str, list[T]]
-
-def get_branch_deps(branches: dict[str, Branch]) -> Tree[str]:
+def prune_branch_deps(branches: list[Branch]) -> list[Branch]:
     """
-    Build tree from branch to deps:
+    Prune deps, such that
 
-        {"main": [], "a": ["main"], "b": ["a"], "c": ["main"]}
+        {"a": ["main"], "b": ["main", "a"]}
+
+    becomes
+
+        {"a": ["main"] "b": ["a"]}
     """
-    branch_data = load_branch_data()
+    new_branches = []
 
-    # Build deps
-    branch_to_deps = {
-        branch: [info.base, *info.deps] if (info := get_branch_info(branch_data, branch)) else []
-        for branch in branches.keys()
-    }
-
-    # Prune deps, such that {"a": ["main"], "b": ["main", "a"]} becomes {"a": ["main"] "b": ["a"]}
-    for branch, deps in branch_to_deps.items():
-        pruned_deps = set(deps)
-        for dep, other_dep in itertools.product(deps, repeat=2):
+    for branch in branches:
+        pruned_deps = set(branch.deps)
+        for dep, other_dep in itertools.product(branch.deps, repeat=2):
             if (
                 dep != other_dep
                 and dep in pruned_deps
                 and other_dep in pruned_deps
-                and is_reachable(from_=dep, to=other_dep, branch_to_deps=branch_to_deps)
+                and is_reachable(from_=dep, to=other_dep, branches=branches)
             ):
                 pruned_deps.remove(other_dep)
-        branch_to_deps[branch] = list(pruned_deps)
+        new_branches.append(dataclasses.replace(branch, deps=list(pruned_deps)))
 
-    return branch_to_deps
+    return new_branches
 
-def is_reachable(*, from_: str, to: str, branch_to_deps: Tree[str]) -> bool:
+def is_reachable(*, from_: str, to: str, branches: list[Branch]) -> bool:
+    branch_map = {branch.name: branch.deps for branch in branches}
+
     def _is_reachable_from(node: str) -> bool:
         if node == to:
             return True
-        for dep in branch_to_deps[node]:
+        for dep in branch_map[node]:
             if _is_reachable_from(dep):
                 return True
         return False
 
     return _is_reachable_from(from_)
 
-def to_branch_tree(
-    branch_to_deps: Tree[str],
-    *,
-    branches: dict[str, Branch],
-) -> Tree[Branch]:
+def to_branch_tree(branches: list[Branch]) -> BranchTree:
     """
     Build tree from parent to children:
 
@@ -159,18 +161,13 @@ def to_branch_tree(
     """
     # reverse deps
     tree = defaultdict(list)
-    for branch, deps in branch_to_deps.items():
-        tree.setdefault(branch, [])
-        for dep in deps:
+    for branch in branches:
+        tree.setdefault(branch.name, [])
+        for dep in branch.deps:
             tree[dep].append(branch)
+    return tree
 
-    # resolve str -> Branch
-    return {
-        branch: [branches[dep] for dep in deps]
-        for branch, deps in tree.items()
-    }
-
-def print_tree(tree: Tree[Branch], root: Branch) -> None:
+def print_tree(tree: BranchTree, root: Branch) -> None:
     def print_subtree(branch: Branch, *, indent: int) -> None:
         print(branch.render(indent=indent))
         for dep in Branch.sorted(tree[branch.name]):
