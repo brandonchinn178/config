@@ -253,11 +253,11 @@ __git-branch-fzf() {
     fi
 
     setopt localoptions pipefail no_aliases 2> /dev/null
-    git branch | fzf --layout=reverse-list --ansi "$@" | xargs
+    git branch | fzf --tac --ansi "$@" | sed 's/^.[[:space:]]*//'
 }
 fzf-git-branch-widget() {
     if [[ -n "${LBUFFER}" ]]; then
-        LBUFFER="${LBUFFER}$(__git-branch-fzf --multi)"
+        LBUFFER="${LBUFFER}$(__git-branch-fzf --multi | tr '\n' ' ')"
     else
         local branch="$(__git-branch-fzf)"
         if [[ -n "${branch}" ]]; then
