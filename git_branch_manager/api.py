@@ -26,7 +26,7 @@ def display_branch_info(data: BranchData, branch: str) -> str:
 
     branch_display = ''
 
-    if info:
+    if info and info.base:
         branch_display += info.base
 
         if len(info.deps) > 0:
@@ -47,6 +47,9 @@ def display_branch_info(data: BranchData, branch: str) -> str:
 
 def get_base_ref(info: BranchInfo) -> str:
     """Return the ref that marks the last commit before this branch starts."""
+    if info.base is None:
+        raise ValueError("get_base_ref called with no base branch")
+    
     if len(info.deps) == 0:
         return info.base
 
