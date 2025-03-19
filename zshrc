@@ -193,7 +193,6 @@ function ecr() {
 function git {
     case "$1" in
         (root) cd "$(git rev-parse --show-cdup)" ;;
-        (branch) shift; git-branch "$@" ;;
         (*) command git "$@" ;;
     esac
 }
@@ -253,11 +252,11 @@ __git-branch-fzf() {
     fi
 
     setopt localoptions pipefail no_aliases 2> /dev/null
-    git branch | fzf --tac --ansi "$@" | sed 's/^.[[:space:]]*\([^[:space:]]*\).*$/\1/'
+    git bm --fzf | fzf --ansi "$@" | xargs
 }
 fzf-git-branch-widget() {
     if [[ -n "${LBUFFER}" ]]; then
-        LBUFFER="${LBUFFER}$(__git-branch-fzf --multi | tr '\n' ' ')"
+        LBUFFER="${LBUFFER}$(__git-branch-fzf --multi)"
     else
         local branch="$(__git-branch-fzf)"
         if [[ -n "${branch}" ]]; then

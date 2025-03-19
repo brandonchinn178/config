@@ -11,9 +11,10 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, HERE.parent.as_posix())
 
 from git_branch_manager.api import *
+from git_branch_manager.display import show_branches
 from git_branch_manager.git import *
 from git_branch_manager.store import *
-from git_branch_manager.utils import abort
+from git_branch_manager.utils import ANSI, abort
 
 def main() -> None:
     command = parse_args()
@@ -30,6 +31,8 @@ def parse_args() -> "CLICommand":
     parser.add_argument('--json', action='store_true')
 
     group = parser.add_mutually_exclusive_group()
+    group.add_argument('--fzf', action='store_true', default=None)
+    group.add_argument('--current', action='store_true', default=None)
     group.add_argument('--list', '-l', action='store_true', default=None)
     group.add_argument('--base', action='store_true', default=None)
     group.add_argument('--deps', action='store_true', default=None)
@@ -39,14 +42,22 @@ def parse_args() -> "CLICommand":
     group.add_argument('--unset-base', action='store_true')
     group.add_argument('--add-dep', metavar='DEP', nargs='+')
     group.add_argument('--rm-dep', metavar='DEP', nargs='+')
+    group.add_argument('--set-group')
+    group.add_argument('--unset-group', action='store_true')
+    group.add_argument('--add-tag')
+    group.add_argument('--rm-tag')
     group.add_argument('--get-default-base', action='store_true', default=None)
     group.add_argument('--set-default-base')
     group.add_argument('--unset-default-base', action='store_true', default=None)
-    group.add_argument('--add-tag')
-    group.add_argument('--rm-tag')
     group.add_argument('--clear', action='store_true', default=None)
 
     args = parser.parse_args()
+
+    if args.fzf:
+        return CLICommandFzf()
+
+    if args.current:
+        return CLICommandShowBranch(branch=args.branch, as_json=args.json)
 
     if args.list:
         if args.branch is not None:
@@ -87,6 +98,12 @@ def parse_args() -> "CLICommand":
     if args.unset_default_base:
         return CLICommandUnsetDefaultBase()
 
+    if args.set_group:
+        return CLICommandSetGroup(branch=args.branch, group=args.set_group)
+
+    if args.unset_group:
+        return CLICommandUnsetGroup(branch=args.branch)
+
     if args.add_tag:
         return CLICommandAddTag(branch=args.branch, tag=args.add_tag)
 
@@ -96,7 +113,7 @@ def parse_args() -> "CLICommand":
     if args.clear:
         return CLICommandClear(branch=args.branch)
 
-    return CLICommandShowBranch(branch=args.branch, as_json=args.json)
+    return CLICommandShowBranches()
 
 ##### CLI Commands #####
 
@@ -112,6 +129,14 @@ class CLIBranchCommand(CLICommand):
     @property
     def branch(self) -> str:
         return resolve_branch(self._branch)
+
+class CLICommandFzf(CLICommand):
+    def run(self, data: BranchData):
+        branches = get_branches(data)
+        group_width = max(len(branch.group or "") for branch in branches)
+        for branch in branches:
+            group = f" {ANSI.YELLOW}[{branch.group}]{ANSI.RESET}" if branch.group else ""
+            print(branch.name + group)
 
 class CLICommandListAll(CLICommand):
     def __init__(self, *, as_json: bool = False):
@@ -217,6 +242,22 @@ class CLICommandUnsetDefaultBase(CLICommand):
         save_data(data)
         print('Unset default base branch in branch-manager database')
 
+class CLICommandSetGroup(CLIBranchCommand):
+    def __init__(self, *, branch: str | None, group: str):
+        super().__init__(branch=branch)
+        self._group = group
+
+    def run(self, data: BranchData):
+        set_group(data, self.branch, self._group)
+        save_data(data)
+        print(f'Set group for `{self.branch}`: {self._group}')
+
+class CLICommandUnsetGroup(CLIBranchCommand):
+    def run(self, data: BranchData):
+        unset_group(data, self.branch)
+        save_data(data)
+        print(f'Unset group for branch `{self.branch}`')
+
 class CLICommandAddTag(CLIBranchCommand):
     def __init__(self, *, branch: str | None, tag: str):
         super().__init__(branch=branch)
@@ -257,6 +298,11 @@ class CLICommandShowBranch(CLIBranchCommand):
     def run(self, data: BranchData):
         print_branch_info(data, [self.branch], as_json=self._as_json)
 
+class CLICommandShowBranches(CLICommand):
+    def run(self, data: BranchData):
+        branches = get_branches(data)
+        show_branches(branches)
+
 def print_branch_info(
     data: BranchData,
     branches: List[str],
@@ -272,19 +318,12 @@ def print_branch_info(
     infos = sorted(infos, key=lambda info: len(info.deps))
 
     if as_json:
-        o = [
-            {
-                "branch": info.name,
-                "base": info.base,
-                "deps": info.deps,
-                "tags": info.tags,
-            }
-            for info in infos
-        ]
+        o = [info.to_json() for info in infos]
         print(json.dumps(o))
     else:
         branch_outputs = [
             '\n'.join([
+                *([f"[{info.group}]"] if info.group else []),
                 info.name + "".join([f" [{tag}]" for tag in info.tags]),
                 *([f' └─ {info.base}'] if info.base is not None else []),
                 *(f'    + {dep}' for dep in info.deps),

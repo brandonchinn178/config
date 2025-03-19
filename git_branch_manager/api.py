@@ -1,9 +1,101 @@
+from __future__ import annotations
+
 import dataclasses
+import itertools
 import re
+import subprocess
 from typing import List, Optional
 
 from .git import branch_exists, git, is_ancestor
 from .store import BranchData, BranchInfo
+
+@dataclasses.dataclass(frozen=True)
+class Branch:
+    name: str
+    is_head: bool
+    is_worktree: bool
+    deps: list[str]
+    tags: set[str]
+    group: str | None
+
+    def to_json(self) -> dict[str, Any]:
+        return {
+            "name": self.name,
+            "is_head": self.is_head,
+            "is_worktree": self.is_worktree,
+            "deps": self.deps,
+            "tags": list(self.tags),
+            "group": self.group,
+        }
+
+def get_branches(data: BranchData) -> list[Branch]:
+    # read branches from git
+    sep = "\t"
+    branch_format = sep.join([
+        "%(HEAD)",
+        "%(worktreepath)",
+        "%(refname:short)",
+    ])
+    out = subprocess.run(
+        ["git", "branch", f"--format={branch_format}"],
+        check=True,
+        capture_output=True,
+        encoding="utf-8",
+    ).stdout
+
+    # parse branch information
+    branches = []
+    for line in out.splitlines():
+        head_str, worktree_path, name = line.split(sep)
+        info = get_branch_info(data, name)
+        branch = Branch(
+            name=name,
+            is_head=head_str == "*",
+            is_worktree=len(worktree_path) > 0,
+            deps=(
+                [
+                    *([info.base] if info.base is not None else []),
+                    *info.deps,
+                ]
+                if info
+                else []
+            ),
+            tags=info.tags if info else set(),
+            group=info.group if info else None,
+        )
+        branches.append(branch)
+
+    # prune deps, such that
+    #     {"a": ["main"], "b": ["main", "a"]}
+    # becomes
+    #     {"a": ["main"], "b": ["a"]}
+    pruned_branches = []
+    for branch in branches:
+        pruned_deps = set(branch.deps)
+        for dep, other_dep in itertools.product(branch.deps, repeat=2):
+            if (
+                dep != other_dep
+                and dep in pruned_deps
+                and other_dep in pruned_deps
+                and is_reachable(from_=dep, to=other_dep, branches=branches)
+            ):
+                pruned_deps.remove(other_dep)
+        pruned_branches.append(dataclasses.replace(branch, deps=list(pruned_deps)))
+
+    return pruned_branches
+
+def is_reachable(*, from_: str, to: str, branches: list[Branch]) -> bool:
+    branch_map = {branch.name: branch.deps for branch in branches}
+
+    def _is_reachable_from(node: str) -> bool:
+        if node == to:
+            return True
+        for dep in branch_map[node]:
+            if _is_reachable_from(dep):
+                return True
+        return False
+
+    return _is_reachable_from(from_)
 
 def get_all_registered_branches(data: BranchData) -> List[str]:
     return list(data.branches.keys())
@@ -49,7 +141,7 @@ def get_base_ref(info: BranchInfo) -> str:
     """Return the ref that marks the last commit before this branch starts."""
     if info.base is None:
         raise ValueError("get_base_ref called with no base branch")
-    
+
     if len(info.deps) == 0:
         return info.base
 
@@ -135,6 +227,18 @@ def get_default_base_branch(data: BranchData) -> str:
     remote_info = git('remote', 'show', 'origin')
     return re.search('HEAD branch: (.*)$', remote_info, flags=re.M).group(1)
 
+def set_group(data: BranchData, branch: str, group: str) -> None:
+    info = get_branch_info(data, branch)
+    if info is None:
+        info = BranchInfo.new(branch)
+        data.branches[branch] = info
+
+    info.group = group
+
+def unset_group(data: BranchData, branch: str) -> None:
+    info = get_branch_info(data, branch, missing_ok=False)
+    info.group = None
+
 def add_tag(data: BranchData, branch: str, tag: str) -> None:
     info = get_branch_info(data, branch)
     if info is None:
@@ -150,6 +254,8 @@ def rm_tag(data: BranchData, branch: str, tag: str) -> None:
 def delete_branch(data: BranchData, branch: str) -> None:
     data.branches.pop(branch, None)
     for branch_info in data.branches.values():
+        if branch == branch_info.base:
+            branch_info.base = None
         if branch in branch_info.deps:
             branch_info.deps.remove(branch)
 

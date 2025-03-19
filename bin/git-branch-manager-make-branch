@@ -3,6 +3,7 @@
 """Create and checkout a new branch."""
 
 import argparse
+import contextlib
 import functools
 import subprocess
 import sys
@@ -18,6 +19,7 @@ from git_branch_manager.api import (
     get_default_base_branch,
     get_merge_deps_command,
     set_base_branch,
+    set_group,
 )
 from git_branch_manager.git import (
     get_current_branch,
@@ -41,40 +43,42 @@ def make_branch(
     data: BranchData,
     new_branch: str,
     base_branch: str,
-    deps: Optional[List[str]],
+    deps: list[str],
+    group: str | None,
     persist_modified: bool,
 ):
-    if deps is not None:
-        if len(deps) == 0:
-            deps = [get_current_branch()]
-        deps = [dep for dep in deps if dep != base_branch]
-
-    unstash = lambda: True
-
+    ctx = contextlib.nullcontext
     if len(get_modified_files()) > 0:
         if persist_modified:
-            git_exec("stash", "push")
-            unstash = lambda: git_exec("stash", "pop")
+            ctx = git_stashed
         else:
             abort('There are modified files')
 
+    with ctx():
+        try:
+            git_exec("checkout", "-b", new_branch, base_branch)
+        except subprocess.CalledProcessError as e:
+            abort(str(e))
+
+        set_base_branch(data, new_branch, base_branch=base_branch)
+        if deps:
+            add_dep_branches(data, new_branch, deps)
+        if group:
+            set_group(data, new_branch, group)
+        save_data(data)
+
+        if deps:
+            cmd = get_merge_deps_command(deps)
+            print('Running: ' + ' '.join(cmd))
+            subprocess.check_call(cmd)
+
+@contextlib.contextmanager
+def git_stashed():
+    git_exec("stash", "push")
     try:
-        git_exec("checkout", "-b", new_branch, base_branch)
-    except subprocess.CalledProcessError as e:
-        unstash()
-        abort(str(e))
-
-    set_base_branch(data, new_branch, base_branch=base_branch)
-    if deps:
-        add_dep_branches(data, new_branch, deps)
-    save_data(data)
-
-    if deps:
-        cmd = get_merge_deps_command(deps)
-        print('Running: ' + ' '.join(cmd))
-        subprocess.check_call(cmd)
-
-    unstash()
+        yield
+    finally:
+        git_exec("stash", "pop")
 
 ### Entrypoint ###
 
@@ -87,11 +91,21 @@ def main():
             data=data,
             new_branch=args.branch,
             base_branch=args.base,
-            deps=args.add_dep,
+            deps=_resolve_deps(args.deps),
+            group=args.group,
             persist_modified=args.stash,
         )
     except APIError as e:
         abort(str(e))
+
+def _resolve_deps(deps: list[str] | None) -> list[str]:
+    if deps is None:
+        return []
+
+    return [
+        get_current_branch if dep == "." else dep
+        for dep in deps
+    ]
 
 def parse_args(data: BranchData):
     parser = argparse.ArgumentParser(description=__doc__)
@@ -108,13 +122,12 @@ def parse_args(data: BranchData):
         default=get_default_base_branch(data),
     )
     parser.add_argument(
-        '--add-dep',
-        metavar='DEP',
-        nargs='*',
-        help=(
-            'Branches to add as dependencies for the new branch. '
-            'If none are provided, will add the current branch as a dependency.'
-        ),
+        '--deps',
+        help="Comma-separated list of branches to add as dependencies. Use '.' to reference the current branch",
+    )
+    parser.add_argument(
+        '--group',
+        help="Group to set for the branch",
     )
     parser.add_argument(
         '--stash',

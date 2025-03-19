@@ -12,6 +12,7 @@ class BranchInfo:
     base: str | None
     deps: list[str]
     tags: set[str]
+    group: str | None
 
     @classmethod
     def new(cls, name: str) -> BranchInfo:
@@ -20,16 +21,19 @@ class BranchInfo:
             base=None,
             deps=[],
             tags=set(),
+            group=None,
         )
 
     @classmethod
     def from_json(cls, name: str, data: dict):
         data["tags"] = data.get("tags", [])  # migration
+        data["group"] = data.get("group")  # migration
         return cls(
             name=name,
             base=data["base"],
             deps=data["deps"],
             tags=set(data["tags"]),
+            group=data["group"],
         )
 
     def to_json(self):
@@ -38,6 +42,7 @@ class BranchInfo:
             "base": self.base,
             "deps": self.deps,
             "tags": list(self.tags),
+            "group": self.group,
         }
 
 @dataclasses.dataclass
