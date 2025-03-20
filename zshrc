@@ -252,7 +252,7 @@ __git-branch-fzf() {
     fi
 
     setopt localoptions pipefail no_aliases 2> /dev/null
-    git bm --fzf | fzf --ansi "$@" | xargs
+    git bm --fzf | fzf --ansi --accept-nth 1 "$@" | xargs
 }
 fzf-git-branch-widget() {
     if [[ -n "${LBUFFER}" ]]; then
