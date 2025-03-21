@@ -103,7 +103,7 @@ def _resolve_deps(deps: list[str] | None) -> list[str]:
         return []
 
     return [
-        get_current_branch if dep == "." else dep
+        get_current_branch() if dep == "." else dep
         for dep in deps
     ]
 
