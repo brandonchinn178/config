@@ -209,7 +209,11 @@ class CLICommandAddDep(CLIBranchCommand):
         self._deps = deps
 
     def run(self, data: BranchData):
-        add_dep_branches(data, self.branch, [resolve_branch(dep) for dep in self._deps])
+        deps = [resolve_branch(dep) for dep in self._deps]
+        if self.branch in deps:
+            raise Exception("Cannot add same branch as dependency")
+
+        add_dep_branches(data, self.branch, deps)
         save_data(data)
         print(f'Added branch dependencies for `{self.branch}`: ' + ', '.join(self._deps))
 
