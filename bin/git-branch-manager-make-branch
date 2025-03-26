@@ -91,20 +91,20 @@ def main():
             data=data,
             new_branch=args.branch,
             base_branch=args.base,
-            deps=_resolve_deps(args.deps.split(",")),
+            deps=_resolve_deps(args.deps),
             group=args.group,
             persist_modified=args.stash,
         )
     except APIError as e:
         abort(str(e))
 
-def _resolve_deps(deps: list[str] | None) -> list[str]:
+def _resolve_deps(deps: str | None) -> list[str]:
     if deps is None:
         return []
 
     return [
         get_current_branch() if dep == "." else dep
-        for dep in deps
+        for dep in deps.split(",")
     ]
 
 def parse_args(data: BranchData):
