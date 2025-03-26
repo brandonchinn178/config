@@ -91,7 +91,7 @@ def main():
             data=data,
             new_branch=args.branch,
             base_branch=args.base,
-            deps=_resolve_deps(args.deps),
+            deps=_resolve_deps(args.deps.split(",")),
             group=args.group,
             persist_modified=args.stash,
         )
