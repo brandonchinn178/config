@@ -90,7 +90,7 @@ def is_reachable(*, from_: str, to: str, branches: list[Branch]) -> bool:
     def _is_reachable_from(node: str) -> bool:
         if node == to:
             return True
-        for dep in branch_map[node]:
+        for dep in branch_map.get(node, []):  # might not exist if tags
             if _is_reachable_from(dep):
                 return True
         return False
