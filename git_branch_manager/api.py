@@ -218,10 +218,10 @@ def get_default_base_branch(data: BranchData) -> str:
     if data.default_base:
         return data.default_base
 
-    if branch_exists('main'):
+    if branch_exists('origin/main'):
         return 'main'
 
-    if branch_exists('master'):
+    if branch_exists('origin/master'):
         return 'master'
 
     remote_info = git('remote', 'show', 'origin')
