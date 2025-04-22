@@ -35,6 +35,7 @@ fi
 
 HISTFILESIZE=10000
 HISTSIZE=$HISTFILESIZE
+setopt EXTENDED_HISTORY
 
 # UP/DOWN
 bindkey '\e[A' history-search-backward
