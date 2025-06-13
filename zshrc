@@ -33,8 +33,10 @@ fi
 
 ############### History ###############
 
-HISTFILESIZE=10000
-HISTSIZE=$HISTFILESIZE
+SAVEHIST=10000
+HISTSIZE=10000
+setopt INC_APPEND_HISTORY_TIME
+# add timestamp to history; use `history -i` to view
 setopt EXTENDED_HISTORY
 
 # UP/DOWN
