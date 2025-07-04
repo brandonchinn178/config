@@ -27,3 +27,4 @@ Highlights:
     * Disable "Application windows" shortcut
     * Change "Missiong Control > Move left a space" to ctrl+alt+shift+left
     * Change "Missiong Control > Move right a space" to ctrl+alt+shift+right
+* To use touch ID for sudo, copy the template at `/etc/pam.d/sudo_local.template` and uncomment the pam_tid.so line
