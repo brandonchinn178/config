@@ -1,7 +1,7 @@
 cask "wezterm"
 cask "maccy"
 cask "notunes"
-cask "rectangle"
+cask "nikitabobko/tap/aerospace"
 
 brew "colordiff"
 brew "corepack"
