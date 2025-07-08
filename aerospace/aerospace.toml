@@ -130,6 +130,11 @@ automatically-unhide-macos-hidden-apps = true
     l = ['join-with right', 'mode main']
 
 [[on-window-detected]]
+    if.app-id = 'us.zoom.xos'
+    if.window-title-regex-substring = 'Zoom Meeting'
+    run = 'move-node-to-workspace z'
+
+[[on-window-detected]]
     if.app-name-regex-substring = 'System Settings|Finder|Steam|zoom.us'
     run = 'layout floating'
     check-further-callbacks = true
