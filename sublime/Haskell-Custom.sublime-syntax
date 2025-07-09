@@ -446,6 +446,10 @@ contexts:
           captures:
             1: keyword.haskell
             2: storage.module.haskell entity.name.module.haskell
+        - match: '\b(pattern) ({{type_id}})'
+          captures:
+            1: keyword.import.haskell
+            2: entity.name.constructor.haskell
         - match: '\b({{type_id}}\.)*({{var_id}})'
           captures:
             1: storage.module.haskell entity.name.module.haskell
