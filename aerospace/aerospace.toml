@@ -124,8 +124,8 @@ automatically-unhide-macos-hidden-apps = true
 [mode.service.binding]
     esc = ['reload-config', 'mode main']
 
-    m = 'move-workspace-to-monitor --wrap-around next'
-    f = 'layout floating tiling'
+    m = ['move-workspace-to-monitor --wrap-around next', 'mode main']
+    f = ['layout floating tiling', 'mode main']
 
 [[on-window-detected]]
     if.app-name-regex-substring = 'System Settings|Finder|Steam'
