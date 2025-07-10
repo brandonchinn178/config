@@ -119,6 +119,7 @@ automatically-unhide-macos-hidden-apps = true
     cmd-alt-shift-z = 'move-node-to-workspace z'
 
     cmd-alt-n = 'exec-and-forget /Applications/WezTerm.app/Contents/MacOS/wezterm-gui'
+    cmd-alt-tab = 'workspace-back-and-forth'
 
 [mode.service.binding]
     esc = ['reload-config', 'mode main']
