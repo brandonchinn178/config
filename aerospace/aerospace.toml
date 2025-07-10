@@ -95,10 +95,11 @@ automatically-unhide-macos-hidden-apps = true
     cmd-alt-shift-k = 'move up'
     cmd-alt-shift-l = 'move right'
 
+    cmd-alt-shift-left = 'join-with left'
+    cmd-alt-shift-right = 'join-with right'
+
     cmd-alt-left  = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace prev'
     cmd-alt-right = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace next'
-
-    cmd-alt-m = 'move-workspace-to-monitor --wrap-around next'
 
     cmd-alt-period = 'layout tiles horizontal vertical'
     cmd-alt-slash = 'layout accordion horizontal vertical'
@@ -106,35 +107,23 @@ automatically-unhide-macos-hidden-apps = true
 [mode.service.binding]
     esc = ['reload-config', 'mode main']
 
-    a = ['workspace 1', 'mode main']
-    s = ['workspace 2', 'mode main']
-    d = ['workspace 3', 'mode main']
-    f = ['workspace 4', 'mode main']
-    z = ['workspace 5', 'mode main']
-    x = ['workspace 6', 'mode main']
-    c = ['workspace 7', 'mode main']
-    v = ['workspace 8', 'mode main']
+    m = 'move-workspace-to-monitor --wrap-around next'
 
-    shift-a = ['move-node-to-workspace 1', 'mode main']
-    shift-s = ['move-node-to-workspace 2', 'mode main']
-    shift-d = ['move-node-to-workspace 3', 'mode main']
-    shift-f = ['move-node-to-workspace 4', 'mode main']
-    shift-z = ['move-node-to-workspace 5', 'mode main']
-    shift-x = ['move-node-to-workspace 6', 'mode main']
-    shift-c = ['move-node-to-workspace 7', 'mode main']
-    shift-v = ['move-node-to-workspace 8', 'mode main']
-
-    h = ['join-with left', 'mode main']
-    j = ['join-with down', 'mode main']
-    k = ['join-with up', 'mode main']
-    l = ['join-with right', 'mode main']
+    a = ['move-node-to-workspace 1', 'mode main']
+    s = ['move-node-to-workspace 2', 'mode main']
+    d = ['move-node-to-workspace 3', 'mode main']
+    f = ['move-node-to-workspace 4', 'mode main']
+    z = ['move-node-to-workspace 5', 'mode main']
+    x = ['move-node-to-workspace 6', 'mode main']
+    c = ['move-node-to-workspace 7', 'mode main']
+    v = ['move-node-to-workspace 8', 'mode main']
 
 [[on-window-detected]]
-    if.app-id = 'us.zoom.xos'
-    if.window-title-regex-substring = 'Zoom Meeting'
-    run = 'move-node-to-workspace z'
-
-[[on-window-detected]]
-    if.app-name-regex-substring = 'System Settings|Finder|Steam|zoom.us'
+    if.app-name-regex-substring = 'System Settings|Finder|Steam'
     run = 'layout floating'
+    check-further-callbacks = true
+
+[[on-window-detected]]
+    if.app-name-regex-substring = 'zoom.us'
+    run = 'move-node-to-workspace z'
     check-further-callbacks = true
