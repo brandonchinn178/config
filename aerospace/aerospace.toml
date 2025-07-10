@@ -104,19 +104,26 @@ automatically-unhide-macos-hidden-apps = true
     cmd-alt-period = 'layout tiles horizontal vertical'
     cmd-alt-slash = 'layout accordion horizontal vertical'
 
+    cmd-alt-1 = 'workspace 1'
+    cmd-alt-2 = 'workspace 2'
+    cmd-alt-3 = 'workspace 3'
+    cmd-alt-4 = 'workspace 4'
+    cmd-alt-5 = 'workspace 5'
+    cmd-alt-z = 'workspace z'
+
+    cmd-alt-shift-1 = 'move-node-to-workspace 1'
+    cmd-alt-shift-2 = 'move-node-to-workspace 2'
+    cmd-alt-shift-3 = 'move-node-to-workspace 3'
+    cmd-alt-shift-4 = 'move-node-to-workspace 4'
+    cmd-alt-shift-5 = 'move-node-to-workspace 5'
+    cmd-alt-shift-z = 'move-node-to-workspace z'
+
+    cmd-alt-n = 'exec-and-forget /Applications/WezTerm.app/Contents/MacOS/wezterm-gui'
+
 [mode.service.binding]
     esc = ['reload-config', 'mode main']
 
     m = 'move-workspace-to-monitor --wrap-around next'
-
-    a = ['move-node-to-workspace 1', 'mode main']
-    s = ['move-node-to-workspace 2', 'mode main']
-    d = ['move-node-to-workspace 3', 'mode main']
-    f = ['move-node-to-workspace 4', 'mode main']
-    z = ['move-node-to-workspace 5', 'mode main']
-    x = ['move-node-to-workspace 6', 'mode main']
-    c = ['move-node-to-workspace 7', 'mode main']
-    v = ['move-node-to-workspace 8', 'mode main']
 
 [[on-window-detected]]
     if.app-name-regex-substring = 'System Settings|Finder|Steam'
