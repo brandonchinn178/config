@@ -340,9 +340,9 @@ function end_command_border {
         case $retval in
             (0) code_display="👌" ;;
             (1) code_display="❗" ;;
-            (*) code_display="❗%F{red}(code=${retval})%f" ;;
+            (*) code_display="❗%F{red}(code=${retval})%f " ;;
         esac
-        print -P "${code_display} %F{250}(elapsed=${elapsed_time}s)%f "
+        print -P "${code_display}%F{250}(elapsed=${elapsed_time}s)%f "
 
         __ZSH_TIMESTAMP_BEGIN_PREV_CMD=
     fi
