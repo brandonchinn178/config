@@ -299,8 +299,11 @@ eval "$(export_aws)"
 
 ############### Prompt ###############
 
-zmodload zsh/datetime
 eval "$(starship init zsh)"
+
+############### Command border ###############
+
+zmodload zsh/datetime
 
 function __get_time {
     strftime '%s.%N'
@@ -308,12 +311,25 @@ function __get_time {
 
 __ZSH_TIMESTAMP_BEGIN_PREV_CMD=
 
-function precmd {
+function start_command_border {
+    local input=$3
+    if [[ -z $input ]]; then
+        return
+    fi
+
+    # get starting time
+    __ZSH_TIMESTAMP_BEGIN_PREV_CMD="$(__get_time)"
+
+    # show starting time
+    _print_time --fill '┈' --fill-color=237
+}
+
+function end_command_border {
     local retval=$?
 
     # if a previous command was run
     if [[ -n "${__ZSH_TIMESTAMP_BEGIN_PREV_CMD}" ]]; then
-        # show ending time
+        # show ending time on the right
         _print_time --end $'\r'
 
         # get elapsed time
@@ -332,19 +348,10 @@ function precmd {
     fi
 }
 
-function preexec {
-    local input=$3
+preexec_functions+=(start_command_border)
+precmd_functions+=(end_command_border)
 
-    if [[ -z $input ]]; then
-        return
-    fi
-
-    # get starting time
-    __ZSH_TIMESTAMP_BEGIN_PREV_CMD="$(__get_time)"
-
-    # show starting time
-    _print_time --fill '┈' --fill-color=237
-}
+############### Window title ###############
 
 function set_window_title {
     # set title to the name of the current directory, or
