@@ -41,13 +41,8 @@ find ./man -type f | while read file; do
     link "${MAN_DIR}/${file}" "${PWD}/${file}"
 done
 
-conf_dirs=(
-    aerospace
-    git
-    wezterm
-)
-for conf_dir in $conf_dirs; do
-    link "${HOME}/.config/${conf_dir}" "${PWD}/${conf_dir}"
+for conf_dir in config/*; do
+    link "${HOME}/.config/$(basename ${conf_dir})" "${PWD}/${conf_dir}"
 done
 
 link "${HOME}/.ssh/config" "${PWD}/ssh/config"
