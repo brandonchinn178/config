@@ -337,19 +337,6 @@ function precmd {
 
         __ZSH_TIMESTAMP_BEGIN_PREV_CMD=
     fi
-
-    # set title to the name of the current directory, or
-    # the name of the directory of the top-level git repo
-    local canonical_dir="$(print -P '%1~')"
-    if git is-in-repo; then
-        canonical_dir="$(basename "$(git rev-parse --show-toplevel)")"
-    fi
-    local title="$(basename $canonical_dir)"
-    if [[ $title = 'wezterm' ]]; then
-        # https://github.com/wez/wezterm/issues/3021
-        title='wezterm*'
-    fi
-    print -f '\e]1;%s\a' $title
 }
 
 function preexec {
@@ -365,6 +352,25 @@ function preexec {
     # show starting time
     _print_time --fill '┈' --fill-color=237
 }
+
+function set_window_title {
+    # set title to the name of the current directory, or
+    # the name of the directory of the top-level git repo
+
+    local canonical_dir="$(print -P '%1~')"
+    if git is-in-repo; then
+        canonical_dir="$(basename "$(git rev-parse --show-toplevel)")"
+    fi
+
+    local title="$(basename $canonical_dir)"
+    if [[ $title = 'wezterm' ]]; then
+        # https://github.com/wez/wezterm/issues/3021
+        title='wezterm*'
+    fi
+
+    echo -ne "\033]0; $title \007"
+}
+chpwd_functions+=(set_window_title)
 
 ############### wezterm ###############
 
