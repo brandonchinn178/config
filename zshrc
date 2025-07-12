@@ -184,13 +184,6 @@ if [[ $(uname -m) == 'arm64' ]]; then
     export C_INCLUDE_PATH="$(xcrun --show-sdk-path)/usr/include/ffi"
 fi
 
-############### AWS helpers ###############
-
-function ecr() {
-    aws ecr get-login-password --region us-west-2 \
-        | docker login --username AWS --password-stdin 766357520640.dkr.ecr.us-west-2.amazonaws.com
-}
-
 ############### Git helpers ###############
 
 function git {
