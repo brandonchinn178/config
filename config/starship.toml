@@ -1,0 +1,55 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+${shlvl}\
+${directory}\
+${custom.git_bm_branch}\
+${custom.git_rebase}\
+${custom.git_no_branch}\
+${git_commit}\
+\n\
+[❯](bold green) \
+"""
+
+[shlvl]
+disabled = false
+symbol = ' '
+
+[directory]
+fish_style_pwd_dir_length = 1
+
+[custom.git_bm_branch]
+description = 'The output of `git branch-manager --display`'
+when = true
+require_repo = true
+command = 'git branch-manager --display'
+format = '[(\[ $output\] )]($style)'
+
+[custom.git_rebase]
+# https://github.com/starship/starship/issues/6843
+description = 'Git rebase information'
+when = true
+require_repo = true
+command = 'git rebase-prompt'
+format = '[(\[$output\] )]($style)'
+style = 'bold 180' # orange
+
+[custom.git_no_branch]
+# https://github.com/starship/starship/issues/3251
+description = 'Prompt when not on git branch'
+when = true
+require_repo = true
+command = '''
+git_dir=$(git rev-parse --git-path .)
+if ! grep -q "^ref:" $git_dir/HEAD && [[ ! -f $git_dir/REBASE_HEAD ]]; then
+    echo "N/A"
+fi
+'''
+format = '[(\[$output\] )]($style)'
+style = 'bold yellow'
+
+[git_commit]
+commit_hash_length = 12
+only_detached = false
+style = 'bold purple'

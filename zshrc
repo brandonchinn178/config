@@ -307,6 +307,7 @@ eval "$(export_aws)"
 ############### Prompt ###############
 
 zmodload zsh/datetime
+eval "$(starship init zsh)"
 
 function __get_time {
     strftime '%s.%N'
@@ -349,9 +350,6 @@ function precmd {
         title='wezterm*'
     fi
     print -f '\e]1;%s\a' $title
-
-    # prompt banner
-    _print_prompt_header
 }
 
 function preexec {
@@ -367,8 +365,6 @@ function preexec {
     # show starting time
     _print_time --fill '┈' --fill-color=237
 }
-
-export PROMPT="$ "
 
 ############### wezterm ###############
 

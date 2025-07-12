@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+
+rebase_branch_name=$(git rebase-branch-name)
+if [[ -n $rebase_branch_name ]]; then
+    rebase_num=$(cat .git/rebase-merge/msgnum)
+    rebase_end=$(cat .git/rebase-merge/end)
+    echo "rebasing: ${rebase_branch_name} (${rebase_num}/${rebase_end})"
+fi
