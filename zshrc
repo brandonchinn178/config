@@ -368,8 +368,11 @@ function set_window_title {
         title='wezterm*'
     fi
 
-    echo -ne "\033]0; $title \007"
+    echo -ne "\033]0;$title\007"
 }
+
+# set title on initialization + whenever PWD changes
+set_window_title
 chpwd_functions+=(set_window_title)
 
 ############### wezterm ###############
