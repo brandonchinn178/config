@@ -128,7 +128,7 @@ automatically-unhide-macos-hidden-apps = true
     f = ['layout floating tiling', 'mode main']
 
 [[on-window-detected]]
-    if.app-name-regex-substring = 'System Settings|Finder|1Password|FaceTime|Steam|Bazecor'
+    if.app-name-regex-substring = 'System Settings|Finder|1Password|FaceTime|Steam|Bazecor|zoom.us'
     run = 'layout floating'
     check-further-callbacks = true
 
