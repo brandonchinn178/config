@@ -41,8 +41,8 @@ description = 'Prompt when not on git branch'
 when = true
 require_repo = true
 command = '''
-git_dir=$(git rev-parse --git-path .)
-if ! grep -q "^ref:" $git_dir/HEAD && [[ ! -f $git_dir/REBASE_HEAD ]]; then
+git_dir=$(git rev-parse --git-dir)
+if ! grep -q "^ref:" $git_dir/HEAD && [[ ! -d $git_dir/rebase-merge ]]; then
     echo "N/A"
 fi
 '''
