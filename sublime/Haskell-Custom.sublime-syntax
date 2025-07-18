@@ -23,7 +23,7 @@ variables:
   # Stuff we use very, very regularly...
   type_id: '[A-Z][\w'']*'
   var_id: '[a-z_][\w'']*'
-  qualified_id: '({{type_id}}\.)*{{var_id}}'
+  qualified_id: '({{type_id}}\.)*({{var_id}}|{{type_id}})'
 
 contexts:
   prototype:
@@ -331,7 +331,7 @@ contexts:
         - include: type
 
   infix_function_definition:
-    - match: '^\s*(?=(([\w''\.''"]+|(?:\w+@)?\(.*\)|\[.*\])\s+)+([^"''_,\(\);\[\]`\{\}\:\w\s]+|`{{qualified_id}}`)((\s*[\w''\.''"]+|\s*(?:\w+@)?\(.*\)|\s*\[.*\]))+\s*=)'
+    - match: '^\s*(?=(([\w''\.''"]+|(?:\w+@)?\(.*\)|\[.*\])\s+)+([^"''_,\(\);\[\]`\{\}\:\w\s]+|`{{var_id}}`)((\s*[\w''\.''"]+|\s*(?:\w+@)?\(.*\)|\s*\[.*\]))+\s*=)'
       push:
         - meta_scope: meta.definition.function.haskell
         - match: '( [^"''_,\(\);\[\]`\{\}\:\w\s]+|`[a-z][\w'']*`)'
