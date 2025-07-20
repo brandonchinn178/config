@@ -586,6 +586,9 @@ contexts:
           captures:
             1: keyword.operator.haskell
           pop: true
+        - match: '(\*)' # match [*] before the operator catch-all
+          captures:
+            1: keyword.operator.haskell
         - include: type
     - match: '"[^"]*"'
       scope: string.quoted.double.haskell
@@ -593,7 +596,7 @@ contexts:
       scope: keyword.operator.haskell
 
   type_declaration:
-    - match: '^(\s*)(type family)'
+    - match: '^(\s*)(type (family|instance))'
       captures:
         2: keyword.declaration.data.haskell
       push:
