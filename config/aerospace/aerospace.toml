@@ -127,6 +127,12 @@ automatically-unhide-macos-hidden-apps = true
     m = ['move-workspace-to-monitor --wrap-around next', 'mode main']
     f = ['layout floating tiling', 'mode main']
 
+# main = monitor, secondary = laptop
+# defaults to main
+[workspace-to-monitor-force-assignment]
+    1 = 'secondary'
+    z = 'secondary'
+
 [[on-window-detected]]
     if.app-name-regex-substring = 'System Settings|Finder|1Password|FaceTime|Steam|Bazecor|zoom.us'
     run = 'layout floating'
