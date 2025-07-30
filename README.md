@@ -14,22 +14,22 @@ Highlights:
     ```bash
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     ```
+
 1. Install [Sublime Text](https://www.sublimetext.com/)
     1. See `sublime/README.md`
+
+1. Install [Jetbrains Mono](https://www.jetbrains.com/lp/mono/)
+
 1. `./install`
-1. Open Rectangle and Maccy
-1. Add Maccy and noTunes to Login Items
 
-## Miscellaneous Mac setup
-
-* Keyboard shortcuts
-    * Change "Mission Control" shortcut to ctrl+alt+shift+up
-    * Disable "Application windows" shortcut
-    * Change "Missiong Control > Move left a space" to ctrl+alt+shift+left
-    * Change "Missiong Control > Move right a space" to ctrl+alt+shift+right
-
-* To use touch ID for sudo, copy the template at `/etc/pam.d/sudo_local.template` and uncomment the pam_tid.so line
-
-* Mission Control
+1. Settings:
+    * Login Items: Maccy, noTunes, Aerospace
+    * Displays have separate Spaces = enabled
     * Group windows by application = enabled
-    * Displays have separate Spaces = disabled
+    * Keyboard shortcuts
+        * Change "Mission Control" shortcut to ctrl+alt+shift+up
+        * Disable "Application windows" shortcut
+        * Change "Missiong Control > Move left a space" to ctrl+alt+shift+left
+        * Change "Missiong Control > Move right a space" to ctrl+alt+shift+right
+
+1. To use touch ID for sudo, copy the template at `/etc/pam.d/sudo_local.template` and uncomment the pam_tid.so line

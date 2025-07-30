@@ -10,7 +10,8 @@
   "caret_extra_top": 1,
   "caret_extra_bottom": 1,
   "caret_extra_width": 1,
-  "font_size": 12,
+  "font_face": "JetBrains Mono",
+  "font_size": 14,
   "scroll_past_end": 0.5,
 
   // indexes + tooltips
