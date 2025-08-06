@@ -106,6 +106,7 @@
     "dist-newstyle",
     "_cache",
     ".svelte-kit",
+    "_build",
   ],
   "index_files": true,
   "update_check": false,

@@ -163,7 +163,7 @@ contexts:
         - include: type
 
   common_keywords:
-    - match: \b(where|case|of|let|in|default|do|mdo|if|then|else|rec|proc)\b
+    - match: \b(where|case|of|let|in|default|do|mdo|if|then|else|rec|proc)(?!')\b
       scope: keyword.other.haskell
     - match: (?<=\\)(cases)\b
       captures:
