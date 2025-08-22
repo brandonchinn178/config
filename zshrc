@@ -58,6 +58,7 @@ export FZF_CTRL_R_OPTS="$(__fzf-ctrl-r-opts)"
 
 bindkey '^A' beginning-of-line
 bindkey '^E' end-of-line
+bindkey '^O' accept-line-and-down-history
 
 autoload -U edit-command-line
 zle -N edit-command-line
