@@ -135,7 +135,7 @@ automatically-unhide-macos-hidden-apps = true
     z = 'secondary'
 
 [[on-window-detected]]
-    if.app-name-regex-substring = 'System Settings|Finder|1Password|FaceTime|Steam|Bazecor|zoom.us'
+    if.app-name-regex-substring = 'System Settings|Finder|1Password|FaceTime|Steam|Bazecor|zoom.us|Managed Software Center'
     run = 'layout floating'
     check-further-callbacks = true
 

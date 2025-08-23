@@ -1,0 +1,32 @@
+#!/usr/bin/env zsh
+
+set -eu -o pipefail
+
+usage="
+Usage: git ws [id]
+
+Push the current branch into the given workspace.
+"
+
+function abort { print "$@" >&2; exit 1 }
+function abort_help { abort -f '%s\n' "$@" $usage }
+
+function git_ws {
+    local id="${1:-}"
+    if [[ -z "${id}" ]]; then
+        abort_help 'workspace id not provided'
+    fi
+
+    local repo="$(git remote get-url origin | sed -e 's|git@github\.com:||' -e 's|\.git$||')"
+    local remote_repo
+    case $repo in
+        (snowflakedb/snowflake) remote_repo="~/Snowflake/trunk" ;;
+        (*) remote_repo="~/Snowflake/${repo#*/}" ;;
+    esac
+
+    local branch="$(git current-branch)"
+
+    git push --no-verify --force "ssh://${id}/${remote_repo}" "HEAD:refs/heads/${branch}"
+}
+
+git_ws "$@"

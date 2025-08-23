@@ -291,6 +291,12 @@ function docker {
     fi
 }
 
+############### Snowflake ###############
+
+eval "$(sf aliases --devenv-development)"
+
+export SF_PY_LINT_COMMAND=fix
+
 ############### Miscellaneous ###############
 
 alias grep="grep --color"
