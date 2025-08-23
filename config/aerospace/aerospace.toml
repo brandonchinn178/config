@@ -131,11 +131,12 @@ automatically-unhide-macos-hidden-apps = true
 # defaults to main
 [workspace-to-monitor-force-assignment]
     1 = 'secondary'
-    2 = 'main'
+    2 = 'secondary'
+    3 = 'main'
     z = 'secondary'
 
 [[on-window-detected]]
-    if.app-name-regex-substring = 'System Settings|Finder|1Password|FaceTime|Steam|Bazecor|zoom.us'
+    if.app-name-regex-substring = 'System Settings|Finder|1Password|FaceTime|Steam|Bazecor|zoom.us|Managed Software Center'
     run = 'layout floating'
     check-further-callbacks = true
 
