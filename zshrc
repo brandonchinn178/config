@@ -194,6 +194,9 @@ function git {
     esac
 }
 
+# https://snowflakecomputing.atlassian.net/browse/SNOW-2368348
+alias git0='git -c core.sshCommand=ssh'
+
 export PATH="${HOME}/repos/graphite-shim:${PATH}"
 
 # CTRL-G - Paste the selected commit(s) into the command line
@@ -292,6 +295,12 @@ function docker {
         command docker "$@"
     fi
 }
+
+############### Snowflake ###############
+
+eval "$(sf aliases --devenv-development)"
+
+export SF_PY_LINT_COMMAND=fix
 
 ############### Miscellaneous ###############
 
