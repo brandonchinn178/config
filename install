@@ -45,7 +45,9 @@ for conf_dir in config/*; do
     link "${HOME}/.config/$(basename ${conf_dir})" "${PWD}/${conf_dir}"
 done
 
-link "${HOME}/.ssh/config" "${PWD}/ssh/config"
+if [[ ! -f ~/.ssh/config ]]; then
+    cp ssh/config ~/.ssh/config
+fi
 mkdir -p ~/.ssh/config.d/
 
 ############### Upstream completion scripts ###############

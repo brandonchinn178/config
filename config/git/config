@@ -1,9 +1,10 @@
 [user]
 name = Brandon Chinn
-email = brandonchinn178@gmail.com
+email = brandon.chinn@snowflake.com
 
 [core]
 pager = delta # TODO: switch to diffnav
+	sshCommand = sf __ssh
 
 [interactive]
 diffFilter = delta --color-only
@@ -33,13 +34,16 @@ mvb = branch-manager-rename-branch
 bd = branch-manager-delete-branch
 bD = branch-manager-delete-branch -D
 p = push --force-with-lease
-pd = !git pull --prune && git delete-merged
+pd = !git pull --prune && git fetch-snowflake-tags && git delete-merged
 wip = !git add -A && git commit -m '[ci skip] wip' --no-verify
 r = branch-manager-rebase
 rc = rebase --continue
 cp = cherry-pick
 is-in-repo = !git rev-parse --is-inside-work-tree &> /dev/null
 copy-sha = !git rev-parse HEAD | tr -d '\n' | pbcopy
+
+devvm = !git push --force devvm $(git rev-parse --abbrev-ref HEAD)
+fetch-snowflake-tags = fetch origin --force --prune tag 'devenv-*' tag 'bptp-*'
 
 [merge]
 conflictstyle = zdiff3
@@ -49,6 +53,7 @@ detachedHead = false
 
 [init]
 defaultBranch = main
+templateDir = /Users/bchinn/.git-template
 
 [diff]
 algorithm = histogram
