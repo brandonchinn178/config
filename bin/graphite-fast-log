@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+#
+# Fast git log, since graphite is slow
+
+git_dir="$(git rev-parse --git-common-dir)"
+
+main() {
+    local target_arg="${1:-}"
+    local target="${target_arg:-HEAD}"
+
+    local branch="${target_arg:-$(get_branch)}"
+    local parent="$(get_parent "${branch}")"
+    if [[ -n "${parent}" ]]; then
+        range="$(git merge-base "${parent}" "${target}")^...${target}"
+    else
+        range="-10"
+    fi
+    exec git --no-pager log --oneline "$range"
+}
+
+get_branch() {
+    local options=(
+        'git branch --show-current'
+        'git rebase-branch-name'
+    )
+    for opt in "${options[@]}"; do
+        branch="$(eval "${opt}")"
+        if [[ -n "${branch}" ]]; then
+            echo "${branch}"
+            return
+        fi
+    done
+}
+
+# graphite commands are too slow, parse cache directly
+get_parent() {
+    local branch=${1:-}
+
+    jq -r --arg branch "$branch" '
+        .branches.[] | select(.[0] == $branch) | .[1].parentBranchName // ""
+    ' "${git_dir}/.graphite_cache_persist" 2> /dev/null
+}
+
+main "$@"
