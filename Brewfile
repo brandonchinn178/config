@@ -12,8 +12,12 @@ brew "git-delta"
 brew "grip"
 brew "jq"
 brew "less"
-brew "pre-commit"
+brew "ruff"
 brew "starship"
 brew "tree"
 brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
+
+# Snowflake
+brew "vault"
+brew "grpcurl"
