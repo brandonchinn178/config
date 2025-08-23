@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+git_dir="$(git rev-parse --git-common-dir)"
+branch="$(git branch --show-current)"
+
+main() {
+    if [[ ! -f "${git_dir}/.graphite_repo_config" ]]; then
+        # no graphite, guess the default branch
+        trunk=$(git rev-parse --abbrev-ref origin/HEAD | sed 's;origin/;;')
+        parent="${trunk}"
+    else
+        info=($(get_graphite_info))
+        trunk="${info[0]}"
+        parent="${info[1]}"
+    fi
+
+    if [[ "${branch}" == "${trunk}" ]]; then
+        echo "${branch}"
+    else
+        count="$(git rev-list --count "${parent}..HEAD")"
+        echo "${parent} > [+${count}] > ${branch}"
+    fi
+}
+
+# graphite commands are too slow, parse cache directly
+get_graphite_info() {
+    jq -r --arg branch "${branch}" '
+        # Convert branch list of pairs into list of objects
+        .branches | map({ name: .[0] } * .[1]) |
+
+        # Create mapping from name to branch info
+        map({ key: .name, value: . }) | from_entries as $branch_map |
+
+        # Get current branch
+        $branch_map.[$branch] |
+
+        # Get trunk branch
+        until(.validationResult == "TRUNK"; $branch_map.[.parentBranchName]) as $trunk |
+
+        # Output info
+        "\($trunk.name) \(.parentBranchName)"
+    ' "${git_dir}/.graphite_cache_persist"
+}
+
+main
