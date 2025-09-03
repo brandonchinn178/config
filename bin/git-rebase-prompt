@@ -2,7 +2,8 @@
 
 rebase_branch_name=$(git rebase-branch-name)
 if [[ -n $rebase_branch_name ]]; then
-    rebase_num=$(cat .git/rebase-merge/msgnum)
-    rebase_end=$(cat .git/rebase-merge/end)
+    gitdir=$(git rev-parse --git-dir)
+    rebase_num=$(cat ${gitdir}/rebase-merge/msgnum)
+    rebase_end=$(cat ${gitdir}/rebase-merge/end)
     echo "rebasing: ${rebase_branch_name} (${rebase_num}/${rebase_end})"
 fi
