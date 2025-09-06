@@ -131,7 +131,7 @@ automatically-unhide-macos-hidden-apps = true
 # defaults to main
 [workspace-to-monitor-force-assignment]
     1 = 'secondary'
-    2 = 'secondary'
+    2 = 'main'
     z = 'secondary'
 
 [[on-window-detected]]
