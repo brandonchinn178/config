@@ -411,6 +411,7 @@ contexts:
         5: constant.character.escape.control.haskell
 
   string_content:
+    - match: '\\\s*\\'  # string gaps
     - match: '(\\)\s*$'
       captures:
         1: constant.character.escape.multi-line.haskell
