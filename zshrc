@@ -194,6 +194,9 @@ function git {
     esac
 }
 
+# https://snowflakecomputing.atlassian.net/browse/SNOW-2368348
+alias git0='git -c core.sshCommand=ssh'
+
 # CTRL-G - Paste the selected commit(s) into the command line
 __git-log-fzf() {
     if ! git is-in-repo; then
