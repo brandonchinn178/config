@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/bin/sh
 
 rebase_branch_name=$(git rebase-branch-name)
 if [[ -n $rebase_branch_name ]]; then
