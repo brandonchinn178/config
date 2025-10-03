@@ -197,6 +197,12 @@ return {
       key = 'n',
       action = wezterm.action.SpawnWindow,
     },
+    {
+      -- Unbind default ToggleFullScreen binding
+      mods = 'ALT',
+      key = 'Enter',
+      action = wezterm.action.Nop,
+    },
 
     -- Tabs
     {
