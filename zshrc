@@ -372,9 +372,8 @@ function set_window_title {
     echo -ne "\033]0;$title\007"
 }
 
-# set title on initialization + whenever PWD changes
-set_window_title
-chpwd_functions+=(set_window_title)
+# set title whenever we draw the prompt; must happen after starship
+PROMPT="\$(set_window_title)$PROMPT"
 
 ############### wezterm ###############
 
