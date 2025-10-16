@@ -8,7 +8,7 @@
 # They are shown below to demonstrate the formatting.
 
 ls log short
-ll log long
+ll log --stack
 ss submit --stack
 
 r restack

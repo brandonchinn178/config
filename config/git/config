@@ -37,8 +37,6 @@ copy-sha = !git rev-parse HEAD | tr -d '\n' | pbcopy
 # graphite aliases
 cb = "!f() { gt create "$@" && gt move --onto main; }; f"
 l = !graphite-fast-log
-ll = !gt log --stack
-ls = !gt log short --stack
 b = !gt log short
 
 [merge]
