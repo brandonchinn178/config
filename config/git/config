@@ -4,7 +4,7 @@ email = brandon.chinn@snowflake.com
 
 [core]
 pager = delta # TODO: switch to diffnav
-	sshCommand = sf __ssh
+	sshCommand = /usr/local/bin/sf __ssh
 
 [interactive]
 diffFilter = delta --color-only
