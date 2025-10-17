@@ -2,8 +2,20 @@
     "scope": "source.python",
     "completions": [
         {
-            "trigger": "annotations",
+            "trigger": "annotations-import",
             "contents": "from __future__ import annotations",
+        },
+        {
+            "trigger": "pathlib-import",
+            "contents": "from pathlib import Path",
+        },
+        {
+            "trigger": "dataclasses-import",
+            "contents": "import dataclasses",
+        },
+        {
+            "trigger": "dataclasses-class",
+            "contents": "@dataclasses.dataclass(frozen=True)\nclass ${1:MyClass}:\n    ${2:pass}",
         },
         {
             "trigger": "new-script",
