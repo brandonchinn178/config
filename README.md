@@ -2,9 +2,7 @@
 
 Highlights:
 
-* I have a whole `git-branch-manager` system that manages my branches
-    * e.g. I can specify branches as dependent on other branches
-    * For example, `git branch-manager-rebase` will automatically rebase on top of any required branches
+* I created [graphite-shim](https://github.com/brandonchinn178/graphite-shim) that uses Graphite for managing stacked branches, but provides a reimplementation that works on non-Graphite managed repos
 * After each bash command, I print out an emoji representing the error code + the amount of time passed
 * Ctrl+B opens a list of branches with fzf. If nothing is typed on the command line, the selected branch is checked out. If there's input on the command line already, the selected branches are copied in
 

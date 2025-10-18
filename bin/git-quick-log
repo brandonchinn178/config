@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+git_dir="$(git rev-parse --git-common-dir)"
+
+main() {
+    local target_arg="${1:-}"
+
+    local target="${target_arg:-HEAD}"
+
+    local branch="${target_arg:-$(get_branch)}"
+    local parent="$(get_parent "${branch}")"
+    if [[ -z "${parent}" ]]; then
+        parent=HEAD~10
+    fi
+
+    local base="$(git merge-base "${parent}" "${target}")"
+    exec git --no-pager log --oneline "${base}^...${target}"
+}
+
+get_branch() {
+    local options=(
+        'git branch --show-current'
+        'git rebase-branch-name'
+    )
+    for opt in "${options[@]}"; do
+        branch="$(eval "${opt}")"
+        if [[ -n "${branch}" ]]; then
+            echo "${branch}"
+            return
+        fi
+    done
+}
+
+# `gt parent` doesn't support showing the parent of an arbitrary branch
+get_parent() {
+    local branch=${1:-}
+
+    if [[ -f "${git_dir}/.graphite_cache_persist" ]]; then
+        jq -r --arg branch "$branch" '
+            .branches.[] | select(.[0] == $branch) | .[1].parentBranchName // ""
+        ' "${git_dir}/.graphite_cache_persist" 2> /dev/null
+    elif [[ -f "${git_dir}/.graphite_shim/store.json" ]]; then
+        jq -r --arg branch "$branch" '
+            .branches.[$branch] // ""
+        ' "${git_dir}/.graphite_shim/store.json" 2> /dev/null
+    fi
+}
+
+main "$@"

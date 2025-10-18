@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+branch="$(git branch --show-current)"
+trunk="$(CACHE_ONLY=true gt trunk --no-interactive)"
+
+if [[ "${branch}" == "${trunk}" ]]; then
+    echo "${branch}"
+else
+    parent="$(CACHE_ONLY=true gt parent --no-interactive)"
+    count="$(git rev-list --count "${parent}..HEAD")"
+    echo "${parent} > [+${count}] > ${branch}"
+fi

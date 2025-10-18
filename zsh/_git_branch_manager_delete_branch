@@ -1,5 +1,0 @@
-#compdef git-branch-manager-delete-branch
-
-function _git_branch_manager_delete_branch {
-    __gitcomp_direct "$(__git_heads)"
-}

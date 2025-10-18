@@ -4,7 +4,7 @@
 format = """
 ${shlvl}\
 ${directory}\
-${custom.git_bm_branch}\
+${custom.git_branch}\
 ${custom.git_rebase}\
 ${custom.git_no_branch}\
 ${git_commit}\
@@ -19,11 +19,11 @@ symbol = ' '
 [directory]
 fish_style_pwd_dir_length = 1
 
-[custom.git_bm_branch]
-description = 'The output of `git branch-manager --display`'
+[custom.git_branch]
+description = 'Git branch information'
 when = true
 require_repo = true
-command = 'git branch-manager --display'
+command = 'git branch-prompt'
 format = '[(\[ $output\] )]($style)'
 
 [custom.git_rebase]

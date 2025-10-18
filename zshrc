@@ -194,6 +194,8 @@ function git {
     esac
 }
 
+export PATH="${HOME}/repos/graphite-shim:${PATH}"
+
 # CTRL-G - Paste the selected commit(s) into the command line
 __git-log-fzf() {
     if ! git is-in-repo; then
@@ -249,7 +251,7 @@ __git-branch-fzf() {
     fi
 
     setopt localoptions pipefail no_aliases 2> /dev/null
-    git bm --fzf | fzf --ansi --accept-nth 1 "$@" | xargs
+    git branch --format='%(refname:short)' | fzf --ansi --accept-nth 1 "$@" | xargs
 }
 fzf-git-branch-widget() {
     if [[ -n "${LBUFFER}" ]]; then
@@ -257,7 +259,7 @@ fzf-git-branch-widget() {
     else
         local branch="$(__git-branch-fzf)"
         if [[ -n "${branch}" ]]; then
-            LBUFFER="git checkout ${branch}"
+            LBUFFER="git c ${branch}"
             zle accept-line
         fi
     fi
@@ -265,7 +267,7 @@ fzf-git-branch-widget() {
 zle -N fzf-git-branch-widget
 bindkey '^B' fzf-git-branch-widget
 
-__checkout_branch() {
+__checkout_branch_with_fuzzy_search() {
     local name=$1
     local branch="$(git branch --format '%(refname:short)' | grep "${name}" | head -n1)"
     if [[ -z "${branch}" ]]; then
@@ -273,11 +275,11 @@ __checkout_branch() {
         return 1
     fi
 
-    echo ">>> git checkout ${branch}" >&2
-    git checkout "${branch}"
+    echo ">>> git c ${branch}" >&2
+    git c "${branch}"
 }
 
-alias gb=__checkout_branch
+alias gb=__checkout_branch_with_fuzzy_search
 
 ############### Docker helpers ###############
 
