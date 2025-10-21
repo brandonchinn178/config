@@ -34,7 +34,7 @@ is-in-repo = !git rev-parse --is-inside-work-tree &> /dev/null
 copy-sha = !git rev-parse HEAD | tr -d '\n' | pbcopy
 
 # graphite aliases
-cb = "!f() { gt create "$@" && gt move --onto main; }; f"
+cb = "!f() { gt create "$@" && gt move --onto "$(gt trunk --no-interactive)"; }; f"
 l = quick-log
 
 [merge]
