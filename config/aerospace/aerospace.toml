@@ -130,8 +130,10 @@ automatically-unhide-macos-hidden-apps = true
 # main = monitor, secondary = laptop
 # defaults to main
 [workspace-to-monitor-force-assignment]
-    1 = 'secondary'
+    1 = 'main'
     2 = 'main'
+    3 = 'main'
+    4 = 'main'
     z = 'secondary'
 
 [[on-window-detected]]
