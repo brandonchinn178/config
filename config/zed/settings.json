@@ -59,7 +59,7 @@
 
   "remove_trailing_whitespace_on_save": false,
   "minimap": {
-    "show": "always"
+    "show": "never"
   },
   "completions": {
     "words_min_length": 0,

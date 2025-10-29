@@ -1,9 +1,10 @@
 [user]
 name = Brandon Chinn
-email = brandonchinn178@gmail.com
+email = brandon.chinn@snowflake.com
 
 [core]
 pager = delta # TODO: switch to diffnav
+	sshCommand = /usr/local/bin/sf __ssh
 
 [interactive]
 diffFilter = delta --color-only
@@ -45,6 +46,7 @@ detachedHead = false
 
 [init]
 defaultBranch = main
+templateDir = /Users/bchinn/.git-template
 
 [diff]
 algorithm = histogram
@@ -58,3 +60,6 @@ enabled = true
 
 [url "git@github.com:"]
 insteadOf = https://github.com/
+
+[url "ssh://git@github.com/"]
+	insteadOf = https://github.com/

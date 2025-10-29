@@ -12,6 +12,9 @@ ${git_commit}\
 [❯](bold green) \
 """
 
+# Python bootup is slower on work laptop for some reason
+command_timeout = 1000
+
 [shlvl]
 disabled = false
 symbol = ' '

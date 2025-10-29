@@ -1,0 +1,44 @@
+#!/usr/bin/env zsh
+
+set -eu -o pipefail
+
+usage="
+Usage: git ws {fetch|pull|push} [id]
+
+Push the current branch into the given workspace.
+"
+
+function abort { print "$@" >&2; exit 1 }
+function abort_help { abort -f '%s\n' "$@" $usage }
+
+function git_ws {
+    local cmd="${1:-}"
+    local id="${2:-}"
+
+    case "${cmd}" in
+        (fetch|pull|push) ;;
+        ('') abort_help 'command not provided' ;;
+        (*) abort_help "unknown command: ${cmd}" ;;
+    esac
+    if [[ -z "${id}" ]]; then
+        abort_help 'workspace id not provided'
+    fi
+
+    local repo="$(git remote get-url origin | sed -e 's|git@github\.com:||' -e 's|\.git$||')"
+    local remote_repo
+    case $repo in
+        (snowflake-eng/snowflake) remote_repo="~/Snowflake/trunk" ;;
+        (*) remote_repo="~/Snowflake/${repo#*/}" ;;
+    esac
+    local uri="ssh://${id}/${remote_repo}"
+
+    local branch="$(git current-branch)"
+
+    case "${cmd}" in
+        (fetch) git fetch "${uri}" "${branch}" ;;
+        (pull) git pull "${uri}" "${branch}" ;;
+        (push) git push --no-verify --force "${uri}" "HEAD:refs/heads/${branch}" ;;
+    esac
+}
+
+git_ws "$@"
