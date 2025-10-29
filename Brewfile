@@ -3,6 +3,8 @@ cask "maccy"
 cask "notunes"
 cask "nikitabobko/tap/aerospace"
 
+tap "withgraphite/tap"
+
 brew "colordiff"
 brew "corepack"
 brew "dlvhdr/formulae/diffnav"
@@ -12,8 +14,13 @@ brew "git-delta"
 brew "grip"
 brew "jq"
 brew "less"
-brew "pre-commit"
+brew "ruff"
 brew "starship"
 brew "tree"
+brew "withgraphite/tap/graphite"
 brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
+
+# Snowflake
+brew "vault"
+brew "grpcurl"
