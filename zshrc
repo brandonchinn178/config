@@ -194,6 +194,19 @@ function git {
     esac
 }
 
+# https://snowflakecomputing.atlassian.net/browse/SNOW-2368348
+alias git0='git -c core.sshCommand=ssh'
+
+function set_graphite_profile {
+    if git config --get remote.origin.url | grep snowflake-eng &> /dev/null; then
+        export GRAPHITE_PROFILE=snowflake-eng
+    else
+        export GRAPHITE_PROFILE=snowflakedb
+    fi
+}
+
+precmd_functions+=(set_graphite_profile)
+
 export PATH="${HOME}/repos/graphite-shim:${PATH}"
 
 # CTRL-G - Paste the selected commit(s) into the command line
@@ -292,6 +305,13 @@ function docker {
         command docker "$@"
     fi
 }
+
+############### Snowflake ###############
+
+eval "$(sf aliases --devenv-development)"
+
+export SF_PYTHON_HOOK_AUTOFIX=true
+export SF_PRECOMMIT_AUTOFIX=true
 
 ############### Miscellaneous ###############
 
@@ -402,3 +422,13 @@ source "${brew_prefix}/opt/fzf/shell/key-bindings.zsh"
 
 export FZF_DEFAULT_COMMAND='fd --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
+
+############### Nix ###############
+
+if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+  . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+fi
+
+############### direnv ###############
+
+eval "$(direnv hook zsh)"
