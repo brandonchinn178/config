@@ -23,11 +23,12 @@ Highlights:
 1. Settings:
     * Login Items: Maccy, noTunes, Aerospace
     * Displays have separate Spaces = enabled
+        * Necessary to workaround [menu bar issue](https://github.com/nikitabobko/AeroSpace/issues/594#issuecomment-3034609631), but causes [other issues](https://github.com/nikitabobko/AeroSpace/issues/101)
     * Group windows by application = enabled
     * Keyboard shortcuts
         * Change "Mission Control" shortcut to ctrl+alt+shift+up
         * Disable "Application windows" shortcut
-        * Change "Missiong Control > Move left a space" to ctrl+alt+shift+left
-        * Change "Missiong Control > Move right a space" to ctrl+alt+shift+right
+        * Change "Mission Control > Move left a space" to ctrl+alt+shift+left
+        * Change "Mission Control > Move right a space" to ctrl+alt+shift+right
 
 1. To use touch ID for sudo, copy the template at `/etc/pam.d/sudo_local.template` and uncomment the pam_tid.so line
