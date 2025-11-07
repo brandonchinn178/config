@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+main() {
+    local passthrough=false
+    for arg in "$@"; do
+        case "${arg}" in
+            (--continue|--abort|--skip) passthrough=true ;;
+            (*) ;;
+        esac
+    done
+
+    if [[ "${passthrough}" == true ]]; then
+        exec git rebase "$@"
+    fi
+
+    local args=("$@")
+
+    if [[ "${#args[@]}" -eq 0 ]]; then
+        local parent; parent="$(CACHE_ONLY=true gt parent --no-interactive 2>/dev/null || true)"
+        if [[ -n "${parent}" ]]; then
+            args=("${parent}")
+        else
+            args=("HEAD~10")
+        fi
+    fi
+
+    exec git rebase -i "${args[@]}"
+}
+
+main "$@"
