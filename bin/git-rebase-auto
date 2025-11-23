@@ -21,8 +21,10 @@ main() {
         local parent; parent="$(CACHE_ONLY=true gt parent --no-interactive 2>/dev/null || true)"
         if [[ -n "${parent}" ]]; then
             args=("${parent}")
-        else
+        elif [[ "$(git rev-list --count HEAD)" -ge 10 ]]; then
             args=("HEAD~10")
+        else
+            args=(--root)
         fi
     fi
 
