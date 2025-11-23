@@ -490,6 +490,19 @@ Find more themes at : https://github.com/daylerees/colour-schemes
         </dict>
         <dict>
             <key>name</key>
+            <string>OverloadedRecordDots</string>
+            <key>scope</key>
+            <string>meta.record_field_dot.haskell</string>
+            <key>settings</key>
+            <dict>
+                <key>fontStyle</key>
+                <string>italic</string>
+                <key>foreground</key>
+                <string>#BFA72F</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>name</key>
             <string>Variable generic</string>
             <key>scope</key>
             <string>variable.generic</string>

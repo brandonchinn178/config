@@ -216,6 +216,11 @@ contexts:
   expression_stuff:
     - match: '\b({{type_id}}\.)+'
       scope: storage.module.haskell entity.name.module.haskell
+    - match: '(\.)({{var_id}})'
+      scope: meta.record_field_dot.haskell
+      captures:
+        1: punctuation.accessor.dot.haskell
+        2: entity.name.label.haskell
     - match: \b(error|undefined)\b
       scope: support.function.prelude.haskell
     - include: infix_op
