@@ -31,30 +31,27 @@ class OpenAllModifiedCommand(WindowCommand):
             if file:
                 self.window.open_file((folder / file).as_posix())
 
+class OpenBuildBazelCommand(WindowCommand):
+    """
+    Defines a command that opens the BUILD.bazel file for the current file.
+    """
+
+    def run(self, staged=False):
+        file = get_active_file(self.window)
+        self.window.open_file((file.parent / "BUILD.bazel").as_posix())
+
 
 class OpenInGithubCommand(WindowCommand):
     """Defines a command that opens the current file in GitHub."""
 
     def run(self):
-        sheet = self.window.active_sheet()
-        if not sheet:
-            fail('ERROR: no tab open.')
+        file = get_active_file(self.window)
 
-        file = sheet.file_name()
-        if not file:
-            fail('ERROR: no file open.')
-        file = Path(file)
-
-        repodir = self._get_output(
-            ['git', 'rev-parse', '--show-toplevel'],
-            cwd=file.parent,
-            error='Could not get repo directory',
-        )
-        repodir = Path(repodir.strip())
+        repodir = get_repo_dir(file)
         file = file.relative_to(repodir)
 
         remote_name = "origin"
-        remote_url = self._get_output(
+        remote_url = get_output(
             ['git', 'remote', 'get-url', remote_name],
             cwd=repodir,
             error='Could not get remotes',
@@ -67,14 +64,14 @@ class OpenInGithubCommand(WindowCommand):
 
     def _get_default_branch(self, repodir, remote_name):
         # this file only exists if we git cloned this repo originally
-        head_ref_file = self._get_output(
+        head_ref_file = get_output(
             ["git", "rev-parse", "--git-path", f"refs/remotes/{remote_name}/HEAD"],
             cwd=repodir,
             error='Could not get git directory',
         ).strip()
         head_ref_file = repodir / head_ref_file
         if not head_ref_file.exists():
-            out = self._get_output(
+            out = get_output(
                 ['git', 'ls-remote', '--symref', remote_name],
                 cwd=repodir,
                 error=f"Could not fetch refs for {remote_name}",
@@ -87,24 +84,40 @@ class OpenInGithubCommand(WindowCommand):
             head_ref_file.parent.mkdir(exist_ok=True, parents=True)
             head_ref_file.write_text(head_ref)
 
-        ref = self._get_output(
+        ref = get_output(
             ['git', 'rev-parse', '--abbrev-ref', 'origin/HEAD'],
             cwd=repodir,
             error='Could not get default branch',
         ).strip()
         return ref.split("/")[1] if "/" in ref else ref
 
-    def _get_output(self, args, *, error, **kwargs):
-        kwargs = {
-            "capture_output": True,
-            "encoding": "utf-8",
-            **kwargs,
-        }
-        proc = subprocess.run(args, **kwargs)
-        if proc.returncode != 0:
-            fail(f'ERROR: {error}\n{proc.stdout}\n{proc.stderr}')
+def get_active_file(window) -> Path:
+    sheet = window.active_sheet()
+    if not sheet:
+        fail('ERROR: no tab open.')
+    file = sheet.file_name()
+    if not file:
+        fail('ERROR: no file open.')
+    return Path(file)
 
-        return proc.stdout
+def get_repo_dir(file: Path) -> Path:
+    repodir = get_output(
+        ['git', 'rev-parse', '--show-toplevel'],
+        cwd=file.parent,
+        error='Could not get repo directory',
+    )
+    return Path(repodir.strip())
+
+def get_output(args, *, error, **kwargs):
+    kwargs = {
+        "capture_output": True,
+        "encoding": "utf-8",
+        **kwargs,
+    }
+    proc = subprocess.run(args, **kwargs)
+    if proc.returncode != 0:
+        fail(f'ERROR: {error}\n{proc.stdout}\n{proc.stderr}')
+    return proc.stdout
 
 def fail(msg):
     sublime.error_message(msg)
