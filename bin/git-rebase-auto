@@ -6,7 +6,7 @@ main() {
     local passthrough=false
     for arg in "$@"; do
         case "${arg}" in
-            (--continue|--abort|--skip) passthrough=true ;;
+            (--continue|--abort|--skip|--edit) passthrough=true ;;
             (*) ;;
         esac
     done
