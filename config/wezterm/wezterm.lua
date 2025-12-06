@@ -131,7 +131,7 @@ wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_wid
 end)
 
 return {
-  font_size = 14, -- set this to keep $COLUMNS >= 80 when half-screen
+  font_size = 18, -- set this to keep $COLUMNS >= 80
   audible_bell = 'Disabled',
   enable_scroll_bar = true,
 
