@@ -1,0 +1,13 @@
+// Project tasks configuration. See https://zed.dev/docs/tasks for documentation.
+[
+  {
+    "label": "chmod +x",
+    "command": "chmod +x $ZED_FILE",
+    "reveal": "never"
+  },
+  {
+    "label": "Open file in GitHub",
+    "command": "open-gh $ZED_RELATIVE_FILE",
+    "reveal": "never"
+  }
+]

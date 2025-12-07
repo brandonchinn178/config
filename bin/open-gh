@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+main() {
+    local dir; dir="$(git rev-parse --show-prefix)"
+    local repo; repo="$(git remote get-url origin | rg 'git@github.com:(.*)(\.git)?' -r '$1')"
+    local default_branch; default_branch=$(get_default_branch)
+
+    for file in "$@"; do
+        open "https://github.com/${repo}/blob/${default_branch}/${dir}${file}"
+    done
+}
+
+get_default_branch() {
+    # this file only exists if we git cloned this repo originally
+    local head_ref_file; head_ref_file="$(git rev-parse --git-path refs/remotes/origin/HEAD)"
+    if [[ ! -f "${head_ref_file}" ]]; then
+        mkdir -p "$(dirname "${head_ref_file}")"
+        git ls-remote --symref origin | rg '^(ref: .*?)\s*HEAD$' -r '$1' > "${head_ref_file}"
+    fi
+
+    local ref; ref="$(git rev-parse --abbrev-ref origin/HEAD)"
+    echo "${ref#*/}"
+}
+
+main "$@"

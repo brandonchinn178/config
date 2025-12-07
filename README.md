@@ -16,6 +16,9 @@ Highlights:
 1. Install [Sublime Text](https://www.sublimetext.com/)
     1. See `sublime/README.md`
 
+1. Install [Zed](https://zed.dev)
+    1. In command prompt, run "cli: install cli binary"
+
 1. Install [Jetbrains Mono](https://www.jetbrains.com/lp/mono/)
 
 1. `./install`

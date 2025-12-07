@@ -72,7 +72,7 @@ function backward-word-segment {
     zle emacs-backward-word
 }
 zle -N backward-word-segment
-bindkey '^[[1;3D' backward-word-segment
+bindkey '^[b' backward-word-segment
 
 # CTRL-LEFT
 function backward-word-alphanum {
@@ -88,7 +88,7 @@ function forward-word-segment {
     zle emacs-forward-word
 }
 zle -N forward-word-segment
-bindkey '^[[1;3C' forward-word-segment
+bindkey '^[f' forward-word-segment
 
 # CTRL-RIGHT
 function forward-word-alphanum {
@@ -187,13 +187,6 @@ fi
 
 ############### Git helpers ###############
 
-function git {
-    case "$1" in
-        (root) cd "$(git rev-parse --show-cdup)" ;;
-        (*) command git "$@" ;;
-    esac
-}
-
 export PATH="${HOME}/repos/graphite-shim:${PATH}"
 
 # CTRL-G - Paste the selected commit(s) into the command line
@@ -281,18 +274,6 @@ __checkout_branch_with_fuzzy_search() {
 
 alias gb=__checkout_branch_with_fuzzy_search
 
-############### Docker helpers ###############
-
-alias dc='docker compose'
-
-function docker {
-    if [[ $# == 1 && $1 == "images" ]]; then
-        docker-images
-    else
-        command docker "$@"
-    fi
-}
-
 ############### Miscellaneous ###############
 
 alias grep="grep --color"
@@ -353,34 +334,6 @@ function end_command_border {
 
 preexec_functions+=(start_command_border)
 precmd_functions+=(end_command_border)
-
-############### Window title ###############
-
-function set_window_title {
-    # set title to the name of the current directory, or
-    # the name of the directory of the top-level git repo
-
-    local canonical_dir="$(print -P '%1~')"
-    if git is-in-repo; then
-        canonical_dir="$(basename "$(git rev-parse --show-toplevel)")"
-    fi
-
-    local title="$(basename $canonical_dir)"
-    if [[ $title = 'wezterm' ]]; then
-        # https://github.com/wez/wezterm/issues/3021
-        title='wezterm*'
-    fi
-
-    echo -ne "\033]0;$title\007"
-}
-
-# set title whenever we draw the prompt; must happen after starship
-PROMPT="\$(set_window_title)$PROMPT"
-
-############### wezterm ###############
-
-WEZTERM_APP=$(find "${brew_prefix}/Caskroom" -name 'WezTerm.app')
-source $WEZTERM_APP/Contents/Resources/wezterm.sh
 
 ############### zsh-syntax-highlighting ###############
 

@@ -140,6 +140,10 @@ automatically-unhide-macos-hidden-apps = true
     if.app-name-regex-substring = 'System Settings|Finder|1Password|FaceTime|Steam|Bazecor|zoom.us'
     run = 'layout floating'
     check-further-callbacks = true
+[[on-window-detected]]
+    if.window-title-regex-substring = 'Zed — Settings'
+    run = 'layout floating'
+    check-further-callbacks = true
 
 [[on-window-detected]]
     if.app-name-regex-substring = 'zoom.us'

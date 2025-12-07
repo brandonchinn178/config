@@ -1,0 +1,88 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "bindings": {
+      "cmd-shift-w": [
+        "pane::CloseAllItems",
+        {
+          "close_pinned": false
+        }
+      ],
+      "cmd-shift-o": [
+        "projects::OpenRecent",
+        {
+          "create_new_window": true
+        }
+      ],
+      "ctrl-p": "project_panel::ToggleFocus",
+      "ctrl-tab": "pane::ActivateNextItem",
+      "ctrl-shift-tab": "pane::ActivatePreviousItem",
+      "alt-tab": "tab_switcher::Toggle",
+      "cmd-k cmd-j": "workspace::ActivateNextPane",
+      "alt-l": "terminal_panel::ToggleFocus",
+      "alt-shift-l": "workspace::ToggleRightDock"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "cmd-k cmd-/": "editor::ToggleSelectedDiffHunks",
+      "ctrl-backspace": "editor::DeleteToPreviousSubwordStart",
+      "ctrl-d": [
+        "editor::GoToDiagnostic",
+        {
+          "severity": {
+            "min": "hint",
+            "max": "error"
+          }
+        }
+      ],
+      "ctrl-shift-d": [
+        "editor::GoToPreviousDiagnostic",
+        {
+          "severity": {
+            "min": "hint",
+            "max": "error"
+          }
+        }
+      ],
+      "ctrl-down": [
+        "editor::AddSelectionBelow",
+        {
+          "skip_soft_wrap": false
+        }
+      ],
+      "ctrl-up": [
+        "editor::AddSelectionAbove",
+        {
+          "skip_soft_wrap": false
+        }
+      ]
+    }
+  },
+  {
+    "context": "Terminal",
+    "bindings": {
+      "cmd-k": null,
+      "cmd-shift-k": "terminal::Clear",
+      "cmd-t": "workspace::NewTerminal",
+      "ctrl-backspace": null
+    }
+  },
+  {
+    "context": "Pane",
+    "bindings": {
+      "alt-c": "search::ToggleCaseSensitive",
+      "alt-x": "search::ToggleRegex",
+      "alt-f": "project_search::ToggleFilters",
+      "alt-w": "search::ToggleWholeWord",
+      "alt-r": "search::ToggleReplace"
+    }
+  }
+]
