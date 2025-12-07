@@ -98,8 +98,8 @@ automatically-unhide-macos-hidden-apps = true
     cmd-alt-ctrl-h = 'join-with left'
     cmd-alt-ctrl-l = 'join-with right'
 
-    cmd-alt-left  = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace prev'
-    cmd-alt-right = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace next'
+    cmd-alt-left  = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace prev --stdin'
+    cmd-alt-right = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace next --stdin'
 
     cmd-alt-period = 'layout tiles horizontal vertical'
     cmd-alt-slash = 'layout accordion horizontal vertical'
