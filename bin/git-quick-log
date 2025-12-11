@@ -12,15 +12,15 @@ main() {
     local branch="${target_arg:-$(get_branch)}"
     local parent="$(get_parent "${branch}")"
 
-    local range
+    local range=()
     if [[ -n "${parent}" ]]; then
         local base="$(git merge-base "${parent}" "${target}")"
-        range="${base}^...${target}"
+        range+=("${base}^...${target}")
     else
-        range=-10
+        range+=(-10 "${target}")
     fi
 
-    exec git --no-pager log --oneline "${range}"
+    exec git --no-pager log --oneline "${range[@]}"
 }
 
 get_branch() {
