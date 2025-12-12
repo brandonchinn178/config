@@ -10,6 +10,7 @@ fpath=(
 
 path+=~/.bin
 path+=~/.local/bin
+path+=~/.cargo/bin
 
 brew_prefix=$(brew --prefix)
 
