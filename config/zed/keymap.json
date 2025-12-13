@@ -25,8 +25,8 @@
       "ctrl-shift-tab": "pane::ActivatePreviousItem",
       "alt-tab": "tab_switcher::Toggle",
       "cmd-k cmd-j": "workspace::ActivateNextPane",
-      "alt-l": "terminal_panel::ToggleFocus",
-      "alt-shift-l": "workspace::ToggleRightDock"
+      "ctrl-l": "terminal_panel::ToggleFocus",
+      "ctrl-shift-l": "workspace::ToggleRightDock"
     }
   },
   {
@@ -83,6 +83,12 @@
       "alt-f": "project_search::ToggleFilters",
       "alt-w": "search::ToggleWholeWord",
       "alt-r": "search::ToggleReplace"
+    }
+  },
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      "alt-n": "project_panel::NewDirectory"
     }
   }
 ]

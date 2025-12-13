@@ -39,6 +39,9 @@
     "show": true
   },
   "languages": {
+    "Cabal": {
+      "tab_size": 2
+    },
     "Haskell": {
       "tab_size": 2
     }
