@@ -8,6 +8,7 @@
 [
   {
     "bindings": {
+      "cmd-m": null,
       "cmd-shift-w": [
         "pane::CloseAllItems",
         {
@@ -20,18 +21,24 @@
           "create_new_window": true
         }
       ],
-      "ctrl-p": "project_panel::ToggleFocus",
       "ctrl-tab": "pane::ActivateNextItem",
       "ctrl-shift-tab": "pane::ActivatePreviousItem",
       "alt-tab": "tab_switcher::Toggle",
       "cmd-k cmd-j": "workspace::ActivateNextPane",
-      "alt-l": "terminal_panel::ToggleFocus",
-      "alt-shift-l": "workspace::ToggleRightDock"
+      "ctrl-l": "terminal_panel::ToggleFocus",
+      "ctrl-shift-l": "workspace::ToggleRightDock"
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "cmd-r": null
     }
   },
   {
     "context": "Editor",
     "bindings": {
+      "cmd-;": null,
       "cmd-k cmd-/": "editor::ToggleSelectedDiffHunks",
       "ctrl-backspace": "editor::DeleteToPreviousSubwordStart",
       "ctrl-d": [
@@ -72,7 +79,9 @@
       "cmd-k": null,
       "cmd-shift-k": "terminal::Clear",
       "cmd-t": "workspace::NewTerminal",
-      "ctrl-backspace": null
+      "ctrl-backspace": null,
+      "cmd-shift-up": "terminal::ScrollToTop",
+      "alt-shift-down": "terminal::ScrollToBottom"
     }
   },
   {
@@ -83,6 +92,20 @@
       "alt-f": "project_search::ToggleFilters",
       "alt-w": "search::ToggleWholeWord",
       "alt-r": "search::ToggleReplace"
+    }
+  },
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      "alt-n": "project_panel::NewDirectory",
+      "ctrl-.": "project_panel::SelectParent",
+      "ctrl-d": "project_panel::SelectNextDirectory",
+      "ctrl-shift-d": "project_panel::SelectPrevDirectory"
+    }
+  },
+  {
+    "bindings": {
+      "ctrl-p": "workspace::ToggleLeftDock"
     }
   }
 ]
