@@ -25,8 +25,8 @@
       "ctrl-shift-tab": "pane::ActivatePreviousItem",
       "alt-tab": "tab_switcher::Toggle",
       "cmd-k cmd-j": "workspace::ActivateNextPane",
-      "alt-l": "terminal_panel::ToggleFocus",
-      "alt-shift-l": "workspace::ToggleRightDock"
+      "ctrl-l": "terminal_panel::ToggleFocus",
+      "ctrl-shift-l": "workspace::ToggleRightDock"
     }
   },
   {
