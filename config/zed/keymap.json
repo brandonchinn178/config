@@ -25,6 +25,9 @@
       "ctrl-shift-tab": "pane::ActivatePreviousItem",
       "alt-tab": "tab_switcher::Toggle",
       "cmd-k cmd-j": "workspace::ActivateNextPane",
+      // Toggle docks
+      "ctrl-p": "project_panel::ToggleFocus",
+      "ctrl-shift-p": "workspace::ToggleLeftDock",
       "ctrl-l": "terminal_panel::ToggleFocus",
       "ctrl-shift-l": "workspace::ToggleRightDock"
     }
@@ -103,9 +106,4 @@
       "ctrl-shift-d": "project_panel::SelectPrevDirectory"
     }
   },
-  {
-    "bindings": {
-      "ctrl-p": "workspace::ToggleLeftDock"
-    }
-  }
 ]
