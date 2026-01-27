@@ -4,10 +4,12 @@ set -eu -o pipefail
 
 main() {
     local passthrough=false
+    local has_pos_args=false
     for arg in "$@"; do
         case "${arg}" in
             (--continue|--abort|--skip|--edit) passthrough=true ;;
-            (*) ;;
+            (-*) ;;
+            (*) has_pos_args=true ;;
         esac
     done
 
@@ -17,14 +19,14 @@ main() {
 
     local args=("$@")
 
-    if [[ "${#args[@]}" -eq 0 ]]; then
+    if [[ "${has_pos_args}" == false ]]; then
         local parent; parent="$(CACHE_ONLY=true gt parent --no-interactive 2>/dev/null || true)"
         if [[ -n "${parent}" ]]; then
-            args=("${parent}")
+            args+=("${parent}")
         elif [[ "$(git rev-list --count HEAD)" -ge 10 ]]; then
-            args=("HEAD~10")
+            args+=("HEAD~10")
         else
-            args=(--root)
+            args+=(--root)
         fi
     fi
 
