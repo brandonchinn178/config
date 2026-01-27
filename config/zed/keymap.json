@@ -9,6 +9,7 @@
   {
     "bindings": {
       "cmd-m": null,
+      "ctrl-q": "workspace::CloseWindow",
       "cmd-shift-w": [
         "pane::CloseAllItems",
         {
