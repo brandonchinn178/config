@@ -118,7 +118,7 @@ automatically-unhide-macos-hidden-apps = true
     cmd-alt-shift-5 = 'move-node-to-workspace 5'
     cmd-alt-shift-z = 'move-node-to-workspace z'
 
-    cmd-alt-n = 'exec-and-forget /Applications/WezTerm.app/Contents/MacOS/wezterm-gui'
+    cmd-alt-n = 'exec-and-forget /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal'
     cmd-alt-tab = 'workspace-back-and-forth'
 
 [mode.service.binding]

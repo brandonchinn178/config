@@ -80,7 +80,9 @@
     "**/venv",
     "**/.mypy_cache",
     "**/bazel-*",
-    "**/dist-newstyle"
+    "**/dist-newstyle",
+    "**/.hie-bios",
+    "**/_build",
   ],
   "title_bar": {
     "show_onboarding_banner": true,
