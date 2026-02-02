@@ -7,6 +7,19 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "ssh_connections": [
+    {
+      "host": "dev02",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "/home/bchinn/end-to-end"
+          ]
+        }
+      ]
+    }
+  ],
   "ensure_final_newline_on_save": false,
   "auto_indent_on_paste": false,
   "agent": {

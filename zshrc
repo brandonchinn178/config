@@ -189,6 +189,16 @@ if [[ $(uname -m) == 'arm64' ]]; then
     export C_INCLUDE_PATH="$(xcrun --show-sdk-path)/usr/include/ffi"
 fi
 
+############### Nix ###############
+
+if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+  . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+fi
+
+############### Direnv ###############
+
+eval "$(direnv hook zsh)"
+
 ############### Git helpers ###############
 
 path=("${HOME}/repos/graphite-shim" $path)
