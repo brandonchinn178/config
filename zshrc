@@ -195,6 +195,23 @@ if [[ $(uname -m) == 'arm64' ]]; then
     export C_INCLUDE_PATH="$(xcrun --show-sdk-path)/usr/include/ffi"
 fi
 
+cabal() {
+    # Avoid clashing with the dist-newstyle directory that HLS builds to,
+    # which causes recompilation
+    local builddir=dist-newstyle.cli
+    if [[ -d $builddir ]]; then
+        command cabal --builddir="$builddir" "$@"
+    else
+        command cabal "$@"
+    fi
+}
+
+############### Nix ###############
+
+if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+  . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+fi
+
 ############### Git helpers ###############
 
 path=("${HOME}/repos/graphite-shim" $path)

@@ -70,6 +70,9 @@
     "Tree-sitter Query": {
       "enable_language_server": true,
     },
+    "Typespec": {
+      "enable_language_server": true,
+    },
     "HTML": {
       "enable_language_server": true,
       "tab_size": 2,
@@ -87,6 +90,15 @@
       "enable_language_server": true,
       "language_servers": ["eslint", "vtsls"],
       "formatter": [{ "code_action": "source.fixAll.eslint" }, "prettier"],
+    },
+    "Nix": {
+      "enable_language_server": true,
+      "formatter": {
+        "external": {
+          "command": "nixpkgs-fmt",
+          "arguments": [],
+        },
+      },
     },
   },
   "format_on_save": "off",
@@ -122,6 +134,7 @@
     "**/.direnv",
     "**/node_modules",
     "**/.vite",
+    "**/build",
   ],
   "title_bar": {
     "show_onboarding_banner": true,
@@ -160,9 +173,49 @@
             "hlint": {
               "globalOn": false,
             },
+            "fourmolu": {
+              "config": {
+                "external": true,
+              },
+            },
           },
         },
       },
+    },
+  },
+
+  // Remote development
+  "ssh_connections": [
+    {
+      "host": "dev02",
+      "args": [],
+      "projects": [
+        {
+          "paths": ["/home/bchinn/end-to-end"],
+        },
+      ],
+    },
+  ],
+
+  // AI
+
+  "agent_servers": {
+    "claude-acp": {
+      "type": "registry",
+      "env": {
+        "ANTHROPIC_BASE_URL": "https://ai-proxy.infra.corp.arista.io/",
+        "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "1",
+      },
+    },
+    "lclaude": {
+      "type": "custom",
+      "command": "lclaude",
+      "args": ["--agent", "acp"],
+    },
+  },
+  "language_models": {
+    "anthropic": {
+      "api_url": "https://ai-proxy.infra.corp.arista.io",
     },
   },
 }
