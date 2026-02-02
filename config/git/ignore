@@ -2,3 +2,6 @@
 .zed/
 .envrc
 .direnv/
+dist-newstyle*
+
+.claude/settings.local.json

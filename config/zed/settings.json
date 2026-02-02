@@ -96,6 +96,15 @@
         "prettier"
       ],
     },
+    "Nix": {
+      "enable_language_server": true,
+      "formatter": {
+        "external": {
+          "command": "nixpkgs-fmt",
+          "arguments": [],
+        },
+      },
+    },
   },
   "format_on_save": "off",
   "enable_language_server": false,
@@ -166,9 +175,27 @@
             "hlint": {
               "globalOn": false,
             },
+            "fourmolu": {
+              "config": {
+                "external": true,
+              },
+            },
           },
         },
       },
     },
   },
+
+  // Remote development
+  "ssh_connections": [
+    {
+      "host": "dev02",
+      "args": [],
+      "projects": [
+        {
+          "paths": ["/home/bchinn/end-to-end"],
+        },
+      ],
+    },
+  ],
 }
