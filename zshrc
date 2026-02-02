@@ -8,6 +8,9 @@ fpath=(
     $fpath
 )
 
+# Put homebrew first
+path=(/opt/homebrew/bin $path)
+
 path+=~/.bin
 path+=~/.local/bin
 path+=~/.cargo/bin
@@ -188,7 +191,7 @@ fi
 
 ############### Git helpers ###############
 
-export PATH="${HOME}/repos/graphite-shim:${PATH}"
+path=("${HOME}/repos/graphite-shim" $path)
 
 # CTRL-G - Paste the selected commit(s) into the command line
 __git-log-fzf() {

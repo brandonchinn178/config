@@ -104,7 +104,7 @@
 
   // Theme
   "theme": {
-    "mode": "system",
+    "mode": "dark",
     "light": "One Light",
     "dark": "One Dark"
   },

@@ -13,13 +13,12 @@ Highlights:
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     ```
 
-1. Install [Sublime Text](https://www.sublimetext.com/)
-    1. See `sublime/README.md`
-
 1. Install [Zed](https://zed.dev)
     1. In command prompt, run "cli: install cli binary"
 
-1. Install [Jetbrains Mono](https://www.jetbrains.com/lp/mono/)
+1. Install fonts
+    * [Jetbrains Mono](https://www.jetbrains.com/lp/mono/)
+    * [Symbols Nerd Font](https://www.nerdfonts.com/font-downloads)
 
 1. `./install`
 
@@ -31,7 +30,6 @@ Highlights:
     * Keyboard shortcuts
         * Change "Mission Control" shortcut to ctrl+alt+shift+up
         * Disable "Application windows" shortcut
-        * Change "Mission Control > Move left a space" to ctrl+alt+shift+left
-        * Change "Mission Control > Move right a space" to ctrl+alt+shift+right
+        * Deselect "Mission Control > Move {left,right} a space" shortcuts
 
 1. To use touch ID for sudo, copy the template at `/etc/pam.d/sudo_local.template` and uncomment the pam_tid.so line
