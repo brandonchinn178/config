@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -e
+
+changelog_paths=(
+    src/haskell/ops-portal-postgres-migration-runner
+    src/javascript/ops-portal
+    src/postgres/ops-portal
+    "src/python/ops-portal*"
+    src/terraform/modules/ops-portal/
+    src/terraform/providers/ops-portal
+)
+
+main() {
+    local from="${1?}"
+    local to="$(git rev-parse HEAD)"
+    local cmd="git log --oneline ${from}..${to} -- ${changelog_paths[*]}"
+    echo -e "\$ ${cmd}\n"
+    eval "$cmd"
+}
+
+main "$@"

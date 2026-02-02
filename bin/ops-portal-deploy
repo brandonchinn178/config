@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -e
+
+main() {
+    local stages=("$@")
+
+    if ! aws sts get-caller-identity > /dev/null; then
+        echo '>>> aws sso login'
+        aws sso login
+        echo '********************************************************************************'
+    fi
+
+    for stage in "${stages[@]}"; do
+        echo ">>> Deploying '$stage'..."
+        ./scripts/cloud-deploy-terraform-run "ops-portal-$stage"
+        echo '********************************************************************************'
+    done
+}
+
+main "$@"
