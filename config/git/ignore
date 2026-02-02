@@ -1,4 +1,10 @@
 .DS_Store
-.zed/
+.zed
 .envrc
 .direnv/
+dist-newstyle*
+
+.claude/settings.local.json
+AGENTS.override.md
+
+.bk.yaml
