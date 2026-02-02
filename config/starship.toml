@@ -2,6 +2,7 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
+${nix_shell}\
 ${shlvl}\
 ${directory}\
 ${custom.git_branch}\
@@ -11,6 +12,9 @@ ${git_commit}\
 \n\
 [❯](bold green) \
 """
+
+[nix_shell]
+format = "via [$symbol$state( \\($name\\))]($style)\n"
 
 [shlvl]
 disabled = false

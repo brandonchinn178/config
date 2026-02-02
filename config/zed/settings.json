@@ -7,6 +7,17 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "ssh_connections": [
+    {
+      "host": "dev02",
+      "args": [],
+      "projects": [
+        {
+          "paths": ["/home/bchinn/end-to-end"],
+        },
+      ],
+    },
+  ],
   "ensure_final_newline_on_save": false,
   "auto_indent_on_paste": false,
   "agent": {
@@ -65,6 +76,15 @@
     "JSONC": {
       "enable_language_server": true,
     },
+    "Nix": {
+      "enable_language_server": true,
+      "formatter": {
+        "external": {
+          "command": "nixpkgs-fmt",
+          "arguments": [],
+        },
+      },
+    },
   },
   "format_on_save": "off",
   "enable_language_server": false,
@@ -92,7 +112,7 @@
     "**/venv",
     "**/.mypy_cache",
     "**/bazel-*",
-    "**/dist-newstyle",
+    "**/dist-newstyle*",
     "**/.hie-bios",
     "**/_build",
     "**/.direnv",
@@ -131,6 +151,11 @@
           "plugin": {
             "hlint": {
               "globalOn": false,
+            },
+            "fourmolu": {
+              "config": {
+                "external": true,
+              },
             },
           },
         },
