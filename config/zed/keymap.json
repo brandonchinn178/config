@@ -8,7 +8,10 @@
 [
   {
     "bindings": {
+      "shift-escape": null,
       "cmd-m": null,
+      "cmd-h": null,
+      "ctrl-space": "workspace::ToggleZoom",
       "ctrl-q": "workspace::CloseWindow",
       "cmd-shift-w": [
         "pane::CloseAllItems",
