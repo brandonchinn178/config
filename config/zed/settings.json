@@ -11,17 +11,17 @@
   "auto_indent_on_paste": false,
   "agent": {
     "dock": "bottom",
-    "model_parameters": []
+    "model_parameters": [],
   },
   "notification_panel": {
     "button": false,
-    "dock": "bottom"
+    "dock": "bottom",
   },
   "collaboration_panel": {
-    "button": false
+    "button": false,
   },
   "git_panel": {
-    "dock": "bottom"
+    "dock": "bottom",
   },
   "extend_comment_on_newline": false,
   "always_treat_brackets_as_autoclosed": true,
@@ -33,47 +33,47 @@
   "project_panel": {
     "entry_spacing": "comfortable",
     "dock": "left",
-    "hide_gitignore": false
+    "hide_gitignore": false,
   },
   "tabs": {
-    "activate_on_close": "neighbour"
+    "activate_on_close": "neighbour",
   },
   "tab_bar": {
     "show_nav_history_buttons": false,
-    "show": true
+    "show": true,
   },
   "languages": {
     "Markdown": {
-      "soft_wrap": "editor_width"
+      "soft_wrap": "editor_width",
     },
     "C": {
-      "tab_size": 2
+      "tab_size": 2,
     },
     "Cabal": {
-      "tab_size": 2
+      "tab_size": 2,
     },
     "Haskell": {
-      "tab_size": 2
-    }
+      "tab_size": 2,
+    },
   },
   "format_on_save": "off",
 
   "remove_trailing_whitespace_on_save": false,
   "minimap": {
-    "show": "always"
+    "show": "always",
   },
   "completions": {
     "words_min_length": 0,
-    "lsp": true
+    "lsp": true,
   },
   "git": {
     "inline_blame": {
-      "enabled": false
-    }
+      "enabled": false,
+    },
   },
   "search": {
     "include_ignored": true,
-    "regex": true
+    "regex": true,
   },
   "file_scan_exclusions": [
     "**/.git",
@@ -88,7 +88,7 @@
   "title_bar": {
     "show_onboarding_banner": true,
     "show_user_picture": false,
-    "show_sign_in": false
+    "show_sign_in": false,
   },
   "base_keymap": "SublimeText",
 
@@ -100,14 +100,14 @@
     "default_width": 900,
     "dock": "right",
     "button": true,
-    "font_size": 18
+    "font_size": 18,
   },
 
   // Theme
   "theme": {
     "mode": "dark",
     "light": "One Light",
-    "dark": "One Dark"
+    "dark": "One Dark",
   },
 
   // Language Servers
@@ -118,11 +118,11 @@
           "formattingProvider": "fourmolu",
           "plugin": {
             "hlint": {
-              "globalOn": false
-            }
-          }
-        }
-      }
-    }
-  }
+              "globalOn": false,
+            },
+          },
+        },
+      },
+    },
+  },
 }

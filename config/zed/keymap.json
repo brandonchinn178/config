@@ -16,14 +16,14 @@
       "cmd-shift-w": [
         "pane::CloseAllItems",
         {
-          "close_pinned": false
-        }
+          "close_pinned": false,
+        },
       ],
       "cmd-shift-o": [
         "projects::OpenRecent",
         {
-          "create_new_window": true
-        }
+          "create_new_window": true,
+        },
       ],
       "ctrl-tab": "pane::ActivateNextItem",
       "ctrl-shift-tab": "pane::ActivatePreviousItem",
@@ -33,14 +33,14 @@
       "ctrl-p": "project_panel::ToggleFocus",
       "ctrl-shift-p": "workspace::ToggleLeftDock",
       "ctrl-l": "terminal_panel::ToggleFocus",
-      "ctrl-shift-l": "workspace::ToggleRightDock"
-    }
+      "ctrl-shift-l": "workspace::ToggleRightDock",
+    },
   },
   {
     "context": "Workspace",
     "bindings": {
-      "cmd-r": null
-    }
+      "cmd-r": null,
+    },
   },
   {
     "context": "Editor",
@@ -53,32 +53,32 @@
         {
           "severity": {
             "min": "hint",
-            "max": "error"
-          }
-        }
+            "max": "error",
+          },
+        },
       ],
       "ctrl-shift-d": [
         "editor::GoToPreviousDiagnostic",
         {
           "severity": {
             "min": "hint",
-            "max": "error"
-          }
-        }
+            "max": "error",
+          },
+        },
       ],
       "ctrl-down": [
         "editor::AddSelectionBelow",
         {
-          "skip_soft_wrap": false
-        }
+          "skip_soft_wrap": false,
+        },
       ],
       "ctrl-up": [
         "editor::AddSelectionAbove",
         {
-          "skip_soft_wrap": false
-        }
-      ]
-    }
+          "skip_soft_wrap": false,
+        },
+      ],
+    },
   },
   {
     "context": "Terminal",
@@ -88,8 +88,8 @@
       "cmd-t": "workspace::NewTerminal",
       "ctrl-backspace": null,
       "cmd-shift-up": "terminal::ScrollToTop",
-      "alt-shift-down": "terminal::ScrollToBottom"
-    }
+      "alt-shift-down": "terminal::ScrollToBottom",
+    },
   },
   {
     "context": "Pane",
@@ -98,8 +98,8 @@
       "alt-x": "search::ToggleRegex",
       "alt-f": "project_search::ToggleFilters",
       "alt-w": "search::ToggleWholeWord",
-      "alt-r": "search::ToggleReplace"
-    }
+      "alt-r": "search::ToggleReplace",
+    },
   },
   {
     "context": "ProjectPanel",
@@ -107,7 +107,7 @@
       "alt-n": "project_panel::NewDirectory",
       "ctrl-.": "project_panel::SelectParent",
       "ctrl-d": "project_panel::SelectNextDirectory",
-      "ctrl-shift-d": "project_panel::SelectPrevDirectory"
-    }
+      "ctrl-shift-d": "project_panel::SelectPrevDirectory",
+    },
   },
 ]
