@@ -4,7 +4,7 @@ set -eu -o pipefail
 
 main() {
     local dir; dir="$(git rev-parse --show-prefix)"
-    local repo; repo="$(git remote get-url origin | rg 'git@github.com:(.*)(\.git)?' -r '$1')"
+    local repo; repo="$(git remote get-url origin | rg 'git@github.com:(.*?)(\.git)?$' -r '$1')"
     local default_branch; default_branch=$(get_default_branch)
 
     for file in "$@"; do
