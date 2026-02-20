@@ -13,6 +13,9 @@ autoSquash = true
 missingCommitsCheck = error
 abbreviateCommands = true
 
+[fetch]
+prune = true
+
 [push]
 default = current
 

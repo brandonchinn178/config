@@ -84,6 +84,7 @@
     "**/dist-newstyle",
     "**/.hie-bios",
     "**/_build",
+    "**/.direnv",
   ],
   "title_bar": {
     "show_onboarding_banner": true,
