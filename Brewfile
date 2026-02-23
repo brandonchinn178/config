@@ -5,6 +5,7 @@ cask "nikitabobko/tap/aerospace"
 
 brew "colordiff"
 brew "corepack"
+brew "direnv"
 brew "dlvhdr/formulae/diffnav"
 brew "fd"
 brew "fzf"
