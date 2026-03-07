@@ -53,10 +53,21 @@
       "tab_size": 2,
     },
     "Haskell": {
+      "enable_language_server": true,
       "tab_size": 2,
+    },
+    "Python": {
+      "enable_language_server": true,
+    },
+    "Shell Script": {
+      "enable_language_server": true,
+    },
+    "JSONC": {
+      "enable_language_server": true,
     },
   },
   "format_on_save": "off",
+  "enable_language_server": false,
 
   "remove_trailing_whitespace_on_save": false,
   "minimap": {
