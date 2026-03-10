@@ -47,7 +47,7 @@ get_parent() {
         ' "${git_dir}/.graphite_cache_persist" 2> /dev/null
     elif [[ -f "${git_dir}/.graphite_shim/store.json" ]]; then
         jq -r --arg branch "$branch" '
-            .branches.[$branch] // ""
+            .branches.[$branch].name // ""
         ' "${git_dir}/.graphite_shim/store.json" 2> /dev/null
     fi
 }
