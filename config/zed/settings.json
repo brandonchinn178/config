@@ -68,6 +68,39 @@
     "Tree-sitter Query": {
       "enable_language_server": true,
     },
+    "HTML": {
+      "enable_language_server": true,
+      "tab_size": 2,
+    },
+    "CSS": {
+      "enable_language_server": true,
+      "tab_size": 2,
+    },
+    "TypeScript": {
+      "enable_language_server": true,
+      "language_servers": ["eslint", "!vtsls"],
+      "formatter": [
+        {"code_action": "source.fixAll.eslint"},
+        "prettier"
+      ],
+    },
+    "TSX": {
+      "enable_language_server": true,
+      "language_servers": ["eslint", "!vtsls"],
+      "formatter": [
+        {"code_action": "source.fixAll.eslint"},
+        "prettier"
+      ],
+    },
+    "Nix": {
+      "enable_language_server": true,
+      "formatter": {
+        "external": {
+          "command": "nixpkgs-fmt",
+          "arguments": [],
+        },
+      },
+    },
   },
   "format_on_save": "off",
   "enable_language_server": false,
