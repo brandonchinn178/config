@@ -65,6 +65,9 @@
     "JSONC": {
       "enable_language_server": true,
     },
+    "Tree-sitter Query": {
+      "enable_language_server": true,
+    },
   },
   "format_on_save": "off",
   "enable_language_server": false,
@@ -93,6 +96,7 @@
     "**/.mypy_cache",
     "**/bazel-*",
     "**/dist-newstyle",
+    "**/.stack-work",
     "**/.hie-bios",
     "**/_build",
     "**/.direnv",
