@@ -7,6 +7,7 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "disable_ai": true,
   "ensure_final_newline_on_save": false,
   "auto_indent_on_paste": false,
   "agent": {
@@ -128,11 +129,12 @@
     "**/venv",
     "**/.mypy_cache",
     "**/bazel-*",
-    "**/dist-newstyle",
+    "**/dist*",
     "**/.stack-work",
     "**/.hie-bios",
     "**/_build",
     "**/.direnv",
+    "**/node_modules",
   ],
   "title_bar": {
     "show_onboarding_banner": true,
