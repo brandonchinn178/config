@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>KeyboardShortcuts_delete</key>
+	<string>{"carbonKeyCode":51,"carbonModifiers":2048}</string>
+	<key>KeyboardShortcuts_pin</key>
+	<string>{"carbonModifiers":2048,"carbonKeyCode":35}</string>
+	<key>KeyboardShortcuts_popup</key>
+	<string>{"carbonModifiers":4096,"carbonKeyCode":9}</string>
+	<key>NSStatusItem Preferred Position Item-0</key>
+	<real>286</real>
+	<key>NSStatusItem VisibleCC Item-1</key>
+	<false/>
+	<key>NSWindow Frame com.sindresorhus.Preferences.FrameAutosaveName</key>
+	<string>449 226 542 468 0 0 1920 1055 </string>
+	<key>NSWindow Frame com.sindresorhus.Settings.FrameAutosaveName</key>
+	<string>585 595 510 245 0 0 1680 1020 </string>
+	<key>SUEnableAutomaticChecks</key>
+	<false/>
+	<key>SUHasLaunchedBefore</key>
+	<true/>
+	<key>SULastCheckTime</key>
+	<date>2026-03-26T18:05:25Z</date>
+	<key>enabledPasteboardTypes</key>
+	<array>
+		<string>public.html</string>
+		<string>public.rtf</string>
+		<string>public.utf8-plain-text</string>
+	</array>
+	<key>ignoreEvents</key>
+	<false/>
+	<key>ignoredPasteboardTypes</key>
+	<array>
+		<string>com.typeit4me.clipping</string>
+		<string>net.antelle.keeweb</string>
+		<string>de.petermaurer.TransientPasteboardType</string>
+		<string>Pasteboard generator type</string>
+		<string>com.agilebits.onepassword</string>
+	</array>
+	<key>maxMenuItems</key>
+	<string>10</string>
+	<key>migrations</key>
+	<dict>
+		<key>2024-07-01-version-2</key>
+		<true/>
+	</dict>
+	<key>pasteByDefault</key>
+	<true/>
+	<key>popupPosition</key>
+	<string>center</string>
+	<key>showFooter</key>
+	<false/>
+	<key>showSearch</key>
+	<true/>
+	<key>showTitle</key>
+	<false/>
+	<key>windowSize</key>
+	<string>[450,800]</string>
+</dict>
+</plist>
