@@ -82,6 +82,3 @@ brew bundle
 
 # Maccy
 defaults import org.p0deje.Maccy plist/org.p0deje.Maccy
-
-# Sublime Text
-link "${HOME}/Library/Application Support/Sublime Text/Packages/User" "${PWD}/sublime"
