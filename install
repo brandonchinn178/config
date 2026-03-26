@@ -85,20 +85,3 @@ defaults import org.p0deje.Maccy plist/org.p0deje.Maccy
 
 # Sublime Text
 link "${HOME}/Library/Application Support/Sublime Text/Packages/User" "${PWD}/sublime"
-
-############### Application settings ###############
-
-# Keyboard shortcuts
-sudo defaults write com.apple.universalaccess com.apple.custommenu.apps -array-add \
-    NSGlobalDomain \
-    'com.google.Chrome' \
-    'com.sublimetext.4'
-defaults write NSGlobalDomain NSUserKeyEquivalents -dict-add \
-    'Hide Others' '@~$h' \
-    'Minimize' '@$m'
-defaults write 'com.google.Chrome' NSUserKeyEquivalents -dict-add \
-    'Hide Google Chrome' '@^$h'
-defaults write 'com.sublimetext.4' NSUserKeyEquivalents -dict-add \
-    'Hide Sublime Text' '@~h' \
-    'Larger' '@~$=' \
-    'Smaller' '@~$-'
