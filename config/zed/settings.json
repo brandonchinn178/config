@@ -79,7 +79,7 @@
     },
     "TypeScript": {
       "enable_language_server": true,
-      "language_servers": ["eslint", "!vtsls"],
+      "language_servers": ["eslint", "vtsls"],
       "formatter": [
         {"code_action": "source.fixAll.eslint"},
         "prettier"
@@ -87,20 +87,11 @@
     },
     "TSX": {
       "enable_language_server": true,
-      "language_servers": ["eslint", "!vtsls"],
+      "language_servers": ["eslint", "vtsls"],
       "formatter": [
         {"code_action": "source.fixAll.eslint"},
         "prettier"
       ],
-    },
-    "Nix": {
-      "enable_language_server": true,
-      "formatter": {
-        "external": {
-          "command": "nixpkgs-fmt",
-          "arguments": [],
-        },
-      },
     },
   },
   "format_on_save": "off",
