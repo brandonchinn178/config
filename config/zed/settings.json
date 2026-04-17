@@ -60,6 +60,9 @@
     "Python": {
       "enable_language_server": true,
     },
+    "Rust": {
+      "enable_language_server": true,
+    },
     "Shell Script": {
       "enable_language_server": true,
     },
@@ -126,6 +129,7 @@
     "**/_build",
     "**/.direnv",
     "**/node_modules",
+    "**/.vite",
   ],
   "title_bar": {
     "show_onboarding_banner": true,

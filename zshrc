@@ -248,21 +248,19 @@ __git-branch-fzf() {
     fi
 
     setopt localoptions pipefail no_aliases 2> /dev/null
-    git branch --format='%(refname:short)' | fzf --ansi --accept-nth 1 "$@" | xargs
+    git branch --color | fzf --ansi --accept-nth -1 --height=~100% "$@" | xargs
 }
-fzf-git-branch-widget() {
+git-branch-widget() {
     if [[ -n "${LBUFFER}" ]]; then
         LBUFFER="${LBUFFER}$(__git-branch-fzf --multi)"
+        zle reset-prompt
     else
-        local branch="$(__git-branch-fzf)"
-        if [[ -n "${branch}" ]]; then
-            LBUFFER="git c ${branch}"
-            zle accept-line
-        fi
+        LBUFFER="gt checkout"
+        zle accept-line
     fi
 }
-zle -N fzf-git-branch-widget
-bindkey '^B' fzf-git-branch-widget
+zle -N git-branch-widget
+bindkey '^B' git-branch-widget
 
 __checkout_branch_with_fuzzy_search() {
     local name=$1
