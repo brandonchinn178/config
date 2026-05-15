@@ -14,16 +14,13 @@
     "dock": "bottom",
     "model_parameters": [],
   },
-  "notification_panel": {
-    "button": false,
-    "dock": "bottom",
-  },
   "collaboration_panel": {
     "button": false,
   },
   "git_panel": {
     "dock": "bottom",
   },
+  "diff_view_style": "unified",
   "extend_comment_on_newline": false,
   "always_treat_brackets_as_autoclosed": true,
   "colorize_brackets": false,
@@ -83,18 +80,12 @@
     "TypeScript": {
       "enable_language_server": true,
       "language_servers": ["eslint", "vtsls"],
-      "formatter": [
-        {"code_action": "source.fixAll.eslint"},
-        "prettier"
-      ],
+      "formatter": [{ "code_action": "source.fixAll.eslint" }, "prettier"],
     },
     "TSX": {
       "enable_language_server": true,
       "language_servers": ["eslint", "vtsls"],
-      "formatter": [
-        {"code_action": "source.fixAll.eslint"},
-        "prettier"
-      ],
+      "formatter": [{ "code_action": "source.fixAll.eslint" }, "prettier"],
     },
   },
   "format_on_save": "off",
@@ -143,10 +134,12 @@
   "buffer_font_fallbacks": ["Symbols Nerd Font Mono"],
   "buffer_font_size": 18,
   "terminal": {
+    "font_family": "JetBrains Mono",
     "default_width": 900,
     "dock": "right",
     "button": true,
     "font_size": 18,
+    "detect_venv": "off",
   },
 
   // Theme
