@@ -79,6 +79,8 @@
         },
       ],
       "ctrl-s": "editor::SelectLargerSyntaxNode",
+      "ctrl-f": "editor::ToggleFold",
+      "ctrl-shift-f": "editor::ToggleFoldAll",
     },
   },
   {
