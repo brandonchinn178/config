@@ -80,7 +80,8 @@
       ],
       "ctrl-s": "editor::SelectLargerSyntaxNode",
       "ctrl-f": "editor::ToggleFold",
-      "ctrl-shift-f": "editor::ToggleFoldAll",
+      "ctrl-shift-f": "editor::UnfoldRecursive",
+      "ctrl-alt-f": "editor::ToggleFoldAll",
     },
   },
   {
