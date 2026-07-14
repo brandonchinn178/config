@@ -255,8 +255,14 @@ git-branch-widget() {
         LBUFFER="${LBUFFER}$(__git-branch-fzf --multi)"
         zle reset-prompt
     else
-        LBUFFER="gt checkout"
-        zle accept-line
+        echo '' # Start selector below the prompt
+        local branch=$(gt select-branch)
+        if [[ -n "${branch}" ]]; then
+            LBUFFER="git checkout ${branch}"
+            zle accept-line
+        else
+            zle reset-prompt
+        fi
     fi
 }
 zle -N git-branch-widget
