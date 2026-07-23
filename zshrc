@@ -8,6 +8,9 @@ fpath=(
     $fpath
 )
 
+# Enable unique elements, removing duplicate entries
+typeset -U path PATH
+
 # Put homebrew first
 path=(/opt/homebrew/bin $path)
 
