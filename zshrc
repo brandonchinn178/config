@@ -11,12 +11,15 @@ fpath=(
 # Enable unique elements, removing duplicate entries
 typeset -U path PATH
 
-# Put homebrew first
-path=(/opt/homebrew/bin $path)
-
 path+=~/.bin
 path+=~/.local/bin
 path+=~/.cargo/bin
+
+# Move system paths to the end
+path=("${(@)path:#/usr/bin}")
+path+=/usr/bin
+path=("${(@)path:#/bin}")
+path+=/bin
 
 brew_prefix=$(brew --prefix)
 
