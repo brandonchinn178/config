@@ -115,4 +115,10 @@
       "cmd-shift-c": "workspace::CopyRelativePath",
     },
   },
+  {
+    "context": "FileFinder > Picker > Editor && end_of_input",
+    "bindings": {
+      "right": "file_finder::OpenWithoutDismiss"
+    }
+  }
 ]
