@@ -78,6 +78,16 @@
       "enable_language_server": true,
       "tab_size": 2,
     },
+    "Svelte": {
+      "enable_language_server": true,
+      "tab_size": 2,
+      "formatter": [{ "code_action": "source.fixAll.eslint" }, "prettier"],
+    },
+    "JavaScript": {
+      "enable_language_server": true,
+      "language_servers": ["eslint", "vtsls"],
+      "formatter": [{ "code_action": "source.fixAll.eslint" }, "prettier"],
+    },
     "TypeScript": {
       "enable_language_server": true,
       "language_servers": ["eslint", "vtsls"],
@@ -122,6 +132,7 @@
     "**/.direnv",
     "**/node_modules",
     "**/.vite",
+    "**/.svelte-kit",
   ],
   "title_bar": {
     "show_onboarding_banner": true,

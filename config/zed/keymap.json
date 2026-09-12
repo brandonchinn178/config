@@ -93,6 +93,7 @@
       "ctrl-backspace": null,
       "cmd-shift-up": "terminal::ScrollToTop",
       "alt-shift-down": "terminal::ScrollToBottom",
+      "ctrl-shift-space": "terminal::ToggleViMode",
     },
   },
   {
@@ -118,7 +119,7 @@
   {
     "context": "FileFinder > Picker > Editor && end_of_input",
     "bindings": {
-      "right": "file_finder::OpenWithoutDismiss"
-    }
-  }
+      "right": "file_finder::OpenWithoutDismiss",
+    },
+  },
 ]
